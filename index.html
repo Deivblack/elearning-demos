@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Onboarding Academy — Demo E-Learning Gamificado</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy:    #0D1F3C;
+    --navy2:   #152D54;
+    --teal:    #0D9488;
+    --teal2:   #14B8A6;
+    --teal3:   #CCFBF1;
+    --gold:    #F59E0B;
+    --gold2:   #FDE68A;
+    --rose:    #F43F5E;
+    --sky:     #38BDF8;
+    --white:   #FFFFFF;
+    --gray50:  #F8FAFC;
+    --gray100: #F1F5F9;
+    --gray300: #CBD5E1;
+    --gray500: #64748B;
+    --gray700: #334155;
+    --gray900: #0F172A;
+    --radius:  16px;
+    --shadow:  0 8px 32px rgba(13,31,60,.18);
+    --shadow-sm: 0 2px 8px rgba(13,31,60,.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── STARS BACKGROUND ── */
+  #stars-bg {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse at 20% 50%, #152D54 0%, #0D1F3C 60%, #060f1e 100%);
+    overflow: hidden;
+  }
+  #stars-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 50%, rgba(255,255,255,.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 80%, rgba(255,255,255,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 35%, rgba(255,255,255,.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 45% 90%, rgba(13,148,136,.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 65% 5%,  rgba(13,148,136,.5) 0%, transparent 100%);
+  }
+
+  /* ── SCREEN SYSTEM ── */
+  .screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; animation: fadeIn .4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── HUD ── */
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: none;
+    background: rgba(13,31,60,.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(13,148,136,.3);
+    padding: 10px 24px;
+    align-items: center; gap: 20px;
+  }
+  #hud.visible { display: flex; }
+  .hud-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 15px; color: var(--teal2);
+    white-space: nowrap;
+  }
+  .hud-logo span { color: var(--white); }
+  .hud-spacer { flex: 1; }
+  .hud-stat { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+  .hud-stat .icon { font-size: 16px; }
+  .hud-xp { color: var(--gold); }
+  .hud-level { color: var(--teal2); }
+  .hud-progress-wrap { display: flex; align-items: center; gap: 8px; }
+  .hud-bar-bg { width: 100px; height: 6px; background: rgba(255,255,255,.15); border-radius: 3px; overflow: hidden; }
+  .hud-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal2)); border-radius: 3px; transition: width .6s ease; }
+
+  /* ── CONTAINERS ── */
+  .page-wrap {
+    max-width: 860px; width: 100%; margin: 0 auto; padding: 100px 24px 60px;
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+  }
+
+  /* ── WELCOME SCREEN ── */
+  #screen-welcome {
+    justify-content: center; align-items: center;
+    padding: 40px 24px; text-align: center;
+  }
+  .welcome-inner { max-width: 640px; }
+  .badge-demo {
+    display: inline-block;
+    background: rgba(13,148,136,.2); border: 1px solid var(--teal);
+    color: var(--teal2); font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; padding: 5px 14px; border-radius: 20px;
+    margin-bottom: 28px;
+  }
+  .welcome-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(36px, 7vw, 64px);
+    font-weight: 700; line-height: 1.05;
+    margin-bottom: 16px;
+  }
+  .welcome-title .hi { color: var(--gray300); font-size: 0.45em; font-weight: 400; display: block; margin-bottom: 8px; letter-spacing: 1px; }
+  .welcome-title .brand { color: var(--teal2); }
+  .welcome-sub {
+    color: var(--gray300); font-size: 16px; line-height: 1.65;
+    margin-bottom: 40px; max-width: 520px; margin-left: auto; margin-right: auto;
+  }
+  .welcome-name-wrap {
+    display: flex; gap: 12px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap;
+  }
+  .input-field {
+    background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.15);
+    color: var(--white); font-family: 'Inter', sans-serif; font-size: 15px;
+    padding: 12px 18px; border-radius: 10px; outline: none; flex: 1; min-width: 200px;
+    transition: border-color .2s;
+  }
+  .input-field:focus { border-color: var(--teal); }
+  .input-field::placeholder { color: var(--gray500); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal), var(--teal2));
+    color: var(--white); font-family: 'Inter', sans-serif;
+    font-size: 15px; font-weight: 700; padding: 13px 32px;
+    border: none; border-radius: 10px; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 4px 16px rgba(13,148,136,.35);
+    white-space: nowrap;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,148,136,.45); }
+  .btn-primary:active { transform: translateY(0); }
+  .welcome-modules {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px; width: 100%; margin-top: 10px;
+  }
+  .module-pill {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px; padding: 16px 12px; text-align: center;
+    transition: border-color .2s, background .2s;
+  }
+  .module-pill:hover { border-color: var(--teal); background: rgba(13,148,136,.1); }
+  .module-pill .mp-icon { font-size: 26px; margin-bottom: 6px; }
+  .module-pill .mp-name { font-size: 12px; font-weight: 600; color: var(--gray300); }
+
+  /* ── MISSION / MODULE CARDS ── */
+  .missions-header { width: 100%; margin-bottom: 28px; }
+  .missions-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px; font-weight: 700; margin-bottom: 6px;
+  }
+  .missions-sub { color: var(--gray500); font-size: 14px; }
+  .missions-grid { display: grid; grid-template-columns: 1fr; gap: 14px; width: 100%; }
+
+  .mission-card {
+    background: rgba(255,255,255,.04); border: 1.5px solid rgba(255,255,255,.1);
+    border-radius: var(--radius); padding: 22px 24px;
+    display: flex; align-items: center; gap: 20px;
+    cursor: pointer; transition: all .2s; position: relative; overflow: hidden;
+  }
+  .mission-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--teal); transform: scaleY(0); transform-origin: bottom;
+    transition: transform .25s ease;
+  }
+  .mission-card:hover { border-color: var(--teal); background: rgba(13,148,136,.08); transform: translateX(4px); }
+  .mission-card:hover::before { transform: scaleY(1); }
+  .mission-card.locked { opacity: .45; cursor: not-allowed; }
+  .mission-card.locked:hover { transform: none; border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.04); }
+  .mission-card.locked:hover::before { transform: scaleY(0); }
+  .mission-card.completed { border-color: rgba(13,148,136,.4); background: rgba(13,148,136,.06); }
+
+  .mc-icon-wrap {
+    width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  .mc-body { flex: 1; }
+  .mc-num { font-size: 11px; font-weight: 700; color: var(--teal2); letter-spacing: 1.5px; margin-bottom: 3px; text-transform: uppercase; }
+  .mc-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .mc-desc { font-size: 13px; color: var(--gray500); line-height: 1.5; }
+  .mc-meta { display: flex; gap: 14px; margin-top: 10px; }
+  .mc-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .mc-xp { background: rgba(245,158,11,.15); color: var(--gold); }
+  .mc-time { background: rgba(255,255,255,.08); color: var(--gray300); }
+  .mc-status { font-size: 20px; flex-shrink: 0; }
+
+  /* ── LESSON SCREEN ── */
+  .lesson-wrap { width: 100%; }
+  .lesson-header { margin-bottom: 28px; }
+  .lesson-breadcrumb { font-size: 12px; color: var(--gray500); margin-bottom: 10px; }
+  .lesson-title { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .lesson-xp-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(245,158,11,.15); color: var(--gold);
+    font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+  }
+
+  .lesson-progress { width: 100%; margin-bottom: 32px; }
+  .lp-steps { display: flex; gap: 6px; }
+  .lp-step {
+    flex: 1; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,.1); transition: background .4s;
+  }
+  .lp-step.done { background: var(--teal); }
+  .lp-step.active { background: var(--teal2); animation: pulse-bar 1.2s infinite; }
+  @keyframes pulse-bar { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+
+  /* Content blocks */
+  .content-block { width: 100%; }
+
+  /* Info card */
+  .info-card {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px; padding: 28px; margin-bottom: 20px; line-height: 1.75;
+    font-size: 15px; color: #CBD5E1;
+  }
+  .info-card h3 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 20px;
+    font-weight: 700; color: var(--white); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .info-card p { margin-bottom: 12px; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .info-highlight {
+    background: rgba(13,148,136,.12); border-left: 3px solid var(--teal);
+    border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0;
+    color: var(--teal3); font-weight: 500;
+  }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
+  .info-item {
+    background: rgba(255,255,255,.06); border-radius: 10px; padding: 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .info-item .ii-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .info-item strong { display: block; font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+  .info-item span { font-size: 12px; color: var(--gray500); line-height: 1.4; }
+
+  /* Quiz card */
+  .quiz-card {
+    background: rgba(255,255,255,.05); border: 1.5px solid rgba(245,158,11,.25);
+    border-radius: 14px; padding: 28px; margin-bottom: 20px;
+  }
+  .quiz-label {
+    font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .quiz-label::before { content: '⚡'; }
+  .quiz-question { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12);
+    border-radius: 10px; padding: 14px 18px; cursor: pointer; font-size: 14px;
+    font-weight: 500; transition: all .15s; display: flex; align-items: center; gap: 12px;
+    position: relative;
+  }
+  .quiz-option:hover { border-color: var(--teal); background: rgba(13,148,136,.1); }
+  .quiz-option.selected { border-color: var(--teal2); background: rgba(13,148,136,.15); }
+  .quiz-option.correct { border-color: #22C55E; background: rgba(34,197,94,.12); color: #86EFAC; }
+  .quiz-option.wrong { border-color: var(--rose); background: rgba(244,63,94,.12); color: #FDA4AF; }
+  .quiz-option.disabled { cursor: default; }
+  .quiz-option .opt-letter {
+    width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .quiz-feedback {
+    margin-top: 14px; padding: 14px 18px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; display: none; line-height: 1.5;
+  }
+  .quiz-feedback.show { display: block; animation: fadeIn .3s ease; }
+  .quiz-feedback.success { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: #86EFAC; }
+  .quiz-feedback.error { background: rgba(244,63,94,.12); border: 1px solid rgba(244,63,94,.3); color: #FDA4AF; }
+
+  /* Scenario card */
+  .scenario-card {
+    background: rgba(255,255,255,.05); border: 1.5px solid rgba(56,189,248,.2);
+    border-radius: 14px; padding: 28px; margin-bottom: 20px;
+  }
+  .scenario-label {
+    font-size: 11px; font-weight: 700; color: var(--sky); letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .scenario-label::before { content: '🎭'; }
+  .scenario-scene {
+    background: rgba(56,189,248,.06); border-radius: 10px; padding: 18px;
+    margin-bottom: 18px; border: 1px solid rgba(56,189,248,.15);
+    font-size: 14px; color: var(--gray300); line-height: 1.65;
+  }
+  .scenario-scene strong { color: var(--sky); }
+  .scenario-q { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+  .scenario-choices { display: flex; flex-direction: column; gap: 10px; }
+  .scenario-choice {
+    background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12);
+    border-radius: 10px; padding: 14px 18px; cursor: pointer;
+    font-size: 14px; font-weight: 500; transition: all .15s;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .scenario-choice:hover { border-color: var(--sky); background: rgba(56,189,248,.08); }
+  .scenario-choice.chosen-good { border-color: #22C55E; background: rgba(34,197,94,.1); }
+  .scenario-choice.chosen-bad  { border-color: var(--rose); background: rgba(244,63,94,.1); }
+  .scenario-choice.disabled { cursor: default; }
+  .choice-icon { font-size: 18px; flex-shrink: 0; }
+
+  /* Match activity */
+  .match-card {
+    background: rgba(255,255,255,.05); border: 1.5px solid rgba(167,139,250,.25);
+    border-radius: 14px; padding: 28px; margin-bottom: 20px;
+  }
+  .match-label {
+    font-size: 11px; font-weight: 700; color: #A78BFA; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .match-label::before { content: '🧩'; }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .match-item {
+    background: rgba(167,139,250,.08); border: 1.5px solid rgba(167,139,250,.2);
+    border-radius: 10px; padding: 12px 16px; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all .2s; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px;
+  }
+  .match-item:hover { border-color: #A78BFA; background: rgba(167,139,250,.15); }
+  .match-item.selected { border-color: #A78BFA; background: rgba(167,139,250,.2); }
+  .match-item.matched { border-color: #22C55E; background: rgba(34,197,94,.1); color: #86EFAC; cursor: default; }
+  .match-item.wrong-match { border-color: var(--rose); background: rgba(244,63,94,.1); animation: shake .3s ease; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  /* Navigation */
+  .lesson-nav { display: flex; gap: 12px; justify-content: flex-end; width: 100%; margin-top: 12px; }
+  .btn-secondary {
+    background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.15);
+    color: var(--white); font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600; padding: 11px 24px;
+    border-radius: 10px; cursor: pointer; transition: all .15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,.14); }
+
+  /* XP popup */
+  .xp-popup {
+    position: fixed; top: 70px; right: 24px; z-index: 200;
+    background: var(--gold); color: var(--navy);
+    font-size: 15px; font-weight: 800; padding: 10px 20px;
+    border-radius: 10px; pointer-events: none;
+    animation: xpAnim .9s ease forwards;
+  }
+  @keyframes xpAnim {
+    0%  { opacity: 0; transform: translateY(8px) scale(.8); }
+    20% { opacity: 1; transform: translateY(0) scale(1); }
+    70% { opacity: 1; transform: translateY(-4px) scale(1.05); }
+    100%{ opacity: 0; transform: translateY(-20px) scale(.9); }
+  }
+
+  /* Badge popup */
+  .badge-popup {
+    position: fixed; inset: 0; z-index: 300; display: flex;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,.6); backdrop-filter: blur(6px);
+    animation: fadeIn .3s ease;
+  }
+  .badge-inner {
+    background: var(--navy2); border: 2px solid var(--gold);
+    border-radius: 20px; padding: 40px 36px; text-align: center;
+    max-width: 360px; width: 90%; box-shadow: 0 0 60px rgba(245,158,11,.3);
+    animation: popIn .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes popIn { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .badge-icon { font-size: 64px; margin-bottom: 16px; }
+  .badge-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+  .badge-desc { color: var(--gray300); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+  .badge-xp { font-size: 28px; font-weight: 900; color: var(--gold); margin-bottom: 4px; }
+  .badge-xp-label { font-size: 12px; color: var(--gray500); margin-bottom: 20px; }
+
+  /* RESULTS screen */
+  .results-wrap { width: 100%; text-align: center; }
+  .results-icon { font-size: 72px; margin-bottom: 20px; }
+  .results-title { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+  .results-sub { color: var(--gray300); font-size: 15px; margin-bottom: 36px; }
+  .results-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-bottom: 36px;
+  }
+  .rs-card {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px; padding: 24px 16px;
+  }
+  .rs-value { font-size: 36px; font-weight: 900; margin-bottom: 4px; }
+  .rs-label { font-size: 12px; color: var(--gray500); font-weight: 500; }
+  .badges-earned { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+  .earned-badge {
+    background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.3);
+    border-radius: 12px; padding: 14px 16px; text-align: center; min-width: 100px;
+  }
+  .earned-badge .eb-icon { font-size: 32px; margin-bottom: 6px; }
+  .earned-badge .eb-name { font-size: 11px; font-weight: 700; color: var(--gold); }
+  .cert-banner {
+    background: linear-gradient(135deg, rgba(13,148,136,.2), rgba(20,184,166,.1));
+    border: 1.5px solid var(--teal); border-radius: 14px;
+    padding: 28px; margin-bottom: 28px;
+  }
+  .cert-banner h3 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; color: var(--teal2); }
+  .cert-banner p { color: var(--gray300); font-size: 14px; }
+  .btn-restart {
+    background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.2);
+    color: var(--white); font-size: 14px; font-weight: 600; padding: 11px 28px;
+    border-radius: 10px; cursor: pointer; transition: all .2s;
+  }
+  .btn-restart:hover { background: rgba(255,255,255,.15); }
+
+  /* Responsive */
+  @media(max-width:580px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .results-stats { grid-template-columns: 1fr 1fr; }
+    .match-grid { grid-template-columns: 1fr; }
+    .hud-bar-bg { width: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars-bg"></div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-logo"><span>Onboarding</span> Academy</div>
+  <div class="hud-spacer"></div>
+  <div class="hud-stat hud-level"><span class="icon">🎖️</span> <span id="hud-level-txt">Nivel 1</span></div>
+  <div class="hud-stat hud-xp"><span class="icon">⚡</span> <span id="hud-xp-txt">0 XP</span></div>
+  <div class="hud-progress-wrap">
+    <div class="hud-bar-bg"><div class="hud-bar-fill" id="hud-bar" style="width:0%"></div></div>
+    <span style="font-size:12px;color:var(--gray500)" id="hud-prog-txt">0/3</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN: WELCOME -->
+<!-- ══════════════════════════════════════════ -->
+<div id="screen-welcome" class="screen active">
+  <div class="welcome-inner">
+    <div class="badge-demo">✦ Demo · E-Learning Gamificado</div>
+    <h1 class="welcome-title">
+      <span class="hi">Bienvenido/a a</span>
+      <span class="brand">Onboarding</span><br>Academy
+    </h1>
+    <p class="welcome-sub">
+      Tu primera semana en la empresa comienza aquí. Completa las 3 misiones,
+      acumula puntos XP, desbloquea insignias y certifícate como
+      <strong style="color:var(--white)">Colaborador/a Fundador/a</strong>.
+    </p>
+    <div class="welcome-name-wrap">
+      <input class="input-field" id="player-name" type="text" placeholder="¿Cómo te llamas?" maxlength="30"/>
+      <button class="btn-primary" onclick="startGame()">¡Comenzar misiones! 🚀</button>
+    </div>
+    <div class="welcome-modules">
+      <div class="module-pill"><div class="mp-icon">🏢</div><div class="mp-name">Nuestra Empresa</div></div>
+      <div class="module-pill"><div class="mp-icon">🤝</div><div class="mp-name">Cultura & Valores</div></div>
+      <div class="module-pill"><div class="mp-icon">🛡️</div><div class="mp-name">Seguridad & Rol</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN: MISSION MAP -->
+<!-- ══════════════════════════════════════════ -->
+<div id="screen-missions" class="screen">
+  <div class="page-wrap">
+    <div class="missions-header" style="width:100%">
+      <p style="color:var(--teal2);font-size:13px;font-weight:600;margin-bottom:4px">👋 Hola, <span id="player-name-display"></span></p>
+      <h2 class="missions-title">Tus Misiones</h2>
+      <p class="missions-sub">Completa cada misión en orden para avanzar de nivel y desbloquear tu certificado.</p>
+    </div>
+    <div class="missions-grid" id="missions-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN: LESSON -->
+<!-- ══════════════════════════════════════════ -->
+<div id="screen-lesson" class="screen">
+  <div class="page-wrap">
+    <div class="lesson-wrap">
+      <div class="lesson-header">
+        <div class="lesson-breadcrumb" id="lesson-breadcrumb">Misión 1 · Paso 1</div>
+        <h2 class="lesson-title" id="lesson-title">Título</h2>
+        <div class="lesson-xp-badge">⚡ <span id="lesson-xp-badge">+50 XP</span> al completar</div>
+      </div>
+      <div class="lesson-progress"><div class="lp-steps" id="lp-steps"></div></div>
+      <div id="lesson-content" class="content-block"></div>
+      <div class="lesson-nav" id="lesson-nav"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN: RESULTS -->
+<!-- ══════════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="page-wrap">
+    <div class="results-wrap">
+      <div class="results-icon">🎓</div>
+      <h2 class="results-title">¡Onboarding Completado!</h2>
+      <p class="results-sub" id="results-sub">Felicitaciones, <strong></strong>. Has demostrado que estás listo/a.</p>
+      <div class="results-stats">
+        <div class="rs-card">
+          <div class="rs-value" style="color:var(--gold)" id="r-xp">0</div>
+          <div class="rs-label">XP Ganados</div>
+        </div>
+        <div class="rs-card">
+          <div class="rs-value" style="color:var(--teal2)" id="r-correct">0/0</div>
+          <div class="rs-label">Respuestas correctas</div>
+        </div>
+        <div class="rs-card">
+          <div class="rs-value" style="color:#A78BFA" id="r-badges">0</div>
+          <div class="rs-label">Insignias ganadas</div>
+        </div>
+      </div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--gray300)">INSIGNIAS DESBLOQUEADAS</h3>
+      <div class="badges-earned" id="badges-earned"></div>
+      <div class="cert-banner">
+        <h3>🏅 Certificado de Inducción</h3>
+        <p id="cert-name-line">Este certificado acredita que <strong></strong> completó exitosamente el programa de Onboarding.</p>
+      </div>
+      <button class="btn-restart" onclick="restartGame()">↩ Volver a jugar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Badge modal -->
+<div id="badge-modal" class="badge-popup" style="display:none">
+  <div class="badge-inner">
+    <div class="badge-icon" id="bm-icon"></div>
+    <div class="badge-title" id="bm-title"></div>
+    <div class="badge-desc" id="bm-desc"></div>
+    <div class="badge-xp" id="bm-xp"></div>
+    <div class="badge-xp-label">XP acumulados</div>
+    <button class="btn-primary" onclick="closeBadge()">¡Seguir adelante! →</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const STATE = {
+  playerName: '',
+  xp: 0,
+  level: 1,
+  completedMissions: [],
+  earnedBadges: [],
+  correctAnswers: 0,
+  totalQuestions: 0,
+};
+
+const LEVELS = [
+  { min:0,    label:'Explorador 🌱' },
+  { min:100,  label:'Colaborador 🌟' },
+  { min:250,  label:'Referente 🚀' },
+  { min:450,  label:'Embajador 🏆' },
+];
+
+// ══════════════════════════════════════════
+// MISSIONS DATA
+// ══════════════════════════════════════════
+const MISSIONS = [
+  {
+    id: 'mission-1',
+    icon: '🏢',
+    color: 'rgba(13,148,136,.25)',
+    num: 'MISIÓN 01',
+    title: 'Conoce tu Nueva Casa',
+    desc: 'Aprende la historia, misión y estructura de la empresa.',
+    xp: 150, time: '~5 min',
+    badge: { icon: '🏢', title: '¡Primera Parada!', desc: 'Conociste la historia y estructura de tu nueva empresa. ¡Bienvenido al equipo!' },
+    steps: [
+      {
+        type: 'info',
+        title: 'Nuestra Historia y Misión',
+        icon: '📖',
+        content: `
+          <div class="info-card">
+            <h3>📖 Quiénes somos</h3>
+            <p>Somos una empresa con más de <strong style="color:var(--teal2)">20 años de trayectoria</strong>, comprometida con ofrecer soluciones de valor a nuestros clientes y un entorno de crecimiento para nuestro equipo.</p>
+            <div class="info-highlight">
+              💡 <strong>Nuestra misión:</strong> Generar valor sostenible para nuestros clientes, colaboradores y la comunidad, innovando cada día con integridad y excelencia.
+            </div>
+            <p>Operamos en <strong>5 líneas de negocio</strong> con más de 1.200 colaboradores en toda la región.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">🎯</div><div><strong>Visión</strong><span>Ser referentes de innovación y servicio en la región para 2030.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💎</div><div><strong>Propósito</strong><span>Transformar la vida de las personas a través de nuestros productos.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🌍</div><div><strong>Presencia</strong><span>5 países, 12 ciudades, más de 80 puntos de atención.</span></div></div>
+              <div class="info-item"><div class="ii-icon">👥</div><div><strong>Equipo</strong><span>+1.200 colaboradores comprometidos con la excelencia.</span></div></div>
+            </div>
+          </div>
+        `
+      },
+      {
+        type: 'quiz',
+        title: '¿Cuántos años tiene la empresa?',
+        question: '¿Cuántos años de trayectoria tiene nuestra empresa?',
+        options: ['10 años', '20 años', '35 años', '5 años'],
+        correct: 1,
+        feedback: { ok: '✅ ¡Correcto! Llevamos más de 20 años construyendo valor para nuestros clientes y equipo.', fail: '❌ Recuerda: tenemos más de 20 años de trayectoria en el mercado.' },
+        xp: 30,
+      },
+      {
+        type: 'info',
+        title: 'Estructura Organizacional',
+        icon: '🏗️',
+        content: `
+          <div class="info-card">
+            <h3>🏗️ Cómo estamos organizados</h3>
+            <p>Nuestra organización está diseñada para ser <strong style="color:var(--teal2)">ágil y centrada en el cliente</strong>. Cada área tiene un propósito claro dentro del ecosistema.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">📊</div><div><strong>Dirección General</strong><span>Estrategia, gobernanza y cultura organizacional.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💼</div><div><strong>Comercial</strong><span>Ventas, marketing y desarrollo de clientes.</span></div></div>
+              <div class="info-item"><div class="ii-icon">⚙️</div><div><strong>Operaciones</strong><span>Producción, logística y calidad de servicio.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🤝</div><div><strong>Talento Humano</strong><span>Selección, capacitación y bienestar del equipo.</span></div></div>
+            </div>
+            <div class="info-highlight">
+              💡 Tu área reporta a la Dirección de Operaciones. Tu líder inmediato será tu primer punto de contacto.
+            </div>
+          </div>
+        `
+      },
+    ]
+  },
+  {
+    id: 'mission-2',
+    icon: '🤝',
+    color: 'rgba(167,139,250,.25)',
+    num: 'MISIÓN 02',
+    title: 'Cultura & Valores',
+    desc: 'Descubre los valores que guían nuestras decisiones y comportamientos.',
+    xp: 175, time: '~5 min',
+    badge: { icon: '💎', title: '¡Guardián de Valores!', desc: 'Demostraste que internalizaste nuestra cultura y valores. ¡Eso marca la diferencia!' },
+    steps: [
+      {
+        type: 'info',
+        title: 'Nuestros 4 Valores Fundamentales',
+        icon: '💎',
+        content: `
+          <div class="info-card">
+            <h3>💎 Lo que nos define</h3>
+            <p>Nuestros valores no son solo palabras en una pared. Son el <strong style="color:var(--teal2)">filtro de cada decisión</strong> que tomamos, desde la más pequeña hasta la más estratégica.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">🔒</div><div><strong>Integridad</strong><span>Actuamos con honestidad y coherencia en todo momento.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🚀</div><div><strong>Innovación</strong><span>Buscamos mejores formas de hacer las cosas cada día.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🤝</div><div><strong>Colaboración</strong><span>El éxito es colectivo. Sumamos, no restamos.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💡</div><div><strong>Excelencia</strong><span>Nos exigimos calidad en cada entrega y proceso.</span></div></div>
+            </div>
+            <div class="info-highlight">
+              🌟 En nuestra empresa, el <strong>comportamiento</strong> es tan importante como el <strong>resultado</strong>. El "cómo" importa tanto como el "qué".
+            </div>
+          </div>
+        `
+      },
+      {
+        type: 'scenario',
+        title: 'Pon en práctica los valores',
+        scenario: `<strong>Tu compañero Marco</strong> te pide que valides una cifra en el reporte mensual antes de enviarlo al cliente. Tú ya revisaste los datos y encontraste un pequeño error que infla el resultado en un 3%. Marco dice: <em>"Es mínimo, nadie se va a dar cuenta y el cliente ya está esperando."</em>`,
+        question: '¿Qué harías tú?',
+        choices: [
+          { icon: '🔒', text: 'Corriges el error y explicas a Marco que la integridad viene primero, incluso si implica un pequeño retraso.', good: true, feedback: '✅ ¡Exacto! La <strong>Integridad</strong> es no negociable. Un pequeño error hoy puede convertirse en un gran problema mañana. El cliente valora la honestidad.' },
+          { icon: '⏩', text: 'Envías el reporte como está para no atrasar la entrega, el cliente probablemente no lo note.', good: false, feedback: '❌ Esta actitud va en contra del valor de <strong>Integridad</strong>. Siempre prevalece la honestidad sobre la comodidad.' },
+          { icon: '🙈', text: 'Le dices a Marco que tú no viste el error y lo dejas decidir.', good: false, feedback: '❌ Evadir la responsabilidad también va en contra de la <strong>Integridad</strong> y la <strong>Colaboración</strong>. Todos somos responsables.' },
+        ],
+        xp: 40,
+      },
+      {
+        type: 'match',
+        title: 'Conecta el valor con la acción',
+        question: 'Une cada valor con el comportamiento que mejor lo representa:',
+        pairs: [
+          { left: '🔒 Integridad', right: 'Reporto un error antes de que afecte al cliente' },
+          { left: '🚀 Innovación', right: 'Propongo una mejora al proceso del equipo' },
+          { left: '🤝 Colaboración', right: 'Apoyo a un colega sin que me lo pidan' },
+          { left: '💡 Excelencia', right: 'Reviso mi trabajo antes de entregarlo' },
+        ],
+        xp: 35,
+      },
+    ]
+  },
+  {
+    id: 'mission-3',
+    icon: '🛡️',
+    color: 'rgba(56,189,248,.2)',
+    num: 'MISIÓN 03',
+    title: 'Seguridad & Tu Rol',
+    desc: 'Conoce las normas esenciales de seguridad y cómo empezar tu rol con éxito.',
+    xp: 200, time: '~5 min',
+    badge: { icon: '🛡️', title: '¡Agente de Seguridad!', desc: 'Conoces las normas esenciales para protegerte y proteger a tu equipo. ¡Eres parte de la solución!' },
+    steps: [
+      {
+        type: 'info',
+        title: 'Seguridad: Responsabilidad de Todos',
+        icon: '🛡️',
+        content: `
+          <div class="info-card">
+            <h3>🛡️ Tu seguridad, nuestra prioridad</h3>
+            <p>La seguridad no es solo del área de SSA — <strong style="color:var(--teal2)">es responsabilidad de cada colaborador</strong>. Conocer las normas básicas protege tu vida, la de tus compañeros y la continuidad del negocio.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">🚨</div><div><strong>Emergencias</strong><span>Memoriza la ruta de evacuación de tu área y el punto de encuentro.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🔥</div><div><strong>Extintor</strong><span>Ubicado a menos de 15m de tu puesto. Tipo ABC para oficinas.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💊</div><div><strong>Primeros Auxilios</strong><span>Botiquín en cada piso. Ante una emergencia médica llama al int. 911.</span></div></div>
+              <div class="info-item"><div class="ii-icon">📋</div><div><strong>Reporte</strong><span>Todo incidente, por menor que sea, debe reportarse en las primeras 24h.</span></div></div>
+            </div>
+            <div class="info-highlight">
+              ⚠️ <strong>Regla de oro:</strong> Si algo te parece inseguro, tienes el <strong>derecho y la responsabilidad</strong> de detener la actividad y reportarlo sin temor a represalias.
+            </div>
+          </div>
+        `
+      },
+      {
+        type: 'quiz',
+        title: '¿Cuándo reportar un incidente?',
+        question: '¿En qué plazo máximo debes reportar un incidente de seguridad, aunque sea menor?',
+        options: ['En la misma semana', 'En las primeras 24 horas', 'Solo si hay lesionados', 'Al finalizar el turno siguiente'],
+        correct: 1,
+        feedback: {
+          ok: '✅ ¡Correcto! Dentro de las primeras 24 horas. El reporte oportuno permite tomar acciones preventivas.',
+          fail: '❌ La respuesta correcta es: en las primeras 24 horas. El reporte oportuno es clave para prevenir accidentes mayores.'
+        },
+        xp: 30,
+      },
+      {
+        type: 'quiz',
+        title: 'Tus primeras semanas con éxito',
+        question: '¿Cuál de estos comportamientos tiene mayor impacto positivo durante tu primera semana de trabajo?',
+        options: [
+          'Resolver todo solo sin preguntar para demostrar autonomía',
+          'Escuchar activamente, hacer preguntas y construir relaciones con tu equipo',
+          'Esperar a que te asignen tareas sin mostrar iniciativa',
+          'Implementar inmediatamente los procesos que usabas en tu empresa anterior'
+        ],
+        correct: 1,
+        feedback: {
+          ok: '✅ ¡Exacto! Escuchar, preguntar y conectar con el equipo son las bases del onboarding exitoso. La humildad y la apertura son tus mejores herramientas.',
+          fail: '❌ La opción correcta es escuchar activamente y construir relaciones. Cada empresa tiene su propia cultura — primero observa, luego actúa.'
+        },
+        xp: 30,
+      },
+    ]
+  },
+];
+
+// ══════════════════════════════════════════
+// GAME LOGIC
+// ══════════════════════════════════════════
+let currentMission = null;
+let currentStep = 0;
+let stepAnswered = false;
+let scenarioChosen = false;
+let matchState = {};
+let badgeQueue = [];
+let pendingBadgeCallback = null;
+
+function startGame() {
+  const nameInput = document.getElementById('player-name').value.trim();
+  STATE.playerName = nameInput || 'Colaborador';
+  showScreen('screen-missions');
+  document.getElementById('hud').classList.add('visible');
+  document.getElementById('player-name-display').textContent = STATE.playerName;
+  renderMissions();
+  updateHUD();
+}
+
+function renderMissions() {
+  const grid = document.getElementById('missions-grid');
+  grid.innerHTML = '';
+  MISSIONS.forEach((m, idx) => {
+    const isCompleted = STATE.completedMissions.includes(m.id);
+    const isLocked = idx > 0 && !STATE.completedMissions.includes(MISSIONS[idx-1].id);
+    const card = document.createElement('div');
+    card.className = 'mission-card' + (isLocked ? ' locked' : '') + (isCompleted ? ' completed' : '');
+    const statusIcon = isCompleted ? '✅' : (isLocked ? '🔒' : '▶️');
+    card.innerHTML = `
+      <div class="mc-icon-wrap" style="background:${m.color}">${m.icon}</div>
+      <div class="mc-body">
+        <div class="mc-num">${m.num}</div>
+        <div class="mc-title">${m.title}</div>
+        <div class="mc-desc">${m.desc}</div>
+        <div class="mc-meta">
+          <span class="mc-tag mc-xp">⚡ +${m.xp} XP</span>
+          <span class="mc-tag mc-time">⏱ ${m.time}</span>
+          ${isCompleted ? '<span class="mc-tag" style="background:rgba(34,197,94,.15);color:#86EFAC">✓ Completada</span>' : ''}
+        </div>
+      </div>
+      <div class="mc-status">${statusIcon}</div>
+    `;
+    if (!isLocked && !isCompleted) card.onclick = () => openMission(idx);
+    grid.appendChild(card);
+  });
+}
+
+function openMission(idx) {
+  currentMission = idx;
+  currentStep = 0;
+  stepAnswered = false;
+  renderStep();
+  showScreen('screen-lesson');
+}
+
+function renderStep() {
+  const m = MISSIONS[currentMission];
+  const step = m.steps[currentStep];
+  stepAnswered = false;
+  scenarioChosen = false;
+  matchState = { selected: null, matched: [] };
+
+  document.getElementById('lesson-breadcrumb').textContent = `${m.num} · Paso ${currentStep + 1} de ${m.steps.length}`;
+  document.getElementById('lesson-title').textContent = step.title;
+  document.getElementById('lesson-xp-badge').textContent = `+${m.xp} XP al completar misión`;
+
+  // Progress dots
+  const stepsEl = document.getElementById('lp-steps');
+  stepsEl.innerHTML = '';
+  m.steps.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'lp-step' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+    stepsEl.appendChild(d);
+  });
+
+  // Content
+  const content = document.getElementById('lesson-content');
+  if (step.type === 'info') {
+    content.innerHTML = step.content;
+    stepAnswered = true;
+  } else if (step.type === 'quiz') {
+    renderQuiz(step, content);
+  } else if (step.type === 'scenario') {
+    renderScenario(step, content);
+  } else if (step.type === 'match') {
+    renderMatch(step, content);
+  }
+
+  renderNav();
+}
+
+function renderQuiz(step, container) {
+  const letters = ['A', 'B', 'C', 'D'];
+  container.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-label">Desafío</div>
+      <div class="quiz-question">${step.question}</div>
+      <div class="quiz-options">
+        ${step.options.map((o, i) => `
+          <div class="quiz-option" id="qopt-${i}" onclick="answerQuiz(${i}, ${step.correct}, '${escQ(step.feedback.ok)}', '${escQ(step.feedback.fail)}', ${step.xp || 0})">
+            <span class="opt-letter">${letters[i]}</span>${o}
+          </div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="quiz-fb"></div>
+    </div>
+  `;
+  STATE.totalQuestions++;
+}
+
+function answerQuiz(idx, correct, ok, fail, xp) {
+  if (stepAnswered) return;
+  stepAnswered = true;
+  const isCorrect = idx === correct;
+  const letters = ['A','B','C','D'];
+  [0,1,2,3].forEach(i => {
+    const el = document.getElementById('qopt-'+i);
+    if (!el) return;
+    el.classList.add('disabled');
+    if (i === correct) el.classList.add('correct');
+    else if (i === idx) el.classList.add('wrong');
+    el.onclick = null;
+  });
+  const fb = document.getElementById('quiz-fb');
+  fb.innerHTML = isCorrect ? ok : fail;
+  fb.className = 'quiz-feedback show ' + (isCorrect ? 'success' : 'error');
+  if (isCorrect) { STATE.xp += xp; STATE.correctAnswers++; showXpPopup('+' + xp + ' XP'); updateHUD(); }
+  renderNav();
+}
+
+function renderScenario(step, container) {
+  container.innerHTML = `
+    <div class="scenario-card">
+      <div class="scenario-label">Escenario</div>
+      <div class="scenario-scene">${step.scenario}</div>
+      <div class="scenario-q">${step.question}</div>
+      <div class="scenario-choices">
+        ${step.choices.map((c, i) => `
+          <div class="scenario-choice" id="sch-${i}" onclick="chooseScenario(${i})">
+            <span class="choice-icon">${c.icon}</span>
+            <span>${c.text}</span>
+          </div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="scenario-fb"></div>
+    </div>
+  `;
+  STATE.totalQuestions++;
+}
+
+function chooseScenario(idx) {
+  if (scenarioChosen) return;
+  scenarioChosen = true;
+  stepAnswered = true;
+  const m = MISSIONS[currentMission];
+  const step = m.steps[currentStep];
+  const choice = step.choices[idx];
+  step.choices.forEach((c, i) => {
+    const el = document.getElementById('sch-'+i);
+    if (!el) return;
+    el.classList.add('disabled'); el.onclick = null;
+    if (i === idx) el.classList.add(c.good ? 'chosen-good' : 'chosen-bad');
+  });
+  const fb = document.getElementById('scenario-fb');
+  fb.innerHTML = choice.feedback;
+  fb.className = 'quiz-feedback show ' + (choice.good ? 'success' : 'error');
+  if (choice.good) { STATE.xp += step.xp; STATE.correctAnswers++; showXpPopup('+' + step.xp + ' XP'); updateHUD(); }
+  renderNav();
+}
+
+function renderMatch(step, container) {
+  const rights = shuffle([...step.pairs.map(p => p.right)]);
+  matchState = { selected: null, selectedType: null, matched: [], pairs: step.pairs, score: 0, total: step.pairs.length };
+  container.innerHTML = `
+    <div class="match-card">
+      <div class="match-label">Relaciona</div>
+      <p style="font-size:14px;color:var(--gray300);margin-bottom:4px">${step.question}</p>
+      <p style="font-size:12px;color:var(--gray500);margin-bottom:0">Haz clic en un valor y luego en su comportamiento.</p>
+      <div class="match-grid" id="match-left">
+        ${step.pairs.map((p,i) => `<div class="match-item" id="ml-${i}" onclick="selectMatch('left',${i},'${escQ(p.left)}')">${p.left}</div>`).join('')}
+      </div>
+      <div style="text-align:center;color:var(--gray500);font-size:12px;margin:6px 0">↕</div>
+      <div class="match-grid" id="match-right">
+        ${rights.map((r,i) => `<div class="match-item" id="mr-${i}" onclick="selectMatch('right',${i},'${escQ(r)}')">${r}</div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="match-fb" style="margin-top:14px"></div>
+    </div>
+  `;
+  matchState.rightItems = rights;
+  STATE.totalQuestions++;
+}
+
+function selectMatch(side, idx, val) {
+  const elId = side === 'left' ? 'ml-' + idx : 'mr-' + idx;
+  const el = document.getElementById(elId);
+  if (!el || el.classList.contains('matched')) return;
+
+  if (matchState.selected === null) {
+    matchState.selected = { side, idx, val };
+    matchState.selectedType = side;
+    el.classList.add('selected');
+  } else {
+    if (matchState.selectedType === side) {
+      // deselect previous same side
+      const prevId = side === 'left' ? 'ml-' + matchState.selected.idx : 'mr-' + matchState.selected.idx;
+      document.getElementById(prevId)?.classList.remove('selected');
+      matchState.selected = { side, idx, val };
+      el.classList.add('selected');
+      return;
+    }
+    // Two different sides selected — check match
+    el.classList.add('selected');
+    const leftVal = matchState.selectedType === 'left' ? matchState.selected.val : val;
+    const rightVal = matchState.selectedType === 'right' ? matchState.selected.val : val;
+    const leftIdx = matchState.selectedType === 'left' ? matchState.selected.idx : idx;
+    const rightIdx = matchState.selectedType === 'right' ? matchState.selected.idx : idx;
+    const leftEl = document.getElementById('ml-' + leftIdx);
+    const rightEl = document.getElementById('mr-' + rightIdx);
+
+    // find correct pair
+    const pair = matchState.pairs.find(p => p.left === leftVal);
+    const isOk = pair && pair.right === rightVal;
+
+    if (isOk) {
+      leftEl?.classList.remove('selected'); leftEl?.classList.add('matched');
+      rightEl?.classList.remove('selected'); rightEl?.classList.add('matched');
+      matchState.matched.push(leftVal);
+      matchState.score++;
+      if (matchState.matched.length === matchState.total) {
+        const fb = document.getElementById('match-fb');
+        fb.innerHTML = '✅ ¡Perfecto! Emparejaste todos los valores correctamente.';
+        fb.className = 'quiz-feedback show success';
+        const m = MISSIONS[currentMission];
+        const step = m.steps[currentStep];
+        STATE.xp += step.xp; STATE.correctAnswers++; showXpPopup('+' + step.xp + ' XP'); updateHUD();
+        stepAnswered = true;
+        renderNav();
+      }
+    } else {
+      leftEl?.classList.add('wrong-match'); rightEl?.classList.add('wrong-match');
+      setTimeout(() => {
+        leftEl?.classList.remove('selected','wrong-match');
+        rightEl?.classList.remove('selected','wrong-match');
+      }, 600);
+    }
+    matchState.selected = null; matchState.selectedType = null;
+  }
+}
+
+function renderNav() {
+  const nav = document.getElementById('lesson-nav');
+  const m = MISSIONS[currentMission];
+  const isLast = currentStep === m.steps.length - 1;
+
+  nav.innerHTML = `
+    <button class="btn-secondary" onclick="backToMissions()">← Mapa</button>
+    ${stepAnswered
+      ? `<button class="btn-primary" onclick="${isLast ? 'completeMission()' : 'nextStep()'}">${isLast ? '✅ Completar misión' : 'Siguiente →'}</button>`
+      : `<button class="btn-primary" style="opacity:.4;cursor:default">Responde para continuar</button>`
+    }
+  `;
+}
+
+function nextStep() {
+  currentStep++;
+  renderStep();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function completeMission() {
+  const m = MISSIONS[currentMission];
+  STATE.completedMissions.push(m.id);
+  STATE.xp += m.xp;
+  STATE.earnedBadges.push(m.badge);
+  updateHUD();
+  showBadge(m.badge, () => {
+    if (STATE.completedMissions.length === MISSIONS.length) {
+      showResults();
+    } else {
+      showScreen('screen-missions');
+      renderMissions();
+    }
+  });
+}
+
+function backToMissions() {
+  showScreen('screen-missions');
+  renderMissions();
+}
+
+// ── Badges ──
+function showBadge(badge, callback) {
+  document.getElementById('bm-icon').textContent = badge.icon;
+  document.getElementById('bm-title').textContent = badge.title;
+  document.getElementById('bm-desc').textContent = badge.desc;
+  document.getElementById('bm-xp').textContent = STATE.xp + ' XP';
+  pendingBadgeCallback = callback;
+  document.getElementById('badge-modal').style.display = 'flex';
+}
+
+function closeBadge() {
+  document.getElementById('badge-modal').style.display = 'none';
+  if (pendingBadgeCallback) { pendingBadgeCallback(); pendingBadgeCallback = null; }
+}
+
+// ── Results ──
+function showResults() {
+  showScreen('screen-results');
+  document.getElementById('r-xp').textContent = STATE.xp;
+  document.getElementById('r-correct').textContent = STATE.correctAnswers + '/' + STATE.totalQuestions;
+  document.getElementById('r-badges').textContent = STATE.earnedBadges.length;
+  const sub = document.getElementById('results-sub');
+  sub.innerHTML = `Felicitaciones, <strong style="color:var(--teal2)">${STATE.playerName}</strong>. Has demostrado que estás listo/a para comenzar.`;
+  const certLine = document.getElementById('cert-name-line');
+  certLine.innerHTML = `Este certificado acredita que <strong style="color:var(--teal2)">${STATE.playerName}</strong> completó exitosamente el programa de Onboarding.`;
+  const badgesEl = document.getElementById('badges-earned');
+  badgesEl.innerHTML = STATE.earnedBadges.map(b => `
+    <div class="earned-badge">
+      <div class="eb-icon">${b.icon}</div>
+      <div class="eb-name">${b.title}</div>
+    </div>
+  `).join('');
+}
+
+function restartGame() {
+  STATE.xp = 0; STATE.level = 1; STATE.completedMissions = [];
+  STATE.earnedBadges = []; STATE.correctAnswers = 0; STATE.totalQuestions = 0;
+  currentMission = null; currentStep = 0;
+  document.getElementById('hud').classList.remove('visible');
+  showScreen('screen-welcome');
+}
+
+// ── HUD ──
+function updateHUD() {
+  document.getElementById('hud-xp-txt').textContent = STATE.xp + ' XP';
+  const lvl = LEVELS.slice().reverse().find(l => STATE.xp >= l.min);
+  document.getElementById('hud-level-txt').textContent = lvl ? lvl.label : 'Explorador 🌱';
+  const total = MISSIONS.length;
+  const done = STATE.completedMissions.length;
+  const pct = (done / total) * 100;
+  document.getElementById('hud-bar').style.width = pct + '%';
+  document.getElementById('hud-prog-txt').textContent = done + '/' + total;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showXpPopup(txt) {
+  const el = document.createElement('div');
+  el.className = 'xp-popup'; el.textContent = txt;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 950);
+}
+
+// ── Helpers ──
+function shuffle(arr) { return arr.sort(() => Math.random() - .5); }
+function escQ(s) { return (s||'').replace(/'/g, "&#39;").replace(/"/g, "&quot;"); }
+
+// enter key on name
+document.getElementById('player-name').addEventListener('keydown', e => { if (e.key === 'Enter') startGame(); });
+</script>
+</body>
+</html>
