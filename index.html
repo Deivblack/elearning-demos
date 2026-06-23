@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Learning Demos – David Moreno</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0D1F3C; 
+           color: white; min-height: 100vh; display: flex; 
+           flex-direction: column; align-items: center; 
+           justify-content: center; padding: 40px 20px; gap: 32px; }
+    h1 { font-size: 28px; color: #14B8A6; text-align: center; }
+    p  { color: #94A3B8; font-size: 14px; text-align: center; }
+    .cards { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+    .card { background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12);
+            border-radius: 16px; padding: 28px 24px; width: 260px; text-align: center;
+            text-decoration: none; color: white; transition: all .2s; }
+    .card:hover { border-color: #0D9488; background: rgba(13,148,136,.12); 
+                  transform: translateY(-4px); }
+    .card .icon { font-size: 40px; margin-bottom: 12px; }
+    .card h2 { font-size: 16px; margin-bottom: 8px; }
+    .card p { font-size: 13px; color: #64748B; }
+    .tag { display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 700;
+           padding: 3px 10px; border-radius: 20px; }
+    .tag-game { background: rgba(245,158,11,.15); color: #F59E0B; }
+    .tag-scorm { background: rgba(13,148,136,.15); color: #14B8A6; }
+    footer { color: #334155; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>🎓 E-Learning Demos</h1>
+  <p>Portafolio de demos interactivos – David Moreno | ICAM</p>
+  <div class="cards">
+    <a class="card" href="onboarding-demo/">
+      <div class="icon">🚀</div>
+      <h2>Onboarding Gamificado</h2>
+      <p>Demo interactivo con XP, insignias y misiones progresivas</p>
+      <span class="tag tag-game">⚡ Alta Gama</span>
+    </a>
+    <a class="card" href="story.html">
+      <div class="icon">📘</div>
+      <h2>Manual de Usuario</h2>
+      <p>Cápsula SCORM – Actores involucrados en el proceso</p>
+      <span class="tag tag-scorm">SCORM · Storyline</span>
+    </a>
+  </div>
+  <footer>David Moreno · Consultor E-Learning · ICAM</footer>
+</body>
+</html>
