@@ -1,50 +1,607 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Learning Demos – David Moreno</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>David Moreno Abril — E-Learning Portfolio</title>
+  <meta name="description" content="E-learning portfolio by David Moreno Abril: Learning & Development professional in Houston. Interactive demos including gamified onboarding and SCORM micro-courses."/>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #0D1F3C; 
-           color: white; min-height: 100vh; display: flex; 
-           flex-direction: column; align-items: center; 
-           justify-content: center; padding: 40px 20px; gap: 32px; }
-    h1 { font-size: 28px; color: #14B8A6; text-align: center; }
-    p  { color: #94A3B8; font-size: 14px; text-align: center; }
-    .cards { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
-    .card { background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12);
-            border-radius: 16px; padding: 28px 24px; width: 260px; text-align: center;
-            text-decoration: none; color: white; transition: all .2s; }
-    .card:hover { border-color: #0D9488; background: rgba(13,148,136,.12); 
-                  transform: translateY(-4px); }
-    .card .icon { font-size: 40px; margin-bottom: 12px; }
-    .card h2 { font-size: 16px; margin-bottom: 8px; }
-    .card p { font-size: 13px; color: #64748B; }
-    .tag { display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 700;
-           padding: 3px 10px; border-radius: 20px; }
-    .tag-game { background: rgba(245,158,11,.15); color: #F59E0B; }
-    .tag-scorm { background: rgba(13,148,136,.15); color: #14B8A6; }
-    footer { color: #334155; font-size: 12px; }
+    :root {
+      --navy: #0D1F3C;
+      --navy2: #152D54;
+      --teal: #0D9488;
+      --teal2: #14B8A6;
+      --teal3: #CCFBF1;
+      --gold: #F59E0B;
+      --white: #FFFFFF;
+      --gray300: #CBD5E1;
+      --gray500: #64748B;
+      --gray700: #334155;
+      --radius: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 20% 0%, #152D54 0%, #0D1F3C 55%, #060f1e 100%);
+    }
+
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 24px 20px 64px;
+    }
+
+    /* Language switcher */
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      border: 1.5px solid rgba(255,255,255,.18);
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,.04);
+    }
+
+    .lang-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 8px 14px;
+      border: none;
+      background: transparent;
+      color: var(--gray500);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+
+    .lang-btn:hover,
+    .lang-btn:focus-visible {
+      color: var(--white);
+      outline: none;
+      background: rgba(13,148,136,.15);
+    }
+
+    .lang-btn[aria-pressed="true"] {
+      background: var(--teal);
+      color: var(--white);
+    }
+
+    /* Header */
+    .hero {
+      text-align: left;
+      margin-bottom: 40px;
+      max-width: 720px;
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal2);
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .hero-meta {
+      color: var(--gray300);
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+
+    .hero-summary {
+      color: var(--gray300);
+      font-size: 16px;
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s, background .15s, opacity .15s;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--teal2);
+      outline-offset: 3px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal), var(--teal2));
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(13,148,136,.35);
+    }
+
+    .btn-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(13,148,136,.45);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.08);
+      border: 1.5px solid rgba(255,255,255,.18);
+      color: var(--white);
+    }
+
+    .btn-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+      background: rgba(255,255,255,.14);
+    }
+
+    .btn:disabled,
+    .btn[aria-disabled="true"] {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Section */
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .section-sub {
+      color: var(--gray500);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background: rgba(255,255,255,.04);
+      border: 1.5px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-media {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-media.onboarding {
+      background:
+        radial-gradient(circle at 30% 40%, rgba(20,184,166,.35), transparent 55%),
+        linear-gradient(135deg, #152D54, #0D1F3C);
+    }
+
+    .card-media.manual {
+      background: #0a1628;
+    }
+
+    .card-media.rise {
+      background:
+        radial-gradient(circle at 70% 30%, rgba(245,158,11,.2), transparent 50%),
+        linear-gradient(135deg, #152D54, #0D1F3C);
+    }
+
+    .media-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--teal2);
+      letter-spacing: -0.02em;
+    }
+
+    .media-sub {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      right: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray300);
+      background: rgba(13,31,60,.75);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      padding: 6px 10px;
+    }
+
+    .card-body {
+      padding: 20px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .card h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .notice {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold);
+      background: rgba(245,158,11,.12);
+      border: 1px solid rgba(245,158,11,.28);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .coming-soon {
+      font-size: 14px;
+      color: var(--gray300);
+      background: rgba(255,255,255,.05);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .facts {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .facts li {
+      font-size: 13px;
+      color: var(--gray300);
+      line-height: 1.45;
+    }
+
+    .facts strong {
+      color: var(--teal2);
+      font-weight: 700;
+      display: inline;
+    }
+
+    .card-actions {
+      margin-top: 4px;
+    }
+
+    .card-actions .btn {
+      width: 100%;
+    }
+
+    /* Results */
+    .results {
+      background: rgba(255,255,255,.04);
+      border: 1.5px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding: 24px 22px;
+      margin-bottom: 40px;
+    }
+
+    .results ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .results li {
+      font-size: 14px;
+      color: var(--gray300);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 3px solid var(--teal);
+    }
+
+    .results li strong {
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--gray700);
+      font-size: 12px;
+      padding-top: 8px;
+    }
+
+    @media (max-width: 420px) {
+      .wrap { padding: 16px 14px 48px; }
+      .hero-meta { font-size: 13px; }
+      .hero-summary { font-size: 15px; }
+      .card-media { height: 120px; }
+    }
   </style>
 </head>
 <body>
-  <h1>🎓 E-Learning Demos</h1>
-  <p>Portafolio de demos interactivos – David Moreno | ICAM</p>
-  <div class="cards">
-    <a class="card" href="onboarding-demo/">
-      <div class="icon">🚀</div>
-      <h2>Onboarding Gamificado</h2>
-      <p>Demo interactivo con XP, insignias y misiones progresivas</p>
-      <span class="tag tag-game">⚡ Alta Gama</span>
-    </a>
-    <a class="card" href="demo-manual-usuario/story_html5.html">
-      <div class="icon">📘</div>
-      <h2>Manual de Usuario</h2>
-      <p>Cápsula SCORM – Actores involucrados en el proceso</p>
-      <span class="tag tag-scorm">SCORM · Storyline</span>
-    </a>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" id="lang-en" aria-pressed="true" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" id="lang-es" aria-pressed="false" data-lang="es">ES</button>
+      </div>
+    </div>
+
+    <header class="hero">
+      <p class="hero-eyebrow" data-i18n="eyebrow">E-Learning Portfolio</p>
+      <h1 data-i18n="name">David Moreno Abril</h1>
+      <p class="hero-meta" data-i18n="meta">Learning &amp; Development · Bilingual (EN/ES) · Houston, TX</p>
+      <p class="hero-summary" data-i18n="summary">Learning &amp; Development professional with 15+ years designing and delivering training. Led the SAP SuccessFactors LMS rollout for 7,000+ employees at PRONACA; trained 7,000 employees and delivered 1,400 courses in 2019.</p>
+      <div class="contact">
+        <a class="btn btn-primary" href="https://www.linkedin.com/in/dmorenoabril/" target="_blank" rel="noopener noreferrer" data-i18n="linkedin">LinkedIn</a>
+        <a class="btn btn-secondary" href="mailto:dmorenoabril@gmail.com" data-i18n="email">Email</a>
+      </div>
+    </header>
+
+    <section aria-labelledby="demos-title">
+      <h2 class="section-title" id="demos-title" data-i18n="demosTitle">Interactive demos</h2>
+      <p class="section-sub" data-i18n="demosSub">Open a sample to see instructional design and interaction patterns.</p>
+
+      <div class="cards">
+        <!-- A. Onboarding Academy -->
+        <article class="card">
+          <div class="card-media onboarding" aria-hidden="true">
+            <span class="media-label">OA</span>
+          </div>
+          <div class="card-body">
+            <h2 data-i18n="aTitle">Onboarding Academy — Gamified New Hire Onboarding</h2>
+            <ul class="facts">
+              <li><strong data-i18n="labelChallenge">Challenge:</strong> <span data-i18n="aChallenge">new hires need a clear, engaging first week that covers company, culture and safety.</span></li>
+              <li><strong data-i18n="labelAudience">Audience:</strong> <span data-i18n="aAudience">new employees (all roles).</span></li>
+              <li><strong data-i18n="labelRole">My role:</strong> <span data-i18n="aRole">instructional design, content, gamification design and build.</span></li>
+              <li><strong data-i18n="labelTools">Tools:</strong> <span data-i18n="aTools">HTML, CSS, JavaScript (no LMS needed); mobile-friendly.</span></li>
+              <li><strong data-i18n="labelFeatures">Features:</strong> <span data-i18n="aFeatures">3 missions, XP points, badges, knowledge checks and a completion certificate.</span></li>
+            </ul>
+            <div class="card-actions">
+              <a class="btn btn-primary" href="onboarding-demo/" data-i18n="viewDemo">View demo</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- B. User Manual Micro-course -->
+        <article class="card">
+          <div class="card-media manual">
+            <img src="demo-manual-usuario/story_content/thumbnail.jpg" alt="" width="400" height="140"/>
+            <span class="media-sub" data-i18n="bNotice">Spanish-language sample · Click play to start</span>
+          </div>
+          <div class="card-body">
+            <h2 data-i18n="bTitle">User Manual Micro-course — Process Actors (SCORM)</h2>
+            <p class="notice" data-i18n="bNotice">Spanish-language sample · Click play to start</p>
+            <ul class="facts">
+              <li><strong data-i18n="labelChallenge">Challenge:</strong> <span data-i18n="bChallenge">users needed to understand who participates in a business process before using a new system.</span></li>
+              <li><strong data-i18n="labelAudience">Audience:</strong> <span data-i18n="bAudience">system end users.</span></li>
+              <li><strong data-i18n="labelRole">My role:</strong> <span data-i18n="bRole">instructional design and development.</span></li>
+              <li><strong data-i18n="labelTools">Tools:</strong> <span data-i18n="bTools">Articulate Storyline 360, published as SCORM/HTML5.</span></li>
+              <li><strong data-i18n="labelFeatures">Features:</strong> <span data-i18n="bFeatures">[COMPLETAR: interacciones que tiene la cápsula]</span></li>
+            </ul>
+            <div class="card-actions">
+              <a class="btn btn-primary" href="demo-manual-usuario/story_html5.html" data-i18n="viewDemo">View demo</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- C. Rise placeholder -->
+        <article class="card">
+          <div class="card-media rise" aria-hidden="true">
+            <span class="media-label">Rise</span>
+          </div>
+          <div class="card-body">
+            <h2 data-i18n="cTitle">Articulate Rise sample</h2>
+            <p class="coming-soon" data-i18n="cComing">Coming soon: New Hire Orientation (Articulate Rise)</p>
+            <ul class="facts">
+              <li><strong data-i18n="labelStatus">Status:</strong> <span data-i18n="cStatus">link not published yet — button stays disabled until the Rise URL is added.</span></li>
+            </ul>
+            <div class="card-actions">
+              <a class="btn btn-primary" id="rise-demo-btn" href="#" aria-disabled="true" tabindex="-1" data-i18n="viewDemo">View demo</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="results" aria-labelledby="results-title">
+      <h2 class="section-title" id="results-title" data-i18n="resultsTitle">Selected results</h2>
+      <p class="section-sub" data-i18n="resultsSub">Highlights from L&amp;D and consulting work (public summary only).</p>
+      <ul>
+        <li data-i18n-html="r1"><strong>PRONACA (7,000+ employees):</strong> SAP SuccessFactors LMS company-wide rollout; 7,000 employees trained; 1,400 courses in 2019; 60% training budget savings in 2020.</li>
+        <li data-i18n-html="r2"><strong>Chief People Officer:</strong> complete Talent Management model implemented in 90 days.</li>
+        <li data-i18n-html="r3"><strong>Consulting:</strong> e-learning platform and training for the national contact center of Ecuador's state electric company; instructional design model for Ecuador's Secretariat of Water.</li>
+      </ul>
+    </section>
+
+    <footer data-i18n="footer">David Moreno Abril · Learning &amp; Development · Houston, TX</footer>
   </div>
-  <footer>David Moreno · Consultor E-Learning  ·  MATCHWORKING</footer>
+
+  <script>
+    // Paste the Articulate Rise demo URL here when ready (e.g. "https://..."). Leave empty to keep the button disabled.
+    const RISE_DEMO_URL = '';
+
+    const I18N = {
+      en: {
+        eyebrow: 'E-Learning Portfolio',
+        name: 'David Moreno Abril',
+        meta: 'Learning & Development · Bilingual (EN/ES) · Houston, TX',
+        summary: 'Learning & Development professional with 15+ years designing and delivering training. Led the SAP SuccessFactors LMS rollout for 7,000+ employees at PRONACA; trained 7,000 employees and delivered 1,400 courses in 2019.',
+        linkedin: 'LinkedIn',
+        email: 'Email',
+        demosTitle: 'Interactive demos',
+        demosSub: 'Open a sample to see instructional design and interaction patterns.',
+        viewDemo: 'View demo',
+        labelChallenge: 'Challenge:',
+        labelAudience: 'Audience:',
+        labelRole: 'My role:',
+        labelTools: 'Tools:',
+        labelFeatures: 'Features:',
+        labelStatus: 'Status:',
+        aTitle: 'Onboarding Academy — Gamified New Hire Onboarding',
+        aChallenge: 'new hires need a clear, engaging first week that covers company, culture and safety.',
+        aAudience: 'new employees (all roles).',
+        aRole: 'instructional design, content, gamification design and build.',
+        aTools: 'HTML, CSS, JavaScript (no LMS needed); mobile-friendly.',
+        aFeatures: '3 missions, XP points, badges, knowledge checks and a completion certificate.',
+        bTitle: 'User Manual Micro-course — Process Actors (SCORM)',
+        bNotice: 'Spanish-language sample · Click play to start',
+        bChallenge: 'users needed to understand who participates in a business process before using a new system.',
+        bAudience: 'system end users.',
+        bRole: 'instructional design and development.',
+        bTools: 'Articulate Storyline 360, published as SCORM/HTML5.',
+        bFeatures: '[COMPLETAR: interacciones que tiene la cápsula]',
+        cTitle: 'Articulate Rise sample',
+        cComing: 'Coming soon: New Hire Orientation (Articulate Rise)',
+        cStatus: 'link not published yet — button stays disabled until the Rise URL is added.',
+        resultsTitle: 'Selected results',
+        resultsSub: 'Highlights from L&D and consulting work (public summary only).',
+        r1: '<strong>PRONACA (7,000+ employees):</strong> SAP SuccessFactors LMS company-wide rollout; 7,000 employees trained; 1,400 courses in 2019; 60% training budget savings in 2020.',
+        r2: '<strong>Chief People Officer:</strong> complete Talent Management model implemented in 90 days.',
+        r3: '<strong>Consulting:</strong> e-learning platform and training for the national contact center of Ecuador\'s state electric company; instructional design model for Ecuador\'s Secretariat of Water.',
+        footer: 'David Moreno Abril · Learning & Development · Houston, TX'
+      },
+      es: {
+        eyebrow: 'Portafolio de e-learning',
+        name: 'David Moreno Abril',
+        meta: 'Learning & Development · Bilingüe (EN/ES) · Houston, TX',
+        summary: 'Profesional de Learning & Development con más de 15 años diseñando e impartiendo formación. Lideró el despliegue de SAP SuccessFactors LMS para más de 7.000 empleados en PRONACA; capacitó a 7.000 empleados y entregó 1.400 cursos en 2019.',
+        linkedin: 'LinkedIn',
+        email: 'Correo',
+        demosTitle: 'Demos interactivos',
+        demosSub: 'Abre una muestra para ver diseño instruccional y patrones de interacción.',
+        viewDemo: 'Ver demo',
+        labelChallenge: 'Reto:',
+        labelAudience: 'Audiencia:',
+        labelRole: 'Mi rol:',
+        labelTools: 'Herramientas:',
+        labelFeatures: 'Características:',
+        labelStatus: 'Estado:',
+        aTitle: 'Onboarding Academy — Inducción gamificada para nuevos ingresos',
+        aChallenge: 'los nuevos colaboradores necesitan una primera semana clara y atractiva sobre empresa, cultura y seguridad.',
+        aAudience: 'nuevos empleados (todos los roles).',
+        aRole: 'diseño instruccional, contenido, diseño y construcción de gamificación.',
+        aTools: 'HTML, CSS, JavaScript (sin LMS); adaptable a móvil.',
+        aFeatures: '3 misiones, puntos XP, insignias, chequeos de conocimiento y certificado de finalización.',
+        bTitle: 'Microcurso Manual de Usuario — Actores del proceso (SCORM)',
+        bNotice: 'Muestra en español · Pulsa play para empezar',
+        bChallenge: 'los usuarios necesitaban entender quién participa en un proceso de negocio antes de usar un sistema nuevo.',
+        bAudience: 'usuarios finales del sistema.',
+        bRole: 'diseño instruccional y desarrollo.',
+        bTools: 'Articulate Storyline 360, publicado como SCORM/HTML5.',
+        bFeatures: '[COMPLETAR: interacciones que tiene la cápsula]',
+        cTitle: 'Muestra de Articulate Rise',
+        cComing: 'Próximamente: Orientación para nuevos ingresos (Articulate Rise)',
+        cStatus: 'enlace aún no publicado — el botón queda desactivado hasta agregar la URL de Rise.',
+        resultsTitle: 'Resultados seleccionados',
+        resultsSub: 'Destacados de trabajo en L&D y consultoría (solo resumen público).',
+        r1: '<strong>PRONACA (más de 7.000 empleados):</strong> despliegue corporativo de SAP SuccessFactors LMS; 7.000 empleados capacitados; 1.400 cursos en 2019; 60% de ahorro en presupuesto de capacitación en 2020.',
+        r2: '<strong>Chief People Officer:</strong> modelo completo de Gestión del Talento implementado en 90 días.',
+        r3: '<strong>Consultoría:</strong> plataforma de e-learning y formación para el contact center nacional de la empresa eléctrica estatal de Ecuador; modelo de diseño instruccional para la Secretaría del Agua de Ecuador.',
+        footer: 'David Moreno Abril · Learning & Development · Houston, TX'
+      }
+    };
+
+    let currentLang = 'en';
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.textContent = dict[key];
+      });
+
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        const pressed = btn.getAttribute('data-lang') === lang;
+        btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+      });
+    }
+
+    function setupRiseButton() {
+      const btn = document.getElementById('rise-demo-btn');
+      if (!btn) return;
+      if (RISE_DEMO_URL && RISE_DEMO_URL.trim()) {
+        btn.href = RISE_DEMO_URL.trim();
+        btn.removeAttribute('aria-disabled');
+        btn.removeAttribute('tabindex');
+        btn.target = '_blank';
+        btn.rel = 'noopener noreferrer';
+      } else {
+        btn.href = '#';
+        btn.setAttribute('aria-disabled', 'true');
+        btn.tabIndex = -1;
+        btn.addEventListener('click', e => e.preventDefault());
+      }
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.getAttribute('data-lang')));
+    });
+
+    setupRiseButton();
+    applyLanguage('en');
+  </script>
 </body>
 </html>
