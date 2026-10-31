@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prime Choice — Pilot admin</title>
+<!--
+  David / pilot admin only — NOT linked from the learner course.
+  Open: .../demos/prime-choice/admin.html
+  Optional gate passphrase (local): pc-pilot-2026
+  Completions live in this browser's localStorage key: pc_outbound_completions
+-->
+<style>
+  :root {
+    --navy: #0D1F3C;
+    --navy2: #152D54;
+    --teal: #0D9488;
+    --teal2: #14B8A6;
+    --gold: #F59E0B;
+    --gray300: #CBD5E1;
+    --gray500: #64748B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy); color: #fff;
+    min-height: 100vh; padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 22px; color: var(--teal2); margin-bottom: 6px; }
+  .sub { color: var(--gray500); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+  .gate {
+    max-width: 400px; margin: 80px auto; background: var(--navy2);
+    border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 24px;
+  }
+  .gate label { display: block; font-size: 13px; color: var(--gray300); margin-bottom: 8px; }
+  input {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06); color: #fff; font-size: 15px; margin-bottom: 12px;
+  }
+  button {
+    min-height: 44px; padding: 10px 16px; border-radius: 10px; border: none;
+    font-weight: 700; cursor: pointer; font-size: 14px;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--teal), var(--teal2)); color: #fff; }
+  .btn-secondary {
+    background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.15); color: #fff;
+  }
+  .err { color: #FDA4AF; font-size: 13px; margin-top: 8px; display: none; }
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin-bottom: 18px;
+  }
+  .stat {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px; padding: 14px;
+  }
+  .stat .v { font-size: 24px; font-weight: 800; color: var(--gold); }
+  .stat .l { font-size: 12px; color: var(--gray500); margin-top: 4px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .table-wrap {
+    overflow: auto; border: 1px solid rgba(255,255,255,.1); border-radius: 12px;
+    background: rgba(255,255,255,.03);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 720px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.08); }
+  th { color: var(--teal2); font-size: 11px; letter-spacing: .5px; text-transform: uppercase; position: sticky; top: 0; background: var(--navy2); }
+  td { color: var(--gray300); }
+  .empty { padding: 28px; text-align: center; color: var(--gray500); }
+  .hidden { display: none !important; }
+  code { background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="gate" class="gate">
+    <h1>Pilot admin</h1>
+    <p class="sub">David only. Completions are stored in this browser (<code>pc_outbound_completions</code>). Not linked from the course.</p>
+    <label for="pass">Passphrase</label>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••"/>
+    <button class="btn-primary" type="button" id="btn-unlock">Unlock</button>
+    <div class="err" id="gate-err">Wrong passphrase.</div>
+  </div>
+
+  <div id="admin" class="hidden">
+    <h1>Prime Choice — completions</h1>
+    <p class="sub">Learner course: <a href="./" style="color:var(--teal2)">index.html</a> · Same device/browser that took the course holds the records.</p>
+    <div class="stats" id="stats"></div>
+    <div class="actions">
+      <button class="btn-primary" type="button" id="btn-json">Download JSON</button>
+      <button class="btn-secondary" type="button" id="btn-csv">Download CSV</button>
+      <button class="btn-secondary" type="button" id="btn-refresh">Refresh</button>
+      <button class="btn-secondary" type="button" id="btn-clear">Clear local records</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Lang</th>
+            <th>XP</th>
+            <th>Trivia</th>
+            <th>Duration</th>
+            <th>Completed</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty hidden" id="empty">No completions in this browser yet.</div>
+    </div>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script>
+  // Optional simple passphrase for David (local pilot). Change if needed.
+  const ADMIN_PASS = 'pc-pilot-2026';
+  const SESSION_KEY = 'pc_outbound_admin_ok';
+
+  function unlock() {
+    const v = document.getElementById('pass').value;
+    if (v !== ADMIN_PASS) {
+      document.getElementById('gate-err').style.display = 'block';
+      return;
+    }
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showAdmin();
+  }
+
+  function showAdmin() {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('admin').classList.remove('hidden');
+    render();
+  }
+
+  function render() {
+    const records = PCStorage.loadCompletions().slice().sort((a, b) =>
+      String(b.completedAt || '').localeCompare(String(a.completedAt || ''))
+    );
+    const sum = PCStorage.summarize(records);
+    document.getElementById('stats').innerHTML =
+      '<div class="stat"><div class="v">' + sum.count + '</div><div class="l">Completions</div></div>' +
+      '<div class="stat"><div class="v">' + sum.avgXp + '</div><div class="l">Avg XP / score</div></div>' +
+      '<div class="stat"><div class="v">' + sum.avgQuizPct + '%</div><div class="l">Avg trivia %</div></div>' +
+      '<div class="stat"><div class="v">' + PCStorage.formatDuration(sum.avgDurationMs) + '</div><div class="l">Avg duration</div></div>';
+
+    const tbody = document.getElementById('tbody');
+    const empty = document.getElementById('empty');
+    tbody.innerHTML = '';
+    if (!records.length) {
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    records.forEach((r) => {
+      const tr = document.createElement('tr');
+      const when = r.completedAt ? new Date(r.completedAt).toLocaleString() : '—';
+      tr.innerHTML =
+        '<td>' + esc(r.fullName || ((r.firstName || '') + ' ' + (r.lastName || ''))) + '</td>' +
+        '<td>' + esc(r.lang || '—') + '</td>' +
+        '<td>' + (r.xp != null ? r.xp : '—') + '</td>' +
+        '<td>' + (r.correctAnswers != null ? r.correctAnswers + '/' + (r.totalQuestions || 0) : '—') + '</td>' +
+        '<td>' + PCStorage.formatDuration(r.durationMs) + '</td>' +
+        '<td>' + esc(when) + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function download(filename, text, mime) {
+    const blob = new Blob([text], { type: mime });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  document.getElementById('btn-unlock').addEventListener('click', unlock);
+  document.getElementById('pass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') unlock();
+  });
+  document.getElementById('btn-refresh').addEventListener('click', render);
+  document.getElementById('btn-json').addEventListener('click', () => {
+    const all = PCStorage.loadCompletions();
+    download('prime-choice-outbound-completions.json', JSON.stringify({
+      exportedAt: new Date().toISOString(),
+      count: all.length,
+      storageKey: PCStorage.STORAGE_KEY,
+      summary: PCStorage.summarize(all),
+      completions: all
+    }, null, 2), 'application/json');
+  });
+  document.getElementById('btn-csv').addEventListener('click', () => {
+    download('prime-choice-outbound-completions.csv', PCStorage.toCsv(PCStorage.loadCompletions()), 'text/csv;charset=utf-8');
+  });
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    if (!confirm('Clear all local completion records on this browser?')) return;
+    PCStorage.clearCompletions();
+    render();
+  });
+
+  if (sessionStorage.getItem(SESSION_KEY) === '1') showAdmin();
+</script>
+</body>
+</html>
