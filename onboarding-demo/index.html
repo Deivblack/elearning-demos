@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Onboarding Academy — Demo E-Learning Gamificado</title>
+<title>Onboarding Academy — Gamified E-Learning Demo</title>
+<meta name="description" content="Gamified new-hire onboarding demo by David Moreno Abril: three missions with XP, badges, knowledge checks and a completion certificate."/>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"/>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
@@ -39,7 +41,6 @@
     overflow-x: hidden;
   }
 
-  /* ── STARS BACKGROUND ── */
   #stars-bg {
     position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background: radial-gradient(ellipse at 20% 50%, #152D54 0%, #0D1F3C 60%, #060f1e 100%);
@@ -59,12 +60,32 @@
       radial-gradient(1.5px 1.5px at 65% 5%,  rgba(13,148,136,.5) 0%, transparent 100%);
   }
 
-  /* ── SCREEN SYSTEM ── */
+  .lang-switch {
+    position: fixed; top: 14px; right: 16px; z-index: 150;
+    display: inline-flex;
+    border: 1.5px solid rgba(255,255,255,.18);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(13,31,60,.85);
+    backdrop-filter: blur(8px);
+  }
+  .lang-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 7px 12px; border: none; background: transparent;
+    color: var(--gray500); cursor: pointer;
+  }
+  .lang-btn:hover, .lang-btn:focus-visible {
+    color: var(--white); outline: none; background: rgba(13,148,136,.15);
+  }
+  .lang-btn[aria-pressed="true"] {
+    background: var(--teal); color: var(--white);
+  }
+
   .screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
   .screen.active { display: flex; flex-direction: column; animation: fadeIn .4s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ── HUD ── */
   #hud {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: none;
@@ -72,6 +93,7 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(13,148,136,.3);
     padding: 10px 24px;
+    padding-right: 110px;
     align-items: center; gap: 20px;
   }
   #hud.visible { display: flex; }
@@ -90,13 +112,11 @@
   .hud-bar-bg { width: 100px; height: 6px; background: rgba(255,255,255,.15); border-radius: 3px; overflow: hidden; }
   .hud-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal2)); border-radius: 3px; transition: width .6s ease; }
 
-  /* ── CONTAINERS ── */
   .page-wrap {
     max-width: 860px; width: 100%; margin: 0 auto; padding: 100px 24px 60px;
     display: flex; flex-direction: column; align-items: center; gap: 0;
   }
 
-  /* ── WELCOME SCREEN ── */
   #screen-welcome {
     justify-content: center; align-items: center;
     padding: 40px 24px; text-align: center;
@@ -143,6 +163,9 @@
   }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,148,136,.45); }
   .btn-primary:active { transform: translateY(0); }
+  .btn-primary:focus-visible, .btn-secondary:focus-visible, .btn-restart:focus-visible {
+    outline: 2px solid var(--teal2); outline-offset: 3px;
+  }
   .welcome-modules {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 14px; width: 100%; margin-top: 10px;
@@ -156,7 +179,6 @@
   .module-pill .mp-icon { font-size: 26px; margin-bottom: 6px; }
   .module-pill .mp-name { font-size: 12px; font-weight: 600; color: var(--gray300); }
 
-  /* ── MISSION / MODULE CARDS ── */
   .missions-header { width: 100%; margin-bottom: 28px; }
   .missions-title {
     font-family: 'Space Grotesk', sans-serif;
@@ -182,6 +204,7 @@
   .mission-card.locked:hover { transform: none; border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.04); }
   .mission-card.locked:hover::before { transform: scaleY(0); }
   .mission-card.completed { border-color: rgba(13,148,136,.4); background: rgba(13,148,136,.06); }
+  .mission-card:focus-visible { outline: 2px solid var(--teal2); outline-offset: 2px; }
 
   .mc-icon-wrap {
     width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
@@ -192,13 +215,12 @@
   .mc-num { font-size: 11px; font-weight: 700; color: var(--teal2); letter-spacing: 1.5px; margin-bottom: 3px; text-transform: uppercase; }
   .mc-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 4px; }
   .mc-desc { font-size: 13px; color: var(--gray500); line-height: 1.5; }
-  .mc-meta { display: flex; gap: 14px; margin-top: 10px; }
+  .mc-meta { display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
   .mc-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
   .mc-xp { background: rgba(245,158,11,.15); color: var(--gold); }
   .mc-time { background: rgba(255,255,255,.08); color: var(--gray300); }
   .mc-status { font-size: 20px; flex-shrink: 0; }
 
-  /* ── LESSON SCREEN ── */
   .lesson-wrap { width: 100%; }
   .lesson-header { margin-bottom: 28px; }
   .lesson-breadcrumb { font-size: 12px; color: var(--gray500); margin-bottom: 10px; }
@@ -219,10 +241,8 @@
   .lp-step.active { background: var(--teal2); animation: pulse-bar 1.2s infinite; }
   @keyframes pulse-bar { 0%,100% { opacity:1; } 50% { opacity:.5; } }
 
-  /* Content blocks */
   .content-block { width: 100%; }
 
-  /* Info card */
   .info-card {
     background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
     border-radius: 14px; padding: 28px; margin-bottom: 20px; line-height: 1.75;
@@ -249,7 +269,6 @@
   .info-item strong { display: block; font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
   .info-item span { font-size: 12px; color: var(--gray500); line-height: 1.4; }
 
-  /* Quiz card */
   .quiz-card {
     background: rgba(255,255,255,.05); border: 1.5px solid rgba(245,158,11,.25);
     border-radius: 14px; padding: 28px; margin-bottom: 20px;
@@ -266,9 +285,10 @@
     background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12);
     border-radius: 10px; padding: 14px 18px; cursor: pointer; font-size: 14px;
     font-weight: 500; transition: all .15s; display: flex; align-items: center; gap: 12px;
-    position: relative;
+    position: relative; text-align: left; width: 100%; color: inherit; font-family: inherit;
   }
   .quiz-option:hover { border-color: var(--teal); background: rgba(13,148,136,.1); }
+  .quiz-option:focus-visible { outline: 2px solid var(--teal2); outline-offset: 2px; }
   .quiz-option.selected { border-color: var(--teal2); background: rgba(13,148,136,.15); }
   .quiz-option.correct { border-color: #22C55E; background: rgba(34,197,94,.12); color: #86EFAC; }
   .quiz-option.wrong { border-color: var(--rose); background: rgba(244,63,94,.12); color: #FDA4AF; }
@@ -286,7 +306,6 @@
   .quiz-feedback.success { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: #86EFAC; }
   .quiz-feedback.error { background: rgba(244,63,94,.12); border: 1px solid rgba(244,63,94,.3); color: #FDA4AF; }
 
-  /* Scenario card */
   .scenario-card {
     background: rgba(255,255,255,.05); border: 1.5px solid rgba(56,189,248,.2);
     border-radius: 14px; padding: 28px; margin-bottom: 20px;
@@ -310,14 +329,15 @@
     border-radius: 10px; padding: 14px 18px; cursor: pointer;
     font-size: 14px; font-weight: 500; transition: all .15s;
     display: flex; gap: 12px; align-items: center;
+    text-align: left; width: 100%; color: inherit; font-family: inherit;
   }
   .scenario-choice:hover { border-color: var(--sky); background: rgba(56,189,248,.08); }
+  .scenario-choice:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .scenario-choice.chosen-good { border-color: #22C55E; background: rgba(34,197,94,.1); }
   .scenario-choice.chosen-bad  { border-color: var(--rose); background: rgba(244,63,94,.1); }
   .scenario-choice.disabled { cursor: default; }
   .choice-icon { font-size: 18px; flex-shrink: 0; }
 
-  /* Match activity */
   .match-card {
     background: rgba(255,255,255,.05); border: 1.5px solid rgba(167,139,250,.25);
     border-radius: 14px; padding: 28px; margin-bottom: 20px;
@@ -334,15 +354,16 @@
     border-radius: 10px; padding: 12px 16px; font-size: 13px; font-weight: 500;
     cursor: pointer; transition: all .2s; text-align: center;
     display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px;
+    color: inherit; font-family: inherit;
   }
   .match-item:hover { border-color: #A78BFA; background: rgba(167,139,250,.15); }
+  .match-item:focus-visible { outline: 2px solid #A78BFA; outline-offset: 2px; }
   .match-item.selected { border-color: #A78BFA; background: rgba(167,139,250,.2); }
   .match-item.matched { border-color: #22C55E; background: rgba(34,197,94,.1); color: #86EFAC; cursor: default; }
   .match-item.wrong-match { border-color: var(--rose); background: rgba(244,63,94,.1); animation: shake .3s ease; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 
-  /* Navigation */
-  .lesson-nav { display: flex; gap: 12px; justify-content: flex-end; width: 100%; margin-top: 12px; }
+  .lesson-nav { display: flex; gap: 12px; justify-content: flex-end; width: 100%; margin-top: 12px; flex-wrap: wrap; }
   .btn-secondary {
     background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.15);
     color: var(--white); font-family: 'Inter', sans-serif;
@@ -351,7 +372,6 @@
   }
   .btn-secondary:hover { background: rgba(255,255,255,.14); }
 
-  /* XP popup */
   .xp-popup {
     position: fixed; top: 70px; right: 24px; z-index: 200;
     background: var(--gold); color: var(--navy);
@@ -366,7 +386,6 @@
     100%{ opacity: 0; transform: translateY(-20px) scale(.9); }
   }
 
-  /* Badge popup */
   .badge-popup {
     position: fixed; inset: 0; z-index: 300; display: flex;
     align-items: center; justify-content: center;
@@ -386,7 +405,6 @@
   .badge-xp { font-size: 28px; font-weight: 900; color: var(--gold); margin-bottom: 4px; }
   .badge-xp-label { font-size: 12px; color: var(--gray500); margin-bottom: 20px; }
 
-  /* RESULTS screen */
   .results-wrap { width: 100%; text-align: center; }
   .results-icon { font-size: 72px; margin-bottom: 20px; }
   .results-title { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 800; margin-bottom: 8px; }
@@ -422,12 +440,12 @@
   }
   .btn-restart:hover { background: rgba(255,255,255,.15); }
 
-  /* Responsive */
   @media(max-width:580px) {
     .info-grid { grid-template-columns: 1fr; }
     .results-stats { grid-template-columns: 1fr 1fr; }
     .match-grid { grid-template-columns: 1fr; }
     .hud-bar-bg { width: 60px; }
+    #hud { gap: 10px; padding: 10px 12px; padding-right: 100px; }
   }
 </style>
 </head>
@@ -435,11 +453,15 @@
 
 <div id="stars-bg"></div>
 
-<!-- HUD -->
+<div class="lang-switch" role="group" aria-label="Language">
+  <button type="button" class="lang-btn" id="lang-en" aria-pressed="true" data-lang="en">EN</button>
+  <button type="button" class="lang-btn" id="lang-es" aria-pressed="false" data-lang="es">ES</button>
+</div>
+
 <div id="hud">
   <div class="hud-logo"><span>Onboarding</span> Academy</div>
   <div class="hud-spacer"></div>
-  <div class="hud-stat hud-level"><span class="icon">🎖️</span> <span id="hud-level-txt">Nivel 1</span></div>
+  <div class="hud-stat hud-level"><span class="icon">🎖️</span> <span id="hud-level-txt">Level 1</span></div>
   <div class="hud-stat hud-xp"><span class="icon">⚡</span> <span id="hud-xp-txt">0 XP</span></div>
   <div class="hud-progress-wrap">
     <div class="hud-bar-bg"><div class="hud-bar-fill" id="hud-bar" style="width:0%"></div></div>
@@ -447,57 +469,48 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- SCREEN: WELCOME -->
-<!-- ══════════════════════════════════════════ -->
 <div id="screen-welcome" class="screen active">
   <div class="welcome-inner">
-    <div class="badge-demo">✦ Demo · E-Learning Gamificado</div>
+    <div class="badge-demo" id="ui-badge-demo">✦ Demo · Gamified E-Learning</div>
     <h1 class="welcome-title">
-      <span class="hi">Bienvenido/a a</span>
+      <span class="hi" id="ui-welcome-hi">Welcome to</span>
       <span class="brand">Onboarding</span><br>Academy
     </h1>
-    <p class="welcome-sub">
-      Tu primera semana en la empresa comienza aquí. Completa las 3 misiones,
-      acumula puntos XP, desbloquea insignias y certifícate como
-      <strong style="color:var(--white)">Colaborador/a Fundador/a</strong>.
+    <p class="welcome-sub" id="ui-welcome-sub">
+      Your first week at the company starts here. Complete the 3 missions,
+      earn XP points, unlock badges and certify as a
+      <strong style="color:var(--white)">Founding Team Member</strong>.
     </p>
     <div class="welcome-name-wrap">
-      <input class="input-field" id="player-name" type="text" placeholder="¿Cómo te llamas?" maxlength="30"/>
-      <button class="btn-primary" onclick="startGame()">¡Comenzar misiones! 🚀</button>
+      <input class="input-field" id="player-name" type="text" placeholder="What is your name?" maxlength="30"/>
+      <button class="btn-primary" id="ui-start-btn" type="button">Start missions! 🚀</button>
     </div>
     <div class="welcome-modules">
-      <div class="module-pill"><div class="mp-icon">🏢</div><div class="mp-name">Nuestra Empresa</div></div>
-      <div class="module-pill"><div class="mp-icon">🤝</div><div class="mp-name">Cultura & Valores</div></div>
-      <div class="module-pill"><div class="mp-icon">🛡️</div><div class="mp-name">Seguridad & Rol</div></div>
+      <div class="module-pill"><div class="mp-icon">🏢</div><div class="mp-name" id="ui-mod1">Our Company</div></div>
+      <div class="module-pill"><div class="mp-icon">🤝</div><div class="mp-name" id="ui-mod2">Culture &amp; Values</div></div>
+      <div class="module-pill"><div class="mp-icon">🛡️</div><div class="mp-name" id="ui-mod3">Safety &amp; Role</div></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- SCREEN: MISSION MAP -->
-<!-- ══════════════════════════════════════════ -->
 <div id="screen-missions" class="screen">
   <div class="page-wrap">
     <div class="missions-header" style="width:100%">
-      <p style="color:var(--teal2);font-size:13px;font-weight:600;margin-bottom:4px">👋 Hola, <span id="player-name-display"></span></p>
-      <h2 class="missions-title">Tus Misiones</h2>
-      <p class="missions-sub">Completa cada misión en orden para avanzar de nivel y desbloquear tu certificado.</p>
+      <p style="color:var(--teal2);font-size:13px;font-weight:600;margin-bottom:4px"><span id="ui-hello">👋 Hi,</span> <span id="player-name-display"></span></p>
+      <h2 class="missions-title" id="ui-missions-title">Your Missions</h2>
+      <p class="missions-sub" id="ui-missions-sub">Complete each mission in order to level up and unlock your certificate.</p>
     </div>
     <div class="missions-grid" id="missions-grid"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- SCREEN: LESSON -->
-<!-- ══════════════════════════════════════════ -->
 <div id="screen-lesson" class="screen">
   <div class="page-wrap">
     <div class="lesson-wrap">
       <div class="lesson-header">
-        <div class="lesson-breadcrumb" id="lesson-breadcrumb">Misión 1 · Paso 1</div>
-        <h2 class="lesson-title" id="lesson-title">Título</h2>
-        <div class="lesson-xp-badge">⚡ <span id="lesson-xp-badge">+50 XP</span> al completar</div>
+        <div class="lesson-breadcrumb" id="lesson-breadcrumb">Mission 1 · Step 1</div>
+        <h2 class="lesson-title" id="lesson-title">Title</h2>
+        <div class="lesson-xp-badge">⚡ <span id="lesson-xp-badge">+50 XP</span></div>
       </div>
       <div class="lesson-progress"><div class="lp-steps" id="lp-steps"></div></div>
       <div id="lesson-content" class="content-block"></div>
@@ -506,56 +519,49 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- SCREEN: RESULTS -->
-<!-- ══════════════════════════════════════════ -->
 <div id="screen-results" class="screen">
   <div class="page-wrap">
     <div class="results-wrap">
       <div class="results-icon">🎓</div>
-      <h2 class="results-title">¡Onboarding Completado!</h2>
-      <p class="results-sub" id="results-sub">Felicitaciones, <strong></strong>. Has demostrado que estás listo/a.</p>
+      <h2 class="results-title" id="ui-results-title">Onboarding Complete!</h2>
+      <p class="results-sub" id="results-sub">Congratulations.</p>
       <div class="results-stats">
         <div class="rs-card">
           <div class="rs-value" style="color:var(--gold)" id="r-xp">0</div>
-          <div class="rs-label">XP Ganados</div>
+          <div class="rs-label" id="ui-label-xp">XP Earned</div>
         </div>
         <div class="rs-card">
           <div class="rs-value" style="color:var(--teal2)" id="r-correct">0/0</div>
-          <div class="rs-label">Respuestas correctas</div>
+          <div class="rs-label" id="ui-label-correct">Correct answers</div>
         </div>
         <div class="rs-card">
           <div class="rs-value" style="color:#A78BFA" id="r-badges">0</div>
-          <div class="rs-label">Insignias ganadas</div>
+          <div class="rs-label" id="ui-label-badges">Badges earned</div>
         </div>
       </div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--gray300)">INSIGNIAS DESBLOQUEADAS</h3>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--gray300)" id="ui-badges-heading">BADGES UNLOCKED</h3>
       <div class="badges-earned" id="badges-earned"></div>
       <div class="cert-banner">
-        <h3>🏅 Certificado de Inducción</h3>
-        <p id="cert-name-line">Este certificado acredita que <strong></strong> completó exitosamente el programa de Onboarding.</p>
+        <h3 id="ui-cert-title">🏅 Induction Certificate</h3>
+        <p id="cert-name-line">This certificate confirms successful completion of the Onboarding program.</p>
       </div>
-      <button class="btn-restart" onclick="restartGame()">↩ Volver a jugar</button>
+      <button class="btn-restart" id="ui-restart-btn" type="button">↩ Play again</button>
     </div>
   </div>
 </div>
 
-<!-- Badge modal -->
-<div id="badge-modal" class="badge-popup" style="display:none">
+<div id="badge-modal" class="badge-popup" style="display:none" role="dialog" aria-modal="true" aria-labelledby="bm-title">
   <div class="badge-inner">
     <div class="badge-icon" id="bm-icon"></div>
     <div class="badge-title" id="bm-title"></div>
     <div class="badge-desc" id="bm-desc"></div>
     <div class="badge-xp" id="bm-xp"></div>
-    <div class="badge-xp-label">XP acumulados</div>
-    <button class="btn-primary" onclick="closeBadge()">¡Seguir adelante! →</button>
+    <div class="badge-xp-label" id="ui-xp-accum">XP accumulated</div>
+    <button class="btn-primary" id="ui-badge-continue" type="button">Keep going! →</button>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
 const STATE = {
   playerName: '',
   xp: 0,
@@ -566,17 +572,287 @@ const STATE = {
   totalQuestions: 0,
 };
 
-const LEVELS = [
-  { min:0,    label:'Explorador 🌱' },
-  { min:100,  label:'Colaborador 🌟' },
-  { min:250,  label:'Referente 🚀' },
-  { min:450,  label:'Embajador 🏆' },
+let currentLang = 'en';
+let currentMission = null;
+let currentStep = 0;
+let stepAnswered = false;
+let scenarioChosen = false;
+let matchState = {};
+let pendingBadgeCallback = null;
+let activeBadgeId = null;
+const countedQuestions = new Set();
+
+const UI = {
+  en: {
+    badgeDemo: '✦ Demo · Gamified E-Learning',
+    welcomeHi: 'Welcome to',
+    welcomeSub: 'Your first week at the company starts here. Complete the 3 missions, earn XP points, unlock badges and certify as a <strong style="color:var(--white)">Founding Team Member</strong>.',
+    namePlaceholder: 'What is your name?',
+    startBtn: 'Start missions! 🚀',
+    mod1: 'Our Company',
+    mod2: 'Culture & Values',
+    mod3: 'Safety & Role',
+    hello: '👋 Hi,',
+    missionsTitle: 'Your Missions',
+    missionsSub: 'Complete each mission in order to level up and unlock your certificate.',
+    completed: '✓ Completed',
+    stepOf: (n, total) => `Step ${n} of ${total}`,
+    xpOnComplete: (xp) => `+${xp} XP on mission complete`,
+    quizLabel: 'Challenge',
+    scenarioLabel: 'Scenario',
+    matchLabel: 'Match',
+    matchHint: 'Click a value, then its matching behavior.',
+    matchPerfect: '✅ Perfect! You matched all values correctly.',
+    mapBtn: '← Map',
+    nextBtn: 'Next →',
+    completeMission: '✅ Complete mission',
+    answerToContinue: 'Answer to continue',
+    resultsTitle: 'Onboarding Complete!',
+    resultsSub: (name) => `Congratulations, <strong style="color:var(--teal2)">${name}</strong>. You have shown you are ready to begin.`,
+    labelXp: 'XP Earned',
+    labelCorrect: 'Correct answers',
+    labelBadges: 'Badges earned',
+    badgesHeading: 'BADGES UNLOCKED',
+    certTitle: '🏅 Induction Certificate',
+    certLine: (name) => `This certificate confirms that <strong style="color:var(--teal2)">${name}</strong> successfully completed the Onboarding program.`,
+    restart: '↩ Play again',
+    xpAccum: 'XP accumulated',
+    badgeContinue: 'Keep going! →',
+    defaultName: 'Team Member',
+    levels: [
+      { min: 0, label: 'Explorer 🌱' },
+      { min: 100, label: 'Contributor 🌟' },
+      { min: 250, label: 'Role Model 🚀' },
+      { min: 450, label: 'Ambassador 🏆' },
+    ],
+  },
+  es: {
+    badgeDemo: '✦ Demo · E-Learning Gamificado',
+    welcomeHi: 'Bienvenido/a a',
+    welcomeSub: 'Tu primera semana en la empresa comienza aquí. Completa las 3 misiones, acumula puntos XP, desbloquea insignias y certifícate como <strong style="color:var(--white)">Colaborador/a Fundador/a</strong>.',
+    namePlaceholder: '¿Cómo te llamas?',
+    startBtn: '¡Comenzar misiones! 🚀',
+    mod1: 'Nuestra Empresa',
+    mod2: 'Cultura & Valores',
+    mod3: 'Seguridad & Rol',
+    hello: '👋 Hola,',
+    missionsTitle: 'Tus Misiones',
+    missionsSub: 'Completa cada misión en orden para avanzar de nivel y desbloquear tu certificado.',
+    completed: '✓ Completada',
+    stepOf: (n, total) => `Paso ${n} de ${total}`,
+    xpOnComplete: (xp) => `+${xp} XP al completar misión`,
+    quizLabel: 'Desafío',
+    scenarioLabel: 'Escenario',
+    matchLabel: 'Relaciona',
+    matchHint: 'Haz clic en un valor y luego en su comportamiento.',
+    matchPerfect: '✅ ¡Perfecto! Emparejaste todos los valores correctamente.',
+    mapBtn: '← Mapa',
+    nextBtn: 'Siguiente →',
+    completeMission: '✅ Completar misión',
+    answerToContinue: 'Responde para continuar',
+    resultsTitle: '¡Onboarding Completado!',
+    resultsSub: (name) => `Felicitaciones, <strong style="color:var(--teal2)">${name}</strong>. Has demostrado que estás listo/a para comenzar.`,
+    labelXp: 'XP Ganados',
+    labelCorrect: 'Respuestas correctas',
+    labelBadges: 'Insignias ganadas',
+    badgesHeading: 'INSIGNIAS DESBLOQUEADAS',
+    certTitle: '🏅 Certificado de Inducción',
+    certLine: (name) => `Este certificado acredita que <strong style="color:var(--teal2)">${name}</strong> completó exitosamente el programa de Onboarding.`,
+    restart: '↩ Volver a jugar',
+    xpAccum: 'XP acumulados',
+    badgeContinue: '¡Seguir adelante! →',
+    defaultName: 'Colaborador',
+    levels: [
+      { min: 0, label: 'Explorador 🌱' },
+      { min: 100, label: 'Colaborador 🌟' },
+      { min: 250, label: 'Referente 🚀' },
+      { min: 450, label: 'Embajador 🏆' },
+    ],
+  }
+};
+
+function t() { return UI[currentLang]; }
+
+function getMissions() {
+  if (currentLang === 'es') return MISSIONS_ES;
+  return MISSIONS_EN;
+}
+
+const MISSIONS_EN = [
+  {
+    id: 'mission-1',
+    icon: '🏢',
+    color: 'rgba(13,148,136,.25)',
+    num: 'MISSION 01',
+    title: 'Meet Your New Home',
+    desc: 'Learn the company history, mission and structure.',
+    xp: 150, time: '~5 min',
+    badge: { icon: '🏢', title: 'First Stop!', desc: 'You learned the history and structure of your new company. Welcome to the team!' },
+    steps: [
+      {
+        type: 'info',
+        title: 'Our History and Mission',
+        content: `
+          <div class="info-card">
+            <h3>📖 Who we are</h3>
+            <p>We are a company with more than <strong style="color:var(--teal2)">20 years of experience</strong>, committed to delivering valuable solutions for our clients and a growth environment for our team.</p>
+            <div class="info-highlight">
+              💡 <strong>Our mission:</strong> Create sustainable value for our clients, employees and community, innovating every day with integrity and excellence.
+            </div>
+            <p>We operate across <strong>5 business lines</strong> with more than 1,200 employees throughout the region.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">🎯</div><div><strong>Vision</strong><span>Be a regional benchmark for innovation and service by 2030.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💎</div><div><strong>Purpose</strong><span>Transform people's lives through our products.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🌍</div><div><strong>Presence</strong><span>5 countries, 12 cities, more than 80 service points.</span></div></div>
+              <div class="info-item"><div class="ii-icon">👥</div><div><strong>Team</strong><span>1,200+ employees committed to excellence.</span></div></div>
+            </div>
+          </div>`
+      },
+      {
+        type: 'quiz',
+        title: 'How many years has the company been around?',
+        question: 'How many years of experience does our company have?',
+        options: ['10 years', '20 years', '35 years', '5 years'],
+        correct: 1,
+        feedback: { ok: '✅ Correct! We have more than 20 years building value for our clients and team.', fail: '❌ Remember: we have more than 20 years of experience in the market.' },
+        xp: 30,
+      },
+      {
+        type: 'info',
+        title: 'Organizational Structure',
+        content: `
+          <div class="info-card">
+            <h3>🏗️ How we are organized</h3>
+            <p>Our organization is designed to be <strong style="color:var(--teal2)">agile and customer-centered</strong>. Each area has a clear role in the ecosystem.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">📊</div><div><strong>General Management</strong><span>Strategy, governance and organizational culture.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💼</div><div><strong>Commercial</strong><span>Sales, marketing and client development.</span></div></div>
+              <div class="info-item"><div class="ii-icon">⚙️</div><div><strong>Operations</strong><span>Production, logistics and service quality.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🤝</div><div><strong>People / HR</strong><span>Hiring, training and team wellbeing.</span></div></div>
+            </div>
+            <div class="info-highlight">
+              💡 Your area reports to Operations. Your immediate manager will be your first point of contact.
+            </div>
+          </div>`
+      },
+    ]
+  },
+  {
+    id: 'mission-2',
+    icon: '🤝',
+    color: 'rgba(167,139,250,.25)',
+    num: 'MISSION 02',
+    title: 'Culture & Values',
+    desc: 'Discover the values that guide our decisions and behaviors.',
+    xp: 175, time: '~5 min',
+    badge: { icon: '💎', title: 'Values Guardian!', desc: 'You showed you internalized our culture and values. That makes a difference!' },
+    steps: [
+      {
+        type: 'info',
+        title: 'Our 4 Core Values',
+        content: `
+          <div class="info-card">
+            <h3>💎 What defines us</h3>
+            <p>Our values are not just words on a wall. They are the <strong style="color:var(--teal2)">filter for every decision</strong> we make, from the smallest to the most strategic.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">🔒</div><div><strong>Integrity</strong><span>We act with honesty and consistency at all times.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🚀</div><div><strong>Innovation</strong><span>We look for better ways to do things every day.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🤝</div><div><strong>Collaboration</strong><span>Success is collective. We add, we do not subtract.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💡</div><div><strong>Excellence</strong><span>We demand quality in every delivery and process.</span></div></div>
+            </div>
+            <div class="info-highlight">
+              🌟 In our company, <strong>behavior</strong> matters as much as <strong>results</strong>. The "how" is as important as the "what".
+            </div>
+          </div>`
+      },
+      {
+        type: 'scenario',
+        title: 'Put the values into practice',
+        scenario: `<strong>Your coworker Marco</strong> asks you to validate a figure in the monthly report before sending it to the client. You already reviewed the data and found a small error that inflates the result by 3%. Marco says: <em>"It's minor, nobody will notice and the client is already waiting."</em>`,
+        question: 'What would you do?',
+        choices: [
+          { icon: '🔒', text: 'Fix the error and explain to Marco that integrity comes first, even if it means a short delay.', good: true, feedback: '✅ Exactly! <strong>Integrity</strong> is non-negotiable. A small error today can become a big problem tomorrow. Clients value honesty.' },
+          { icon: '⏩', text: 'Send the report as is so you do not delay delivery; the client probably will not notice.', good: false, feedback: '❌ This goes against <strong>Integrity</strong>. Honesty always comes before convenience.' },
+          { icon: '🙈', text: 'Tell Marco you did not see the error and leave the decision to him.', good: false, feedback: '❌ Avoiding responsibility also goes against <strong>Integrity</strong> and <strong>Collaboration</strong>. We are all accountable.' },
+        ],
+        xp: 40,
+      },
+      {
+        type: 'match',
+        title: 'Connect the value to the action',
+        question: 'Match each value with the behavior that best represents it:',
+        pairs: [
+          { left: '🔒 Integrity', right: 'I report an error before it affects the client' },
+          { left: '🚀 Innovation', right: 'I propose an improvement to the team process' },
+          { left: '🤝 Collaboration', right: 'I support a colleague without being asked' },
+          { left: '💡 Excellence', right: 'I review my work before submitting it' },
+        ],
+        xp: 35,
+      },
+    ]
+  },
+  {
+    id: 'mission-3',
+    icon: '🛡️',
+    color: 'rgba(56,189,248,.2)',
+    num: 'MISSION 03',
+    title: 'Safety & Your Role',
+    desc: 'Learn essential safety rules and how to start your role successfully.',
+    xp: 200, time: '~5 min',
+    badge: { icon: '🛡️', title: 'Safety Agent!', desc: 'You know the essential rules to protect yourself and your team. You are part of the solution!' },
+    steps: [
+      {
+        type: 'info',
+        title: 'Safety: Everyone\'s Responsibility',
+        content: `
+          <div class="info-card">
+            <h3>🛡️ Your safety, our priority</h3>
+            <p>Safety is not only the HSE team's job — <strong style="color:var(--teal2)">it is every employee's responsibility</strong>. Knowing the basics protects your life, your coworkers and business continuity.</p>
+            <div class="info-grid">
+              <div class="info-item"><div class="ii-icon">🚨</div><div><strong>Emergencies</strong><span>Memorize your area evacuation route and meeting point.</span></div></div>
+              <div class="info-item"><div class="ii-icon">🔥</div><div><strong>Fire extinguisher</strong><span>Located within 15m of your workstation. ABC type for offices.</span></div></div>
+              <div class="info-item"><div class="ii-icon">💊</div><div><strong>First aid</strong><span>Kit on every floor. For a medical emergency call ext. 911.</span></div></div>
+              <div class="info-item"><div class="ii-icon">📋</div><div><strong>Reporting</strong><span>Every incident, even minor ones, must be reported within 24 hours.</span></div></div>
+            </div>
+            <div class="info-highlight">
+              ⚠️ <strong>Golden rule:</strong> If something looks unsafe, you have the <strong>right and responsibility</strong> to stop the activity and report it without fear of retaliation.
+            </div>
+          </div>`
+      },
+      {
+        type: 'quiz',
+        title: 'When to report an incident?',
+        question: 'What is the maximum time to report a safety incident, even a minor one?',
+        options: ['Within the same week', 'Within the first 24 hours', 'Only if someone is injured', 'At the end of the next shift'],
+        correct: 1,
+        feedback: {
+          ok: '✅ Correct! Within the first 24 hours. Timely reporting enables preventive action.',
+          fail: '❌ The correct answer is: within the first 24 hours. Timely reporting helps prevent larger accidents.'
+        },
+        xp: 30,
+      },
+      {
+        type: 'quiz',
+        title: 'Succeed in your first weeks',
+        question: 'Which behavior has the greatest positive impact during your first week at work?',
+        options: [
+          'Solve everything alone without asking to show autonomy',
+          'Listen actively, ask questions and build relationships with your team',
+          'Wait to be assigned tasks without showing initiative',
+          'Immediately implement processes from your previous company'
+        ],
+        correct: 1,
+        feedback: {
+          ok: '✅ Exactly! Listening, asking and connecting with the team are the foundations of successful onboarding. Humility and openness are your best tools.',
+          fail: '❌ The correct option is to listen actively and build relationships. Every company has its own culture — observe first, then act.'
+        },
+        xp: 30,
+      },
+    ]
+  },
 ];
 
-// ══════════════════════════════════════════
-// MISSIONS DATA
-// ══════════════════════════════════════════
-const MISSIONS = [
+const MISSIONS_ES = [
   {
     id: 'mission-1',
     icon: '🏢',
@@ -590,7 +866,6 @@ const MISSIONS = [
       {
         type: 'info',
         title: 'Nuestra Historia y Misión',
-        icon: '📖',
         content: `
           <div class="info-card">
             <h3>📖 Quiénes somos</h3>
@@ -605,8 +880,7 @@ const MISSIONS = [
               <div class="info-item"><div class="ii-icon">🌍</div><div><strong>Presencia</strong><span>5 países, 12 ciudades, más de 80 puntos de atención.</span></div></div>
               <div class="info-item"><div class="ii-icon">👥</div><div><strong>Equipo</strong><span>+1.200 colaboradores comprometidos con la excelencia.</span></div></div>
             </div>
-          </div>
-        `
+          </div>`
       },
       {
         type: 'quiz',
@@ -620,7 +894,6 @@ const MISSIONS = [
       {
         type: 'info',
         title: 'Estructura Organizacional',
-        icon: '🏗️',
         content: `
           <div class="info-card">
             <h3>🏗️ Cómo estamos organizados</h3>
@@ -634,8 +907,7 @@ const MISSIONS = [
             <div class="info-highlight">
               💡 Tu área reporta a la Dirección de Operaciones. Tu líder inmediato será tu primer punto de contacto.
             </div>
-          </div>
-        `
+          </div>`
       },
     ]
   },
@@ -652,7 +924,6 @@ const MISSIONS = [
       {
         type: 'info',
         title: 'Nuestros 4 Valores Fundamentales',
-        icon: '💎',
         content: `
           <div class="info-card">
             <h3>💎 Lo que nos define</h3>
@@ -666,8 +937,7 @@ const MISSIONS = [
             <div class="info-highlight">
               🌟 En nuestra empresa, el <strong>comportamiento</strong> es tan importante como el <strong>resultado</strong>. El "cómo" importa tanto como el "qué".
             </div>
-          </div>
-        `
+          </div>`
       },
       {
         type: 'scenario',
@@ -708,7 +978,6 @@ const MISSIONS = [
       {
         type: 'info',
         title: 'Seguridad: Responsabilidad de Todos',
-        icon: '🛡️',
         content: `
           <div class="info-card">
             <h3>🛡️ Tu seguridad, nuestra prioridad</h3>
@@ -722,8 +991,7 @@ const MISSIONS = [
             <div class="info-highlight">
               ⚠️ <strong>Regla de oro:</strong> Si algo te parece inseguro, tienes el <strong>derecho y la responsabilidad</strong> de detener la actividad y reportarlo sin temor a represalias.
             </div>
-          </div>
-        `
+          </div>`
       },
       {
         type: 'quiz',
@@ -758,20 +1026,60 @@ const MISSIONS = [
   },
 ];
 
-// ══════════════════════════════════════════
-// GAME LOGIC
-// ══════════════════════════════════════════
-let currentMission = null;
-let currentStep = 0;
-let stepAnswered = false;
-let scenarioChosen = false;
-let matchState = {};
-let badgeQueue = [];
-let pendingBadgeCallback = null;
+function applyStaticUI() {
+  const u = t();
+  document.documentElement.lang = currentLang;
+  document.getElementById('ui-badge-demo').textContent = u.badgeDemo;
+  document.getElementById('ui-welcome-hi').textContent = u.welcomeHi;
+  document.getElementById('ui-welcome-sub').innerHTML = u.welcomeSub;
+  document.getElementById('player-name').placeholder = u.namePlaceholder;
+  document.getElementById('ui-start-btn').textContent = u.startBtn;
+  document.getElementById('ui-mod1').textContent = u.mod1;
+  document.getElementById('ui-mod2').textContent = u.mod2;
+  document.getElementById('ui-mod3').textContent = u.mod3;
+  document.getElementById('ui-hello').textContent = u.hello;
+  document.getElementById('ui-missions-title').textContent = u.missionsTitle;
+  document.getElementById('ui-missions-sub').textContent = u.missionsSub;
+  document.getElementById('ui-results-title').textContent = u.resultsTitle;
+  document.getElementById('ui-label-xp').textContent = u.labelXp;
+  document.getElementById('ui-label-correct').textContent = u.labelCorrect;
+  document.getElementById('ui-label-badges').textContent = u.labelBadges;
+  document.getElementById('ui-badges-heading').textContent = u.badgesHeading;
+  document.getElementById('ui-cert-title').textContent = u.certTitle;
+  document.getElementById('ui-restart-btn').textContent = u.restart;
+  document.getElementById('ui-xp-accum').textContent = u.xpAccum;
+  document.getElementById('ui-badge-continue').textContent = u.badgeContinue;
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.setAttribute('aria-pressed', btn.getAttribute('data-lang') === currentLang ? 'true' : 'false');
+  });
+  updateHUD();
+}
+
+function setLanguage(lang) {
+  if (lang !== 'en' && lang !== 'es') return;
+  currentLang = lang;
+  applyStaticUI();
+
+  // Refresh badge modal texts if open
+  if (activeBadgeId) {
+    const m = getMissions().find(x => x.id === activeBadgeId);
+    if (m) {
+      document.getElementById('bm-title').textContent = m.badge.title;
+      document.getElementById('bm-desc').textContent = m.badge.desc;
+    }
+  }
+
+  const active = document.querySelector('.screen.active');
+  if (!active) return;
+  if (active.id === 'screen-missions') renderMissions();
+  else if (active.id === 'screen-lesson' && currentMission !== null) {
+    renderStep();
+  } else if (active.id === 'screen-results') showResults();
+}
 
 function startGame() {
   const nameInput = document.getElementById('player-name').value.trim();
-  STATE.playerName = nameInput || 'Colaborador';
+  STATE.playerName = nameInput || t().defaultName;
   showScreen('screen-missions');
   document.getElementById('hud').classList.add('visible');
   document.getElementById('player-name-display').textContent = STATE.playerName;
@@ -781,12 +1089,15 @@ function startGame() {
 
 function renderMissions() {
   const grid = document.getElementById('missions-grid');
+  const MISSIONS = getMissions();
   grid.innerHTML = '';
   MISSIONS.forEach((m, idx) => {
     const isCompleted = STATE.completedMissions.includes(m.id);
-    const isLocked = idx > 0 && !STATE.completedMissions.includes(MISSIONS[idx-1].id);
+    const isLocked = idx > 0 && !STATE.completedMissions.includes(MISSIONS[idx - 1].id);
     const card = document.createElement('div');
     card.className = 'mission-card' + (isLocked ? ' locked' : '') + (isCompleted ? ' completed' : '');
+    card.setAttribute('role', 'button');
+    card.tabIndex = (isLocked || isCompleted) ? -1 : 0;
     const statusIcon = isCompleted ? '✅' : (isLocked ? '🔒' : '▶️');
     card.innerHTML = `
       <div class="mc-icon-wrap" style="background:${m.color}">${m.icon}</div>
@@ -797,12 +1108,15 @@ function renderMissions() {
         <div class="mc-meta">
           <span class="mc-tag mc-xp">⚡ +${m.xp} XP</span>
           <span class="mc-tag mc-time">⏱ ${m.time}</span>
-          ${isCompleted ? '<span class="mc-tag" style="background:rgba(34,197,94,.15);color:#86EFAC">✓ Completada</span>' : ''}
+          ${isCompleted ? `<span class="mc-tag" style="background:rgba(34,197,94,.15);color:#86EFAC">${t().completed}</span>` : ''}
         </div>
       </div>
       <div class="mc-status">${statusIcon}</div>
     `;
-    if (!isLocked && !isCompleted) card.onclick = () => openMission(idx);
+    if (!isLocked && !isCompleted) {
+      card.onclick = () => openMission(idx);
+      card.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMission(idx); } };
+    }
     grid.appendChild(card);
   });
 }
@@ -815,18 +1129,30 @@ function openMission(idx) {
   showScreen('screen-lesson');
 }
 
+function questionKey() {
+  return currentMission + ':' + currentStep;
+}
+
+function countQuestionOnce() {
+  const key = questionKey();
+  if (!countedQuestions.has(key)) {
+    countedQuestions.add(key);
+    STATE.totalQuestions++;
+  }
+}
+
 function renderStep() {
+  const MISSIONS = getMissions();
   const m = MISSIONS[currentMission];
   const step = m.steps[currentStep];
   stepAnswered = false;
   scenarioChosen = false;
   matchState = { selected: null, matched: [] };
 
-  document.getElementById('lesson-breadcrumb').textContent = `${m.num} · Paso ${currentStep + 1} de ${m.steps.length}`;
+  document.getElementById('lesson-breadcrumb').textContent = `${m.num} · ${t().stepOf(currentStep + 1, m.steps.length)}`;
   document.getElementById('lesson-title').textContent = step.title;
-  document.getElementById('lesson-xp-badge').textContent = `+${m.xp} XP al completar misión`;
+  document.getElementById('lesson-xp-badge').textContent = t().xpOnComplete(m.xp);
 
-  // Progress dots
   const stepsEl = document.getElementById('lp-steps');
   stepsEl.innerHTML = '';
   m.steps.forEach((_, i) => {
@@ -835,7 +1161,6 @@ function renderStep() {
     stepsEl.appendChild(d);
   });
 
-  // Content
   const content = document.getElementById('lesson-content');
   if (step.type === 'info') {
     content.innerHTML = step.content;
@@ -855,32 +1180,34 @@ function renderQuiz(step, container) {
   const letters = ['A', 'B', 'C', 'D'];
   container.innerHTML = `
     <div class="quiz-card">
-      <div class="quiz-label">Desafío</div>
+      <div class="quiz-label">${t().quizLabel}</div>
       <div class="quiz-question">${step.question}</div>
       <div class="quiz-options">
         ${step.options.map((o, i) => `
-          <div class="quiz-option" id="qopt-${i}" onclick="answerQuiz(${i}, ${step.correct}, '${escQ(step.feedback.ok)}', '${escQ(step.feedback.fail)}', ${step.xp || 0})">
+          <button type="button" class="quiz-option" id="qopt-${i}">
             <span class="opt-letter">${letters[i]}</span>${o}
-          </div>`).join('')}
+          </button>`).join('')}
       </div>
       <div class="quiz-feedback" id="quiz-fb"></div>
     </div>
   `;
-  STATE.totalQuestions++;
+  step.options.forEach((_, i) => {
+    document.getElementById('qopt-' + i).onclick = () => answerQuiz(i, step.correct, step.feedback.ok, step.feedback.fail, step.xp || 0);
+  });
+  countQuestionOnce();
 }
 
 function answerQuiz(idx, correct, ok, fail, xp) {
   if (stepAnswered) return;
   stepAnswered = true;
   const isCorrect = idx === correct;
-  const letters = ['A','B','C','D'];
-  [0,1,2,3].forEach(i => {
-    const el = document.getElementById('qopt-'+i);
+  [0, 1, 2, 3].forEach(i => {
+    const el = document.getElementById('qopt-' + i);
     if (!el) return;
     el.classList.add('disabled');
+    el.disabled = true;
     if (i === correct) el.classList.add('correct');
     else if (i === idx) el.classList.add('wrong');
-    el.onclick = null;
   });
   const fb = document.getElementById('quiz-fb');
   fb.innerHTML = isCorrect ? ok : fail;
@@ -892,33 +1219,37 @@ function answerQuiz(idx, correct, ok, fail, xp) {
 function renderScenario(step, container) {
   container.innerHTML = `
     <div class="scenario-card">
-      <div class="scenario-label">Escenario</div>
+      <div class="scenario-label">${t().scenarioLabel}</div>
       <div class="scenario-scene">${step.scenario}</div>
       <div class="scenario-q">${step.question}</div>
       <div class="scenario-choices">
         ${step.choices.map((c, i) => `
-          <div class="scenario-choice" id="sch-${i}" onclick="chooseScenario(${i})">
+          <button type="button" class="scenario-choice" id="sch-${i}">
             <span class="choice-icon">${c.icon}</span>
             <span>${c.text}</span>
-          </div>`).join('')}
+          </button>`).join('')}
       </div>
       <div class="quiz-feedback" id="scenario-fb"></div>
     </div>
   `;
-  STATE.totalQuestions++;
+  step.choices.forEach((_, i) => {
+    document.getElementById('sch-' + i).onclick = () => chooseScenario(i);
+  });
+  countQuestionOnce();
 }
 
 function chooseScenario(idx) {
   if (scenarioChosen) return;
   scenarioChosen = true;
   stepAnswered = true;
-  const m = MISSIONS[currentMission];
+  const m = getMissions()[currentMission];
   const step = m.steps[currentStep];
   const choice = step.choices[idx];
   step.choices.forEach((c, i) => {
-    const el = document.getElementById('sch-'+i);
+    const el = document.getElementById('sch-' + i);
     if (!el) return;
-    el.classList.add('disabled'); el.onclick = null;
+    el.classList.add('disabled');
+    el.disabled = true;
     if (i === idx) el.classList.add(c.good ? 'chosen-good' : 'chosen-bad');
   });
   const fb = document.getElementById('scenario-fb');
@@ -930,24 +1261,29 @@ function chooseScenario(idx) {
 
 function renderMatch(step, container) {
   const rights = shuffle([...step.pairs.map(p => p.right)]);
-  matchState = { selected: null, selectedType: null, matched: [], pairs: step.pairs, score: 0, total: step.pairs.length };
+  matchState = { selected: null, selectedType: null, matched: [], pairs: step.pairs, score: 0, total: step.pairs.length, rightItems: rights };
   container.innerHTML = `
     <div class="match-card">
-      <div class="match-label">Relaciona</div>
+      <div class="match-label">${t().matchLabel}</div>
       <p style="font-size:14px;color:var(--gray300);margin-bottom:4px">${step.question}</p>
-      <p style="font-size:12px;color:var(--gray500);margin-bottom:0">Haz clic en un valor y luego en su comportamiento.</p>
+      <p style="font-size:12px;color:var(--gray500);margin-bottom:0">${t().matchHint}</p>
       <div class="match-grid" id="match-left">
-        ${step.pairs.map((p,i) => `<div class="match-item" id="ml-${i}" onclick="selectMatch('left',${i},'${escQ(p.left)}')">${p.left}</div>`).join('')}
+        ${step.pairs.map((p, i) => `<button type="button" class="match-item" id="ml-${i}">${p.left}</button>`).join('')}
       </div>
       <div style="text-align:center;color:var(--gray500);font-size:12px;margin:6px 0">↕</div>
       <div class="match-grid" id="match-right">
-        ${rights.map((r,i) => `<div class="match-item" id="mr-${i}" onclick="selectMatch('right',${i},'${escQ(r)}')">${r}</div>`).join('')}
+        ${rights.map((r, i) => `<button type="button" class="match-item" id="mr-${i}">${r}</button>`).join('')}
       </div>
       <div class="quiz-feedback" id="match-fb" style="margin-top:14px"></div>
     </div>
   `;
-  matchState.rightItems = rights;
-  STATE.totalQuestions++;
+  step.pairs.forEach((p, i) => {
+    document.getElementById('ml-' + i).onclick = () => selectMatch('left', i, p.left);
+  });
+  rights.forEach((r, i) => {
+    document.getElementById('mr-' + i).onclick = () => selectMatch('right', i, r);
+  });
+  countQuestionOnce();
 }
 
 function selectMatch(side, idx, val) {
@@ -961,14 +1297,12 @@ function selectMatch(side, idx, val) {
     el.classList.add('selected');
   } else {
     if (matchState.selectedType === side) {
-      // deselect previous same side
       const prevId = side === 'left' ? 'ml-' + matchState.selected.idx : 'mr-' + matchState.selected.idx;
       document.getElementById(prevId)?.classList.remove('selected');
       matchState.selected = { side, idx, val };
       el.classList.add('selected');
       return;
     }
-    // Two different sides selected — check match
     el.classList.add('selected');
     const leftVal = matchState.selectedType === 'left' ? matchState.selected.val : val;
     const rightVal = matchState.selectedType === 'right' ? matchState.selected.val : val;
@@ -977,7 +1311,6 @@ function selectMatch(side, idx, val) {
     const leftEl = document.getElementById('ml-' + leftIdx);
     const rightEl = document.getElementById('mr-' + rightIdx);
 
-    // find correct pair
     const pair = matchState.pairs.find(p => p.left === leftVal);
     const isOk = pair && pair.right === rightVal;
 
@@ -988,9 +1321,9 @@ function selectMatch(side, idx, val) {
       matchState.score++;
       if (matchState.matched.length === matchState.total) {
         const fb = document.getElementById('match-fb');
-        fb.innerHTML = '✅ ¡Perfecto! Emparejaste todos los valores correctamente.';
+        fb.innerHTML = t().matchPerfect;
         fb.className = 'quiz-feedback show success';
-        const m = MISSIONS[currentMission];
+        const m = getMissions()[currentMission];
         const step = m.steps[currentStep];
         STATE.xp += step.xp; STATE.correctAnswers++; showXpPopup('+' + step.xp + ' XP'); updateHUD();
         stepAnswered = true;
@@ -999,8 +1332,8 @@ function selectMatch(side, idx, val) {
     } else {
       leftEl?.classList.add('wrong-match'); rightEl?.classList.add('wrong-match');
       setTimeout(() => {
-        leftEl?.classList.remove('selected','wrong-match');
-        rightEl?.classList.remove('selected','wrong-match');
+        leftEl?.classList.remove('selected', 'wrong-match');
+        rightEl?.classList.remove('selected', 'wrong-match');
       }, 600);
     }
     matchState.selected = null; matchState.selectedType = null;
@@ -1009,16 +1342,20 @@ function selectMatch(side, idx, val) {
 
 function renderNav() {
   const nav = document.getElementById('lesson-nav');
-  const m = MISSIONS[currentMission];
+  const m = getMissions()[currentMission];
   const isLast = currentStep === m.steps.length - 1;
+  const u = t();
 
   nav.innerHTML = `
-    <button class="btn-secondary" onclick="backToMissions()">← Mapa</button>
+    <button class="btn-secondary" type="button" id="nav-map">${u.mapBtn}</button>
     ${stepAnswered
-      ? `<button class="btn-primary" onclick="${isLast ? 'completeMission()' : 'nextStep()'}">${isLast ? '✅ Completar misión' : 'Siguiente →'}</button>`
-      : `<button class="btn-primary" style="opacity:.4;cursor:default">Responde para continuar</button>`
+      ? `<button class="btn-primary" type="button" id="nav-next">${isLast ? u.completeMission : u.nextBtn}</button>`
+      : `<button class="btn-primary" type="button" style="opacity:.4;cursor:default" disabled>${u.answerToContinue}</button>`
     }
   `;
+  document.getElementById('nav-map').onclick = backToMissions;
+  const next = document.getElementById('nav-next');
+  if (next) next.onclick = isLast ? completeMission : nextStep;
 }
 
 function nextStep() {
@@ -1028,13 +1365,13 @@ function nextStep() {
 }
 
 function completeMission() {
-  const m = MISSIONS[currentMission];
+  const m = getMissions()[currentMission];
   STATE.completedMissions.push(m.id);
   STATE.xp += m.xp;
-  STATE.earnedBadges.push(m.badge);
+  STATE.earnedBadges.push({ id: m.id, ...m.badge });
   updateHUD();
-  showBadge(m.badge, () => {
-    if (STATE.completedMissions.length === MISSIONS.length) {
+  showBadge(m.id, m.badge, () => {
+    if (STATE.completedMissions.length === getMissions().length) {
       showResults();
     } else {
       showScreen('screen-missions');
@@ -1048,8 +1385,8 @@ function backToMissions() {
   renderMissions();
 }
 
-// ── Badges ──
-function showBadge(badge, callback) {
+function showBadge(id, badge, callback) {
+  activeBadgeId = id;
   document.getElementById('bm-icon').textContent = badge.icon;
   document.getElementById('bm-title').textContent = badge.title;
   document.getElementById('bm-desc').textContent = badge.desc;
@@ -1060,45 +1397,45 @@ function showBadge(badge, callback) {
 
 function closeBadge() {
   document.getElementById('badge-modal').style.display = 'none';
+  activeBadgeId = null;
   if (pendingBadgeCallback) { pendingBadgeCallback(); pendingBadgeCallback = null; }
 }
 
-// ── Results ──
 function showResults() {
   showScreen('screen-results');
   document.getElementById('r-xp').textContent = STATE.xp;
   document.getElementById('r-correct').textContent = STATE.correctAnswers + '/' + STATE.totalQuestions;
   document.getElementById('r-badges').textContent = STATE.earnedBadges.length;
-  const sub = document.getElementById('results-sub');
-  sub.innerHTML = `Felicitaciones, <strong style="color:var(--teal2)">${STATE.playerName}</strong>. Has demostrado que estás listo/a para comenzar.`;
-  const certLine = document.getElementById('cert-name-line');
-  certLine.innerHTML = `Este certificado acredita que <strong style="color:var(--teal2)">${STATE.playerName}</strong> completó exitosamente el programa de Onboarding.`;
+  document.getElementById('results-sub').innerHTML = t().resultsSub(STATE.playerName);
+  document.getElementById('cert-name-line').innerHTML = t().certLine(STATE.playerName);
+
+  const missions = getMissions();
   const badgesEl = document.getElementById('badges-earned');
-  badgesEl.innerHTML = STATE.earnedBadges.map(b => `
-    <div class="earned-badge">
-      <div class="eb-icon">${b.icon}</div>
-      <div class="eb-name">${b.title}</div>
-    </div>
-  `).join('');
+  badgesEl.innerHTML = STATE.earnedBadges.map(b => {
+    const live = missions.find(m => m.id === b.id);
+    const title = live ? live.badge.title : b.title;
+    const icon = live ? live.badge.icon : b.icon;
+    return `<div class="earned-badge"><div class="eb-icon">${icon}</div><div class="eb-name">${title}</div></div>`;
+  }).join('');
 }
 
 function restartGame() {
   STATE.xp = 0; STATE.level = 1; STATE.completedMissions = [];
   STATE.earnedBadges = []; STATE.correctAnswers = 0; STATE.totalQuestions = 0;
+  countedQuestions.clear();
   currentMission = null; currentStep = 0;
   document.getElementById('hud').classList.remove('visible');
   showScreen('screen-welcome');
 }
 
-// ── HUD ──
 function updateHUD() {
   document.getElementById('hud-xp-txt').textContent = STATE.xp + ' XP';
-  const lvl = LEVELS.slice().reverse().find(l => STATE.xp >= l.min);
-  document.getElementById('hud-level-txt').textContent = lvl ? lvl.label : 'Explorador 🌱';
-  const total = MISSIONS.length;
+  const levels = t().levels;
+  const lvl = levels.slice().reverse().find(l => STATE.xp >= l.min);
+  document.getElementById('hud-level-txt').textContent = lvl ? lvl.label : levels[0].label;
+  const total = getMissions().length;
   const done = STATE.completedMissions.length;
-  const pct = (done / total) * 100;
-  document.getElementById('hud-bar').style.width = pct + '%';
+  document.getElementById('hud-bar').style.width = ((done / total) * 100) + '%';
   document.getElementById('hud-prog-txt').textContent = done + '/' + total;
 }
 
@@ -1114,12 +1451,17 @@ function showXpPopup(txt) {
   setTimeout(() => el.remove(), 950);
 }
 
-// ── Helpers ──
 function shuffle(arr) { return arr.sort(() => Math.random() - .5); }
-function escQ(s) { return (s||'').replace(/'/g, "&#39;").replace(/"/g, "&quot;"); }
 
-// enter key on name
+document.getElementById('ui-start-btn').addEventListener('click', startGame);
+document.getElementById('ui-restart-btn').addEventListener('click', restartGame);
+document.getElementById('ui-badge-continue').addEventListener('click', closeBadge);
 document.getElementById('player-name').addEventListener('keydown', e => { if (e.key === 'Enter') startGame(); });
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+});
+
+applyStaticUI();
 </script>
 </body>
 </html>
