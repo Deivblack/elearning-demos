@@ -10,6 +10,7 @@ Repositorio de demos interactivos de Learning & Development, pensado para reclut
 |------|------------------|--------|
 | Onboarding Academy (HTML/CSS/JS gamificado) | `onboarding-demo/` | Selector EN \| ES |
 | Manual de Usuario — Actores del proceso (SCORM / Storyline) | `demo-manual-usuario/` | Muestra en español; no editar archivos generados por Storyline |
+| Prime Choice — Outbound (piloto warehouse) | `demos/prime-choice/` | ES / EN / 简体 dentro del demo |
 | New Hire Orientation (Articulate Rise) | Variable `RISE_DEMO_URL` en `index.html` | Botón desactivado hasta pegar el enlace |
 
 ## Cómo agregar un demo nuevo

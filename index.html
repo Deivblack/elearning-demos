@@ -246,6 +246,12 @@
         linear-gradient(135deg, #152D54, #0D1F3C);
     }
 
+    .card-media.prime {
+      background:
+        radial-gradient(circle at 40% 60%, rgba(245,158,11,.22), transparent 55%),
+        linear-gradient(135deg, #152D54, #0D1F3C);
+    }
+
     .media-label {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 28px;
@@ -448,7 +454,28 @@
           </div>
         </article>
 
-        <!-- C. Rise placeholder -->
+        <!-- C. Prime Choice (already on Pages branch) -->
+        <article class="card">
+          <div class="card-media prime" aria-hidden="true">
+            <span class="media-label">PC</span>
+          </div>
+          <div class="card-body">
+            <h2 data-i18n="pTitle">Prime Choice — Outbound</h2>
+            <p class="notice" data-i18n="pNotice">Pilot · warehouse outbound onboarding</p>
+            <ul class="facts">
+              <li><strong data-i18n="labelChallenge">Challenge:</strong> <span data-i18n="pChallenge">gamified warehouse outbound onboarding covering safety, conveyor belt, and container.</span></li>
+              <li><strong data-i18n="labelAudience">Audience:</strong> <span data-i18n="pAudience">warehouse outbound team (pilot).</span></li>
+              <li><strong data-i18n="labelRole">My role:</strong> <span data-i18n="pRole">[COMPLETAR: rol en este piloto]</span></li>
+              <li><strong data-i18n="labelTools">Tools:</strong> <span data-i18n="pTools">HTML, CSS, JavaScript; mobile-friendly.</span></li>
+              <li><strong data-i18n="labelFeatures">Features:</strong> <span data-i18n="pFeatures">short missions with XP; interface in ES / EN / 简体.</span></li>
+            </ul>
+            <div class="card-actions">
+              <a class="btn btn-primary" href="demos/prime-choice/" data-i18n="viewDemo">View demo</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- D. Rise placeholder -->
         <article class="card">
           <div class="card-media rise" aria-hidden="true">
             <span class="media-label">Rise</span>
@@ -514,6 +541,13 @@
         bRole: 'instructional design and development.',
         bTools: 'Articulate Storyline 360, published as SCORM/HTML5.',
         bFeatures: '[COMPLETAR: interacciones que tiene la cápsula]',
+        pTitle: 'Prime Choice — Outbound',
+        pNotice: 'Pilot · warehouse outbound onboarding',
+        pChallenge: 'gamified warehouse outbound onboarding covering safety, conveyor belt, and container.',
+        pAudience: 'warehouse outbound team (pilot).',
+        pRole: '[COMPLETAR: rol en este piloto]',
+        pTools: 'HTML, CSS, JavaScript; mobile-friendly.',
+        pFeatures: 'short missions with XP; interface in ES / EN / 简体.',
         cTitle: 'Articulate Rise sample',
         cComing: 'Coming soon: New Hire Orientation (Articulate Rise)',
         cStatus: 'link not published yet — button stays disabled until the Rise URL is added.',
@@ -553,6 +587,13 @@
         bRole: 'diseño instruccional y desarrollo.',
         bTools: 'Articulate Storyline 360, publicado como SCORM/HTML5.',
         bFeatures: '[COMPLETAR: interacciones que tiene la cápsula]',
+        pTitle: 'Prime Choice — Outbound',
+        pNotice: 'Piloto · onboarding outbound de warehouse',
+        pChallenge: 'onboarding gamificado de warehouse outbound: seguridad, cinta y contenedor.',
+        pAudience: 'equipo outbound de warehouse (piloto).',
+        pRole: '[COMPLETAR: rol en este piloto]',
+        pTools: 'HTML, CSS, JavaScript; adaptable a móvil.',
+        pFeatures: 'misiones cortas con XP; interfaz en ES / EN / 简体.',
         cTitle: 'Muestra de Articulate Rise',
         cComing: 'Próximamente: Orientación para nuevos ingresos (Articulate Rise)',
         cStatus: 'enlace aún no publicado — el botón queda desactivado hasta agregar la URL de Rise.',
