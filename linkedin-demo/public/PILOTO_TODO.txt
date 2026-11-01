@@ -1,0 +1,3 @@
+[TODO: piloto.mov or photo]
+Drop a blur-safe floor still or short clip here as piloto.mov (or .jpg / .webp).
+Until then Remotion uses the placeholder plate in SCRIPT.md.

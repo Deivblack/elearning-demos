@@ -1,0 +1,26 @@
+{
+  "name": "linkedin-demo-prime-choice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LinkedIn storytelling Remotion project for Prime Choice outbound onboarding (render gated on SCRIPT.md approval)",
+  "scripts": {
+    "record": "node scripts/record.mjs",
+    "studio": "remotion studio",
+    "render": "echo 'BLOCKED: Wait for David to approve linkedin-demo/SCRIPT.md, then run: npx remotion render LinkedInStory out/prime-choice-linkedin.mp4' && exit 1",
+    "render:approved": "remotion render LinkedInStory out/prime-choice-linkedin.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.539",
+    "@remotion/media-utils": "^4.0.539",
+    "@remotion/player": "^4.0.539",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.539"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "playwright": "^1.48.0",
+    "typescript": "^5.6.3"
+  }
+}
