@@ -1,6 +1,7 @@
 /* Prime Choice outbound learner app */
 (function () {
   const LANG_KEY = 'pc_outbound_lang';
+  const PROGRESS_KEY = 'pc_outbound_progress';
   const AVATAR_SRC = 'assets/avatar/guide.jpg';
 
   const STATE = {
@@ -70,6 +71,56 @@
       xp += Number(STATE.moduleScores[id].total) || 0;
     });
     STATE.xp = xp;
+  }
+
+  function saveProgress() {
+    if (!STATE.firstName || !STATE.lastName) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+        firstName: STATE.firstName,
+        lastName: STATE.lastName,
+        lang: STATE.lang,
+        xp: STATE.xp,
+        completedMissions: STATE.completedMissions.slice(),
+        moduleScores: { ...STATE.moduleScores },
+        correctAnswers: STATE.correctAnswers,
+        totalQuestions: STATE.totalQuestions,
+        startedAt: STATE.startedAt,
+        startedMs: STATE.startedMs,
+        updatedAt: new Date().toISOString()
+      }));
+    } catch (e) {
+      console.warn('Could not save progress', e);
+    }
+  }
+
+  function loadProgress() {
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data || !data.firstName || !data.lastName) return null;
+      return data;
+    } catch {
+      return null;
+    }
+  }
+
+  function applyProgress(data) {
+    STATE.firstName = data.firstName;
+    STATE.lastName = data.lastName;
+    STATE.completedMissions = Array.isArray(data.completedMissions) ? data.completedMissions.slice() : [];
+    STATE.moduleScores = data.moduleScores && typeof data.moduleScores === 'object' ? { ...data.moduleScores } : {};
+    STATE.correctAnswers = Number(data.correctAnswers) || 0;
+    STATE.totalQuestions = Number(data.totalQuestions) || 0;
+    STATE.startedAt = data.startedAt || new Date().toISOString();
+    STATE.startedMs = data.startedMs || Date.now();
+    if (data.lang && PCI18n.UI[data.lang]) STATE.lang = data.lang;
+    recalcXpFromBest();
+  }
+
+  function clearProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* ignore */ }
   }
 
   function showScreen(id) {
@@ -187,6 +238,16 @@
     renderLangSwitcher();
   }
 
+  function enterMissionsScreen() {
+    document.getElementById('hello-line').textContent = ui('hello', { name: fullName() });
+    document.getElementById('guide-missions-text').textContent = ui('guideMissionsNamed', { name: STATE.firstName });
+    document.getElementById('hud').classList.add('visible');
+    showScreen('screen-missions');
+    renderMissions();
+    updateHUD();
+    saveProgress();
+  }
+
   function startGame() {
     const first = document.getElementById('first-name').value.trim();
     const last = document.getElementById('last-name').value.trim();
@@ -194,6 +255,26 @@
       alert(ui('needName'));
       return;
     }
+    const saved = loadProgress();
+    const samePerson = saved &&
+      saved.firstName.toLowerCase() === first.toLowerCase() &&
+      saved.lastName.toLowerCase() === last.toLowerCase() &&
+      Array.isArray(saved.completedMissions) &&
+      saved.completedMissions.length > 0;
+
+    if (samePerson) {
+      const uiLang = STATE.lang;
+      applyProgress(saved);
+      STATE.firstName = first;
+      STATE.lastName = last;
+      STATE.lang = uiLang;
+      localStorage.setItem(LANG_KEY, uiLang);
+      document.documentElement.lang = uiLang === 'zh' ? 'zh-CN' : uiLang;
+      applyStaticUI();
+      enterMissionsScreen();
+      return;
+    }
+
     STATE.firstName = first;
     STATE.lastName = last;
     STATE.xp = 0;
@@ -203,12 +284,7 @@
     STATE.totalQuestions = 0;
     STATE.startedAt = new Date().toISOString();
     STATE.startedMs = Date.now();
-    document.getElementById('hello-line').textContent = ui('hello', { name: fullName() });
-    document.getElementById('guide-missions-text').textContent = ui('guideMissionsNamed', { name: STATE.firstName });
-    document.getElementById('hud').classList.add('visible');
-    showScreen('screen-missions');
-    renderMissions();
-    updateHUD();
+    enterMissionsScreen();
   }
 
   function renderMissions() {
@@ -261,7 +337,19 @@
     (blocks || []).forEach((b) => {
       if (b.h) html += '<h3>' + escapeHtml(b.h) + '</h3>';
       if (b.p) html += '<p>' + escapeHtml(b.p) + '</p>';
+      if (b.img) {
+        html += '<figure class="lesson-figure"><img src="' + escapeHtml(b.img) + '" alt="' +
+          escapeHtml(b.alt || '') + '" loading="lazy"/></figure>';
+      }
       if (b.highlight) html += '<div class="info-highlight">' + escapeHtml(b.highlight) + '</div>';
+      if (b.alert && b.alert.items) {
+        html += '<div class="info-alert"><div class="info-alert-title">⚠️ ' +
+          escapeHtml(b.alert.title || '') + '</div><ul>';
+        b.alert.items.forEach((item) => {
+          html += '<li>' + escapeHtml(item) + '</li>';
+        });
+        html += '</ul></div>';
+      }
       if (b.grid) {
         html += '<div class="info-grid">';
         b.grid.forEach((g) => {
@@ -612,20 +700,24 @@
     if (!isBest && prev) {
       badge.desc = (badge.desc || '') + ' · ' + ui('bestTag', { n: prev.total });
     }
+    saveProgress();
     showBadge(badge, () => {
       if (STATE.completedMissions.length === missions().length) {
         finalizeAndShowResults();
       } else {
         showScreen('screen-missions');
         renderMissions();
+        updateHUD();
+        saveProgress();
       }
     });
   }
 
   function backToMissions() {
-    // discard in-progress XP from this attempt beyond bests
+    // Keep completed missions/scores; drop only in-progress attempt XP beyond bests
     recalcXpFromBest();
     updateHUD();
+    saveProgress();
     showScreen('screen-missions');
     renderMissions();
   }
@@ -673,13 +765,14 @@
         ...(STATE.moduleScores[m.id] || {})
       })),
       program: 'Prime Choice Outbound Onboarding',
-      version: '1.2-pilot'
+      version: '1.3-pilot'
     };
     try {
       PCStorage.saveCompletion(record);
     } catch (e) {
       console.warn('Could not save completion', e);
     }
+    clearProgress();
     showResults(record);
   }
 
@@ -723,8 +816,15 @@
     document.getElementById('hud-level-txt').textContent = lvl ? lvl.label : ui('level0');
     const done = STATE.completedMissions.length;
     const total = missions().length;
-    document.getElementById('hud-bar').style.width = ((done / total) * 100) + '%';
+    const pct = total ? (done / total) * 100 : 0;
+    document.getElementById('hud-bar').style.width = pct + '%';
     document.getElementById('hud-prog-txt').textContent = done + '/' + total;
+    const pathFill = document.getElementById('path-progress-fill');
+    const pathLabel = document.getElementById('path-progress-label');
+    if (pathFill) pathFill.style.width = pct + '%';
+    if (pathLabel) pathLabel.textContent = ui('progressLabel', { done: done, total: total });
+    const resume = document.getElementById('resume-hint');
+    if (resume) resume.textContent = ui('resumeHint');
   }
 
   function init() {
