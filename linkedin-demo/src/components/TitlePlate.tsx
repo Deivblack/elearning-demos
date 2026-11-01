@@ -4,42 +4,57 @@ import { COLORS } from '../config';
 
 type Props = {
   lines: string[];
+  es?: string;
   accent?: string;
   sub?: string;
 };
 
-export const TitlePlate: React.FC<Props> = ({ lines, accent, sub }) => {
+export const TitlePlate: React.FC<Props> = ({ lines, es, accent, sub }) => {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [0, 12], [0, 1], { extrapolateRight: 'clamp' });
-  const y = interpolate(frame, [0, 12], [24, 0], { extrapolateRight: 'clamp' });
+  const opacity = interpolate(frame, [0, 10], [0, 1], { extrapolateRight: 'clamp' });
+  const y = interpolate(frame, [0, 10], [22, 0], { extrapolateRight: 'clamp' });
 
   return (
     <AbsoluteFill
       style={{
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 72,
+        padding: 64,
         background: `radial-gradient(ellipse at 20% 40%, ${COLORS.navy2} 0%, ${COLORS.navy} 50%, ${COLORS.navyDeep} 100%)`,
         opacity,
         transform: `translateY(${y}px)`,
       }}
     >
-      <div style={{ maxWidth: 900, textAlign: 'center' }}>
+      <div style={{ maxWidth: 920, textAlign: 'center' }}>
         {lines.map((line, i) => (
           <div
             key={i}
             style={{
-              fontFamily: 'Space Grotesk, sans-serif',
+              fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
-              fontSize: i === 0 ? 64 : 52,
-              lineHeight: 1.15,
+              fontSize: lines.length === 1 && line.length > 36 ? 48 : i === 0 ? 58 : 48,
+              lineHeight: 1.18,
               color: COLORS.white,
-              marginBottom: 12,
+              marginBottom: 10,
             }}
           >
             {line}
           </div>
         ))}
+        {es ? (
+          <div
+            style={{
+              marginTop: 14,
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 600,
+              fontSize: 28,
+              color: COLORS.teal2,
+              lineHeight: 1.35,
+            }}
+          >
+            {es}
+          </div>
+        ) : null}
         {accent ? (
           <div
             style={{
@@ -56,10 +71,10 @@ export const TitlePlate: React.FC<Props> = ({ lines, accent, sub }) => {
         {accent ? (
           <div
             style={{
-              marginTop: 28,
-              fontFamily: 'Space Grotesk, sans-serif',
+              marginTop: 24,
+              fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
-              fontSize: 40,
+              fontSize: 38,
               color: COLORS.teal2,
             }}
           >
@@ -69,9 +84,9 @@ export const TitlePlate: React.FC<Props> = ({ lines, accent, sub }) => {
         {sub ? (
           <div
             style={{
-              marginTop: 20,
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 28,
+              marginTop: 16,
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 26,
               color: COLORS.muted,
             }}
           >

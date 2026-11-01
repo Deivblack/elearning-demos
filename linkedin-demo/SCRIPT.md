@@ -1,10 +1,11 @@
 # LinkedIn storytelling script — Prime Choice outbound onboarding
 
-**Status:** DRAFT — waiting for David approval before Remotion render  
-**Format:** Vertical 1080×1920 · target **54s** (45–60s band) · 30 fps  
+**Status:** APPROVED by David (2026-11-01) — render authorized  
+**Format:** Vertical 1080×1920 · target **~48s** (45–54s band) · 30 fps  
 **Privacy:** `BLUR_FACE=true` · `GENERIC_NAMES=true` (Warehouse / Carrier A–D)  
 **Audio:** Music/SFX slot left empty (no copyrighted music)  
-**Language on screen:** English (≤8 words per text beat)
+**Captions:** EN primary + ES secondary (burned in)  
+**Output:** `out/onboarding-demo.mp4` (H.264 veryfast)
 
 ---
 
@@ -26,82 +27,60 @@
 - Badge copy: **Pilot · ~10 min**  
 - 5 missions: Safety → Process → Belt & colors → Containerization → More responsibility  
 - Languages in app: Español / English / 简体中文  
-- Features visible in commits/UI: XP, badges, retry keeps best score, path progress, device-local progress, admin.html records  
+- Features: XP, badges, retry keeps best score, path progress, device-local progress, admin.html records  
 
-### From Project brief (outbound plan)
+### From Project brief + David approval
 
-- Role context: warehouse outbound after packing (belt → carts → containerize → load)  
-- Constraints: high turnover, fast pace, three languages on the floor  
-- Training order: belt/colors first (no scanning on belt) → containerization → more responsibility  
+- Warehouse outbound after packing (belt → carts → containerize → load)  
+- Hook line (David): **Our onboarding was: "Go figure it out."**  
+- TL may be mentioned  
+- Mission 3 color quiz **skipped** in video for privacy — Safety trivia only  
+- End card: **David Moreno Abril**  
 
-### Media TODO
+### Media (approved)
 
-- **`piloto.mov`:** file not found in this checkout or Project store.  
-  Marked **`[TODO: piloto.mov or photo]`** — use dark navy placeholder plate with caption “Floor pilot · photo TBD” until David drops a blur-safe clip/photo into `linkedin-demo/public/piloto.mov` (or `.jpg`/`.webp`).
-
----
-
-## Scene-by-scene beats
-
-| Time | Beat | On-screen text (≤8 words) | Visuals |
-|------|------|---------------------------|---------|
-| 0:00–0:04 | Hook | High turnover. Fast floor. | Dark navy gradient + subtle teal particles; gold underline under first line |
-| 0:04–0:08 | Problem | Three languages. One first week. | Same plate; second line fades in; tiny path chips “Belt → Carts → Container” (generic, no carrier names) |
-| 0:08–0:13 | Solution name | I built a 10-minute pilot. | Brand plate: **Prime Choice** (Space Grotesk) + “Outbound onboarding” |
-| 0:13–0:18 | Product promise | Missions. XP. Badges. Retry. | Icon row (mission / XP / badge) — no fake stats |
-| 0:18–0:24 | Build stage 1 | Published the pilot. Oct 31. | Timeline tick from git: `bf18fc4` / “Publish… GitHub Pages” (message shortened on screen to fit 8 words: **Published the pilot.**) |
-| 0:24–0:28 | Build stage 2 | Phone-ready. Three languages. | Timeline: responsive + i18n (`9724d91`) |
-| 0:28–0:32 | Build stage 3 | Activities. Retry. Best score. | Timeline: activities/shuffle/retry (`23b7d37`) |
-| 0:32–0:36 | Build stage 4 | Graphics. Path progress. Saved. | Timeline: missions 2–4 + progress (`70ddeb9`) |
-| 0:36–0:40 | Build stage 5 | One XP truth. Mission five. | Timeline: XP unify + Mission 5 (`b4f08cc`, Nov 1) |
-| 0:40–0:44 | Clip · Welcome | Welcome to Prime Choice. | Phone frame 390×844: `welcome.webm` (EN UI; guide face blurred) |
-| 0:44–0:48 | Clip · Map | Five missions. Belt first. | Phone frame: `mission-map.webm` (generic name “Alex Warehouse”) |
-| 0:48–0:52 | Clip · Lesson | Safety. Look. Don’t climb. Tell. | Phone frame: `lesson-safety.webm` |
-| 0:52–0:56 | Clip · Quiz | Wrong once. Then right. | Phone frame split/cut: `quiz-wrong.webm` → `quiz-right.webm` |
-| 0:56–1:00 | Clip · Badge | Badge unlocked. Keep going. | Phone frame: `badge.webm` |
-| 1:00–1:04 | Clip · Finish | Path complete. Pilot record. | Phone frame: `final.webm` |
-| 1:04–1:08 | Floor note | Real floor. Same path. | **`[TODO: piloto.mov or photo]`** placeholder plate |
-| 1:08–1:12 | Soft CTA | Built for the floor. | End card: name **David Moreno** · L&D · Houston; “Prime Choice · Outbound pilot”; audio slot silent |
-| 1:12–1:14 | Hold | — | Fade to navy; leave 0.5–1s for LinkedIn autoplay loop comfort |
-
-> Timing note: table spans ~1:14 for edit room. **Cut to 54s (±6s)** by shortening timeline ticks (0:18–0:40) and/or holding clips shorter. Do **not** add metrics that aren’t in sources.
+| File | Use | Privacy |
+|------|-----|---------|
+| `cover-laptop-warehouse-safe.png` | Hook / first cover | Avatar + URL chrome + background people + carrier packaging blurred |
+| `piloto-pda-blur.png` | Floor beat | Face (+ ID pocket) blurred |
+| `welcome.webm` … `final.webm` | Phone clips | `BLUR_FACE` / `GENERIC_NAMES` at record time |
 
 ---
 
-## Voiceover / caption notes (optional; not recorded yet)
+## Scene-by-scene beats (~48s)
 
-If David adds VO later, keep it factual:
-
-1. Warehouse onboarding is high turnover and multilingual.  
-2. I shipped a ~10-minute gamified outbound pilot: five missions, XP, badges.  
-3. Built in public commits Oct 31–Nov 1: publish → i18n/responsive → activities → graphics/progress → XP/Mission 5.  
-4. Training order matches the floor: belt colors first, then containers, then more.  
-5. Soft close — no company or carrier names.
-
----
-
-## Privacy checklist for final edit
-
-- [ ] No USPS / Swift / Speedex / Uni Uni / Gofo on screen or VO  
-- [ ] Use Carrier A–D or color-only labels in any re-shot color mission  
-- [ ] Guide avatar blurred when `BLUR_FACE=true`  
-- [ ] Learner name generic (`Alex Warehouse` / `Sam Carrier`) when `GENERIC_NAMES=true`  
-- [ ] No warehouse employer brand, no customer logos  
-
----
-
-## Open questions for David (`[TODO]`)
-
-1. **`[TODO: piloto.mov or photo]`** — provide blur-safe floor still or clip, or keep placeholder?  
-2. Confirm **English-only** on-screen text (vs brief bilingual captions)?  
-3. Confirm end-card name line: **David Moreno** / **David Moreno Abril** / other?  
-4. Any quote from TL/manager that is cleared to use? (none in sources → leave out)  
-5. Target length preference inside 45–60s (default cut **54s**)?  
-6. Approve cutting Mission 3 color quiz from the video (carrier names) and using Mission 1 safety trivia instead? **Recommended: yes** for privacy.  
+| Time | Beat | On-screen EN (+ ES) | Visuals |
+|------|------|---------------------|---------|
+| 0:00–0:05 | Hook | EN: Our onboarding was: "Go figure it out." · ES: Nuestro onboarding era: "Arréglatelas." | Full-bleed `cover-laptop-warehouse-safe.png` + caption bar |
+| 0:05–0:08 | Context | EN: Three languages. One first week. · ES: Tres idiomas. Una primera semana. | Cover continues / navy wash; path chips Belt → carts → container |
+| 0:08–0:12 | Solution | EN: I built a 10-minute pilot. · ES: Armé un piloto de 10 minutos. | Brand: **Prime Choice** · Outbound onboarding |
+| 0:12–0:14 | Promise | EN: Missions. XP. Badges. Retry. · ES: Misiones. XP. Badges. Reintento. | Title plate |
+| 0:14–0:16 | Build 1 | EN: Published the pilot. · ES: Publiqué el piloto. | Timeline 2026-10-31 |
+| 0:16–0:18 | Build 2 | EN: Phone-ready. Three languages. · ES: Listo en celular. Tres idiomas. | Timeline 2026-10-31 |
+| 0:18–0:20 | Build 3 | EN: Activities. Retry. Best score. · ES: Actividades. Reintento. Mejor puntaje. | Timeline 2026-11-01 |
+| 0:20–0:22 | Build 4 | EN: Graphics. Path progress. Saved. · ES: Gráficos. Progreso. Guardado. | Timeline 2026-11-01 |
+| 0:22–0:24 | Build 5 | EN: One XP truth. Mission five. · ES: Un solo XP. Misión cinco. | Timeline 2026-11-01 |
+| 0:24–0:27 | Clip · Welcome | EN: Welcome to Prime Choice. · ES: Bienvenido a Prime Choice. | Phone: `welcome.webm` |
+| 0:27–0:30 | Clip · Map | EN: Five missions. Belt first. · ES: Cinco misiones. Cinta primero. | Phone: `mission-map.webm` (Alex Warehouse) |
+| 0:30–0:33 | Clip · Lesson | EN: Safety. Look. Don’t climb. Tell. · ES: Seguridad. Mira. No trepes. Avisa. | Phone: `lesson-safety.webm` |
+| 0:33–0:36 | Clip · Quiz | EN: Wrong once. Then right. · ES: Fallar una. Luego bien. | `quiz-wrong.webm` → `quiz-right.webm` (Safety trivia) |
+| 0:36–0:39 | Clip · Badge | EN: Badge unlocked. Keep going. · ES: Badge desbloqueado. Sigue. | Phone: `badge.webm` |
+| 0:39–0:42 | Clip · Finish | EN: Path complete. Pilot record. · ES: Ruta completa. Registro piloto. | Phone: `final.webm` |
+| 0:42–0:45 | Floor | EN: Real floor. Same path. · ES: Piso real. Misma ruta. | `piloto-pda-blur.png` |
+| 0:45–0:48 | End card | EN: Built for the floor. · ES: Hecho para el piso. | **David Moreno Abril** · L&D · Prime Choice · Outbound pilot |
 
 ---
 
-## Approval gate
+## Privacy checklist (final)
 
-**Do not run `npx remotion render` until David approves this SCRIPT.md.**  
-Scaffold + Playwright clips may exist under `linkedin-demo/`; final MP4 awaits explicit approval.
+- [x] Hook uses David’s approved line  
+- [x] No USPS / Swift / Speedex / Uni Uni / Gofo on captions or VO  
+- [x] Mission 3 color quiz not shown  
+- [x] Guide / coworker faces blurred (`BLUR_FACE`)  
+- [x] Learner name generic (`Alex Warehouse`)  
+- [x] End card: David Moreno Abril  
+- [x] Audio slot empty  
+
+## Open (non-blocking)
+
+None for render. Optional later: VO track if David records one.

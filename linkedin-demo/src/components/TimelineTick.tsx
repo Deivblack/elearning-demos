@@ -4,13 +4,14 @@ import { COLORS } from '../config';
 
 type Props = {
   date: string;
-  headline: string;
+  en: string;
+  es?: string;
   detail?: string;
 };
 
-export const TimelineTick: React.FC<Props> = ({ date, headline, detail }) => {
+export const TimelineTick: React.FC<Props> = ({ date, en, es, detail }) => {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [0, 10], [0, 1], { extrapolateRight: 'clamp' });
+  const opacity = interpolate(frame, [0, 8], [0, 1], { extrapolateRight: 'clamp' });
 
   return (
     <AbsoluteFill
@@ -22,40 +23,53 @@ export const TimelineTick: React.FC<Props> = ({ date, headline, detail }) => {
         opacity,
       }}
     >
-      <div style={{ width: '100%', maxWidth: 880 }}>
+      <div style={{ width: '100%', maxWidth: 900 }}>
         <div
           style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: 26,
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 24,
             fontWeight: 600,
             color: COLORS.gold,
             letterSpacing: 2,
             textTransform: 'uppercase',
-            marginBottom: 20,
+            marginBottom: 18,
           }}
         >
           {date}
         </div>
         <div
           style={{
-            fontFamily: 'Space Grotesk, sans-serif',
+            fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
-            fontSize: 56,
+            fontSize: 52,
             color: COLORS.white,
             lineHeight: 1.2,
-            marginBottom: 16,
+            marginBottom: 12,
           }}
         >
-          {headline}
+          {en}
         </div>
+        {es ? (
+          <div
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 600,
+              fontSize: 28,
+              color: COLORS.teal2,
+              marginBottom: 16,
+            }}
+          >
+            {es}
+          </div>
+        ) : null}
         {detail ? (
           <div
             style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 28,
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 24,
               color: COLORS.muted,
               borderLeft: `3px solid ${COLORS.teal}`,
-              paddingLeft: 20,
+              paddingLeft: 18,
             }}
           >
             {detail}

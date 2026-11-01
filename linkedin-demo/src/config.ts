@@ -3,8 +3,8 @@ export const BLUR_FACE = process.env.BLUR_FACE !== 'false';
 export const GENERIC_NAMES = process.env.GENERIC_NAMES !== 'false';
 
 export const FPS = 30;
-/** Draft length ~54s; trim after SCRIPT approval. */
-export const DURATION_IN_FRAMES = 54 * FPS;
+/** Approved cut ~48s (45–54s band). */
+export const DURATION_IN_FRAMES = 48 * FPS;
 
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
