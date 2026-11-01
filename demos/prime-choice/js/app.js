@@ -21,6 +21,10 @@
   let stepAnswered = false;
   let pendingBadgeCallback = null;
   let currentModuleQuizXp = 0;
+  let currentModuleCorrect = 0;
+  let currentModuleQuestions = 0;
+  let quizRuntime = null;
+  let orderRuntime = null;
 
   function ui(key, vars) {
     return PCI18n.t(STATE.lang, key, vars);
@@ -47,6 +51,25 @@
     return String(s || '').replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function recalcXpFromBest() {
+    let xp = 0;
+    Object.keys(STATE.moduleScores).forEach((id) => {
+      xp += Number(STATE.moduleScores[id].total) || 0;
+    });
+    STATE.xp = xp;
   }
 
   function showScreen(id) {
@@ -79,8 +102,13 @@
         btn.type = 'button';
         btn.className = 'lang-btn' + (STATE.lang === L.code ? ' active' : '');
         btn.textContent = L.label;
+        btn.dataset.lang = L.code;
         btn.setAttribute('aria-pressed', STATE.lang === L.code ? 'true' : 'false');
-        btn.addEventListener('click', () => setLang(L.code));
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setLang(L.code);
+        });
         group.appendChild(btn);
       });
       wrap.appendChild(group);
@@ -92,22 +120,25 @@
     const wasInLesson = document.getElementById('screen-lesson').classList.contains('active');
     const wasMissions = document.getElementById('screen-missions').classList.contains('active');
     const wasResults = document.getElementById('screen-results').classList.contains('active');
+    const wasWelcome = document.getElementById('screen-welcome').classList.contains('active');
     STATE.lang = code;
     localStorage.setItem(LANG_KEY, code);
     document.documentElement.lang = code === 'zh' ? 'zh-CN' : code;
     applyStaticUI();
-    if (wasMissions) {
-      document.getElementById('player-name-display').textContent = fullName();
+    if (wasMissions && STATE.firstName) {
+      document.getElementById('hello-line').textContent = ui('hello', { name: fullName() });
       document.getElementById('guide-missions-text').textContent = ui('guideMissionsNamed', { name: STATE.firstName });
       renderMissions();
       updateHUD();
+      showScreen('screen-missions');
     } else if (wasInLesson && currentMission != null) {
       renderStep();
       updateHUD();
+      showScreen('screen-lesson');
     } else if (wasResults) {
-      // keep results as last saved view — re-apply labels only
       applyResultsLabels();
-    } else {
+      showScreen('screen-results');
+    } else if (wasWelcome) {
       showScreen('screen-welcome');
     }
   }
@@ -203,14 +234,13 @@
             '<span class="mc-tag mc-xp">⚡ +' + m.xp + ' XP</span>' +
             '<span class="mc-tag mc-time">⏱ ' + escapeHtml(m.time) + '</span>' +
             (isCompleted
-              ? '<span class="mc-tag mc-done">' + (score ? ui('triviaXpTag', { n: score.quizXp }) : ui('completedTag')) + '</span>'
+              ? '<span class="mc-tag mc-done">' + ui('bestTag', { n: (score && score.total) || 0 }) + '</span>' +
+                '<span class="mc-tag mc-retry">' + ui('retryTag') + '</span>'
               : '') +
           '</div>' +
         '</div>' +
         '<div class="mc-status" aria-hidden="true">' + statusIcon + '</div>';
-      if (!isLocked) {
-        card.addEventListener('click', () => openMission(idx));
-      }
+      if (!isLocked) card.addEventListener('click', () => openMission(idx));
       grid.appendChild(card);
     });
   }
@@ -219,6 +249,8 @@
     currentMission = idx;
     currentStep = 0;
     currentModuleQuizXp = 0;
+    currentModuleCorrect = 0;
+    currentModuleQuestions = 0;
     stepAnswered = false;
     renderStep();
     showScreen('screen-lesson');
@@ -263,11 +295,13 @@
     const m = list[currentMission];
     const step = m.steps[currentStep];
     stepAnswered = false;
+    quizRuntime = null;
+    orderRuntime = null;
 
     document.getElementById('lesson-breadcrumb').textContent = ui('stepOf', {
       num: m.num, cur: currentStep + 1, total: m.steps.length
     });
-    document.getElementById('lesson-title').textContent = step.title;
+    document.getElementById('lesson-title').textContent = step.title || m.title;
     document.getElementById('lesson-xp-badge').textContent = ui('xpCompleteMission', { xp: m.xp });
     document.getElementById('guide-lesson-text').textContent = step.guide || m.guide;
 
@@ -285,13 +319,48 @@
       stepAnswered = true;
     } else if (step.type === 'quiz') {
       renderQuiz(step, content);
+    } else if (step.type === 'color') {
+      renderColor(step, content);
+    } else if (step.type === 'order') {
+      renderOrder(step, content);
+    } else if (step.type === 'scene') {
+      renderScene(step, content);
     }
     renderNav();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function liveXp() {
+    let xp = 0;
+    const curId = currentMission != null ? missions()[currentMission].id : null;
+    Object.keys(STATE.moduleScores).forEach((id) => {
+      if (id === curId) return;
+      xp += Number(STATE.moduleScores[id].total) || 0;
+    });
+    if (curId) xp += currentModuleQuizXp;
+    else xp = STATE.xp;
+    return xp;
+  }
+
+  function awardActivity(step, isCorrect) {
+    currentModuleQuestions++;
+    STATE.totalQuestions++;
+    if (isCorrect) {
+      currentModuleQuizXp += step.xp;
+      currentModuleCorrect++;
+      STATE.correctAnswers++;
+      showXpPopup('+' + step.xp + ' XP');
+      updateHUD();
+    }
+  }
+
   function renderQuiz(step, container) {
-    const letters = ['A', 'B', 'C', 'D'];
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const indexed = step.options.map((text, i) => ({ text, i }));
+    const shuffled = shuffle(indexed);
+    const correctPos = shuffled.findIndex((o) => o.i === step.correct);
+    quizRuntime = { shuffled, correctPos, step };
+
     container.innerHTML =
       '<div class="quiz-card">' +
         '<div class="quiz-label">' + escapeHtml(ui('trivia')) + '</div>' +
@@ -300,42 +369,185 @@
         '<div class="quiz-feedback" id="quiz-fb"></div>' +
       '</div>';
     const opts = container.querySelector('#quiz-options');
-    step.options.forEach((o, i) => {
+    shuffled.forEach((o, displayIdx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'quiz-option';
-      btn.id = 'qopt-' + i;
-      btn.innerHTML = '<span class="opt-letter">' + letters[i] + '</span><span class="opt-text">' + escapeHtml(o) + '</span>';
-      btn.addEventListener('click', () => answerQuiz(i));
+      btn.id = 'qopt-' + displayIdx;
+      btn.innerHTML = '<span class="opt-letter">' + letters[displayIdx] + '</span><span class="opt-text">' +
+        escapeHtml(o.text) + '</span>';
+      btn.addEventListener('click', () => answerQuiz(displayIdx));
       opts.appendChild(btn);
     });
-    STATE.totalQuestions++;
   }
 
-  function answerQuiz(idx) {
-    if (stepAnswered) return;
+  function answerQuiz(displayIdx) {
+    if (stepAnswered || !quizRuntime) return;
     stepAnswered = true;
-    const m = missions()[currentMission];
-    const step = m.steps[currentStep];
-    const isCorrect = idx === step.correct;
-    step.options.forEach((_, i) => {
+    const { shuffled, correctPos, step } = quizRuntime;
+    const isCorrect = displayIdx === correctPos;
+    shuffled.forEach((_, i) => {
       const el = document.getElementById('qopt-' + i);
       if (!el) return;
-      el.classList.add('disabled');
       el.disabled = true;
-      if (i === step.correct) el.classList.add('correct');
-      else if (i === idx) el.classList.add('wrong');
+      el.classList.add('disabled');
+      if (i === correctPos) el.classList.add('correct');
+      else if (i === displayIdx) el.classList.add('wrong');
     });
     const fb = document.getElementById('quiz-fb');
     fb.textContent = isCorrect ? step.feedback.ok : step.feedback.fail;
     fb.className = 'quiz-feedback show ' + (isCorrect ? 'success' : 'error');
-    if (isCorrect) {
-      STATE.xp += step.xp;
-      currentModuleQuizXp += step.xp;
-      STATE.correctAnswers++;
-      showXpPopup('+' + step.xp + ' XP');
-      updateHUD();
-    }
+    awardActivity(step, isCorrect);
+    renderNav();
+  }
+
+  function renderColor(step, container) {
+    const indexed = step.options.map((o, i) => ({ o, i }));
+    const shuffled = shuffle(indexed);
+    const correctPos = shuffled.findIndex((x) => x.i === step.correct);
+    quizRuntime = { shuffled, correctPos, step };
+
+    container.innerHTML =
+      '<div class="activity-card">' +
+        '<div class="quiz-label">' + escapeHtml(ui('activity')) + '</div>' +
+        '<div class="quiz-question">' + escapeHtml(step.prompt) + '</div>' +
+        '<p class="activity-hint">' + escapeHtml(ui('tapColor')) + '</p>' +
+        '<div class="color-tap-grid" id="color-tap-grid"></div>' +
+        '<div class="quiz-feedback" id="quiz-fb"></div>' +
+      '</div>';
+    const grid = container.querySelector('#color-tap-grid');
+    shuffled.forEach((x, displayIdx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'color-tap';
+      btn.style.setProperty('--swatch', x.o.hex);
+      btn.innerHTML = '<span class="swatch" style="background:' + x.o.hex + '"></span>' +
+        '<span class="ct-label">' + escapeHtml(x.o.label) + '</span>' +
+        '<small>' + escapeHtml(x.o.sub) + '</small>';
+      btn.addEventListener('click', () => answerColor(displayIdx));
+      grid.appendChild(btn);
+    });
+  }
+
+  function answerColor(displayIdx) {
+    if (stepAnswered || !quizRuntime) return;
+    stepAnswered = true;
+    const { shuffled, correctPos, step } = quizRuntime;
+    const isCorrect = displayIdx === correctPos;
+    const grid = document.getElementById('color-tap-grid');
+    [...grid.children].forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === correctPos) btn.classList.add('correct');
+      else if (i === displayIdx) btn.classList.add('wrong');
+    });
+    const fb = document.getElementById('quiz-fb');
+    fb.textContent = isCorrect ? step.feedback.ok : step.feedback.fail;
+    fb.className = 'quiz-feedback show ' + (isCorrect ? 'success' : 'error');
+    awardActivity(step, isCorrect);
+    renderNav();
+  }
+
+  function renderOrder(step, container) {
+    const correct = step.items.slice();
+    const display = shuffle(correct.map((text, i) => ({ text, i })));
+    orderRuntime = { correct, picked: [], display, step };
+
+    container.innerHTML =
+      '<div class="activity-card">' +
+        '<div class="quiz-label">' + escapeHtml(ui('activity')) + '</div>' +
+        '<div class="quiz-question">' + escapeHtml(step.prompt) + '</div>' +
+        '<p class="activity-hint">' + escapeHtml(ui('orderHint')) + '</p>' +
+        '<div class="order-picked" id="order-picked"></div>' +
+        '<div class="order-pool" id="order-pool"></div>' +
+        '<button type="button" class="btn-secondary order-reset" id="order-reset">' + escapeHtml(ui('orderReset')) + '</button>' +
+        '<div class="quiz-feedback" id="quiz-fb"></div>' +
+      '</div>';
+    paintOrderPool();
+    document.getElementById('order-reset').addEventListener('click', () => {
+      if (stepAnswered) return;
+      orderRuntime.picked = [];
+      paintOrderPool();
+      document.getElementById('quiz-fb').className = 'quiz-feedback';
+    });
+  }
+
+  function paintOrderPool() {
+    if (!orderRuntime) return;
+    const pool = document.getElementById('order-pool');
+    const pickedEl = document.getElementById('order-picked');
+    pool.innerHTML = '';
+    pickedEl.innerHTML = '';
+    orderRuntime.picked.forEach((p, idx) => {
+      const chip = document.createElement('div');
+      chip.className = 'order-chip filled';
+      chip.textContent = (idx + 1) + '. ' + p.text;
+      pickedEl.appendChild(chip);
+    });
+    orderRuntime.display.forEach((item) => {
+      if (orderRuntime.picked.some((p) => p.i === item.i)) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'order-chip';
+      btn.textContent = item.text;
+      btn.addEventListener('click', () => pickOrder(item));
+      pool.appendChild(btn);
+    });
+  }
+
+  function pickOrder(item) {
+    if (stepAnswered || !orderRuntime) return;
+    orderRuntime.picked.push(item);
+    paintOrderPool();
+    if (orderRuntime.picked.length < orderRuntime.correct.length) return;
+
+    stepAnswered = true;
+    const ok = orderRuntime.picked.every((p, idx) => p.text === orderRuntime.correct[idx]);
+    const fb = document.getElementById('quiz-fb');
+    fb.textContent = ok ? orderRuntime.step.feedback.ok : orderRuntime.step.feedback.fail;
+    fb.className = 'quiz-feedback show ' + (ok ? 'success' : 'error');
+    document.getElementById('order-picked').classList.add(ok ? 'ok' : 'bad');
+    document.getElementById('order-reset').disabled = true;
+    [...document.getElementById('order-pool').querySelectorAll('button')].forEach((b) => { b.disabled = true; });
+    awardActivity(orderRuntime.step, ok);
+    renderNav();
+  }
+
+  function renderScene(step, container) {
+    const scenes = shuffle(step.scenes.map((s, i) => ({ s, i })));
+    container.innerHTML =
+      '<div class="activity-card">' +
+        '<div class="quiz-label">' + escapeHtml(ui('activity')) + '</div>' +
+        '<div class="quiz-question">' + escapeHtml(step.prompt || ui('scenePrompt')) + '</div>' +
+        '<div class="scene-grid" id="scene-grid"></div>' +
+        '<div class="quiz-feedback" id="quiz-fb"></div>' +
+      '</div>';
+    const grid = container.querySelector('#scene-grid');
+    scenes.forEach((x) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'scene-card';
+      btn.innerHTML = '<div class="scene-icon">' + x.s.icon + '</div><div class="scene-label">' +
+        escapeHtml(x.s.label) + '</div>';
+      btn.addEventListener('click', () => answerScene(btn, x.s, step, grid));
+      grid.appendChild(btn);
+    });
+  }
+
+  function answerScene(btn, scene, step, grid) {
+    if (stepAnswered) return;
+    stepAnswered = true;
+    const isCorrect = !!scene.wrong;
+    const wrongLabel = (step.scenes.find((s) => s.wrong) || {}).label;
+    [...grid.children].forEach((el) => {
+      el.disabled = true;
+      const labelEl = el.querySelector('.scene-label');
+      if (labelEl && wrongLabel && labelEl.textContent === wrongLabel) el.classList.add('correct');
+    });
+    if (!isCorrect) btn.classList.add('wrong');
+    const fb = document.getElementById('quiz-fb');
+    fb.textContent = isCorrect ? step.feedback.ok : step.feedback.fail;
+    fb.className = 'quiz-feedback show ' + (isCorrect ? 'success' : 'error');
+    awardActivity(step, isCorrect);
     renderNav();
   }
 
@@ -343,7 +555,6 @@
     const nav = document.getElementById('lesson-nav');
     const m = missions()[currentMission];
     const isLast = currentStep === m.steps.length - 1;
-    const alreadyDone = STATE.completedMissions.includes(m.id);
     nav.innerHTML = '';
 
     const back = document.createElement('button');
@@ -360,8 +571,8 @@
       primary.disabled = true;
       primary.textContent = ui('answerToContinue');
     } else if (isLast) {
-      primary.textContent = alreadyDone ? ui('backToMap') : ui('closeModule');
-      primary.addEventListener('click', alreadyDone ? backToMissions : completeMission);
+      primary.textContent = ui('closeModule');
+      primary.addEventListener('click', completeMission);
     } else {
       primary.textContent = ui('next');
       primary.addEventListener('click', nextStep);
@@ -377,18 +588,31 @@
 
   function completeMission() {
     const m = missions()[currentMission];
+    const attempt = {
+      title: m.title,
+      missionXp: m.xp,
+      quizXp: currentModuleQuizXp,
+      total: m.xp + currentModuleQuizXp,
+      correct: currentModuleCorrect,
+      questions: currentModuleQuestions
+    };
+    const prev = STATE.moduleScores[m.id];
+    const isBest = !prev || attempt.total > prev.total;
+    if (isBest) {
+      STATE.moduleScores[m.id] = attempt;
+    }
     if (!STATE.completedMissions.includes(m.id)) {
       STATE.completedMissions.push(m.id);
-      STATE.xp += m.xp;
-      STATE.moduleScores[m.id] = {
-        title: m.title,
-        missionXp: m.xp,
-        quizXp: currentModuleQuizXp,
-        total: m.xp + currentModuleQuizXp
-      };
-      updateHUD();
     }
-    showBadge(m.badge, () => {
+    // Recalculate XP from best module totals (avoids double-counting retries)
+    recalcXpFromBest();
+    updateHUD();
+
+    const badge = Object.assign({}, m.badge);
+    if (!isBest && prev) {
+      badge.desc = (badge.desc || '') + ' · ' + ui('bestTag', { n: prev.total });
+    }
+    showBadge(badge, () => {
       if (STATE.completedMissions.length === missions().length) {
         finalizeAndShowResults();
       } else {
@@ -399,6 +623,9 @@
   }
 
   function backToMissions() {
+    // discard in-progress XP from this attempt beyond bests
+    recalcXpFromBest();
+    updateHUD();
     showScreen('screen-missions');
     renderMissions();
   }
@@ -425,6 +652,7 @@
     const completedAt = new Date().toISOString();
     const durationMs = STATE.startedMs != null ? Date.now() - STATE.startedMs : null;
     const list = missions();
+    recalcXpFromBest();
     const record = {
       id: 'pc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
       firstName: STATE.firstName,
@@ -445,7 +673,7 @@
         ...(STATE.moduleScores[m.id] || {})
       })),
       program: 'Prime Choice Outbound Onboarding',
-      version: '1.1-pilot'
+      version: '1.2-pilot'
     };
     try {
       PCStorage.saveCompletion(record);
@@ -489,8 +717,9 @@
   }
 
   function updateHUD() {
-    document.getElementById('hud-xp-txt').textContent = STATE.xp + ' XP';
-    const lvl = levels().slice().reverse().find((l) => STATE.xp >= l.min);
+    const xpNow = liveXp();
+    document.getElementById('hud-xp-txt').textContent = xpNow + ' XP';
+    const lvl = levels().slice().reverse().find((l) => xpNow >= l.min);
     document.getElementById('hud-level-txt').textContent = lvl ? lvl.label : ui('level0');
     const done = STATE.completedMissions.length;
     const total = missions().length;
@@ -514,6 +743,20 @@
     });
   }
 
-  window.PCApp = { init, setLang, closeBadge, startGame };
+  window.PCApp = {
+    init,
+    setLang,
+    closeBadge,
+    startGame,
+    getDebugState: () => ({
+      lang: STATE.lang,
+      currentMission,
+      currentStep,
+      stepAnswered,
+      completedMissions: STATE.completedMissions.slice(),
+      moduleScores: { ...STATE.moduleScores },
+      xp: liveXp()
+    })
+  };
   document.addEventListener('DOMContentLoaded', init);
 })();
