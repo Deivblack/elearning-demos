@@ -65,7 +65,37 @@
     return a;
   }
 
+  /** Single source of truth for displayed XP (HUD + badge popup). */
+  function computeXp() {
+    let xp = 0;
+    const curId = currentMission != null ? missions()[currentMission].id : null;
+    const mXp = curId != null ? Number(missions()[currentMission].xp) || 0 : 0;
+
+    Object.keys(STATE.moduleScores).forEach((id) => {
+      if (id === curId) return;
+      xp += Number(STATE.moduleScores[id].total) || 0;
+    });
+
+    if (curId != null) {
+      const prevTotal = Number(STATE.moduleScores[curId] && STATE.moduleScores[curId].total) || 0;
+      if (prevTotal > 0) {
+        // Retry: keep best until this attempt would beat it (mission XP + live quiz)
+        xp += Math.max(prevTotal, mXp + currentModuleQuizXp);
+      } else {
+        // First play: show quiz XP so far; mission bonus lands on complete
+        xp += currentModuleQuizXp;
+      }
+    }
+    return xp;
+  }
+
+  function syncXp() {
+    STATE.xp = computeXp();
+    updateHUD();
+  }
+
   function recalcXpFromBest() {
+    // Settled total = sum of best module scores only (no live attempt overlay)
     let xp = 0;
     Object.keys(STATE.moduleScores).forEach((id) => {
       xp += Number(STATE.moduleScores[id].total) || 0;
@@ -328,6 +358,7 @@
     currentModuleCorrect = 0;
     currentModuleQuestions = 0;
     stepAnswered = false;
+    syncXp();
     renderStep();
     showScreen('screen-lesson');
   }
@@ -418,18 +449,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function liveXp() {
-    let xp = 0;
-    const curId = currentMission != null ? missions()[currentMission].id : null;
-    Object.keys(STATE.moduleScores).forEach((id) => {
-      if (id === curId) return;
-      xp += Number(STATE.moduleScores[id].total) || 0;
-    });
-    if (curId) xp += currentModuleQuizXp;
-    else xp = STATE.xp;
-    return xp;
-  }
-
   function awardActivity(step, isCorrect) {
     currentModuleQuestions++;
     STATE.totalQuestions++;
@@ -437,8 +456,8 @@
       currentModuleQuizXp += step.xp;
       currentModuleCorrect++;
       STATE.correctAnswers++;
-      showXpPopup('+' + step.xp + ' XP');
-      updateHUD();
+      syncXp();
+      showXpPopup('+' + step.xp + ' · ' + STATE.xp + ' XP');
     }
   }
 
@@ -692,7 +711,11 @@
     if (!STATE.completedMissions.includes(m.id)) {
       STATE.completedMissions.push(m.id);
     }
-    // Recalculate XP from best module totals (avoids double-counting retries)
+    // End live attempt so XP = sum of bests only (same number in HUD + badge)
+    currentMission = null;
+    currentModuleQuizXp = 0;
+    currentModuleCorrect = 0;
+    currentModuleQuestions = 0;
     recalcXpFromBest();
     updateHUD();
 
@@ -714,7 +737,11 @@
   }
 
   function backToMissions() {
-    // Keep completed missions/scores; drop only in-progress attempt XP beyond bests
+    // Keep completed missions/scores; drop only in-progress attempt overlay
+    currentMission = null;
+    currentModuleQuizXp = 0;
+    currentModuleCorrect = 0;
+    currentModuleQuestions = 0;
     recalcXpFromBest();
     updateHUD();
     saveProgress();
@@ -765,7 +792,7 @@
         ...(STATE.moduleScores[m.id] || {})
       })),
       program: 'Prime Choice Outbound Onboarding',
-      version: '1.3-pilot'
+      version: '1.4-pilot'
     };
     try {
       PCStorage.saveCompletion(record);
@@ -810,7 +837,7 @@
   }
 
   function updateHUD() {
-    const xpNow = liveXp();
+    const xpNow = STATE.xp;
     document.getElementById('hud-xp-txt').textContent = xpNow + ' XP';
     const lvl = levels().slice().reverse().find((l) => xpNow >= l.min);
     document.getElementById('hud-level-txt').textContent = lvl ? lvl.label : ui('level0');
@@ -855,7 +882,7 @@
       stepAnswered,
       completedMissions: STATE.completedMissions.slice(),
       moduleScores: { ...STATE.moduleScores },
-      xp: liveXp()
+      xp: STATE.xp
     })
   };
   document.addEventListener('DOMContentLoaded', init);
