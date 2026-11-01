@@ -1,6 +1,8 @@
 node_modules/
-out/
 .cache/
 public/_tmp/
 *.log
 .DS_Store
+# Keep out/onboarding-demo.mp4 tracked; ignore other render leftovers
+out/*
+!out/onboarding-demo.mp4
