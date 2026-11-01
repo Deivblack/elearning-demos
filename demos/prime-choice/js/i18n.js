@@ -418,42 +418,63 @@
         },
         m5: {
           title: 'Más responsabilidades',
-          desc: 'Swap, cerrar, carga.',
-          guide: 'Después del contenedor.',
-          badge: { icon: '🚀', title: 'Más a cargo', desc: 'Swap, cerrar, carga por carrier.' },
-          infoTitle: 'Siguiente nivel',
-          infoGuide: 'Cuando ya manejas contenedor.',
+          desc: 'Ayudar · pallets · frágil.',
+          guide: 'Después del contenedor: ayudas al equipo.',
+          badge: { icon: '🚀', title: 'Más a cargo', desc: 'Ayudas, pallets y cuidado frágil.' },
+          infoTitle: 'Cómo ayudas en el piso',
+          infoGuide: 'Cinco tareas claras. Imágenes + emoji.',
           blocks: [
-            { h: '🚀 Más', p: '' },
+            {
+              h: '🔄 Cambiar carritos = ayudar a otros',
+              p: 'Si el carrito de un compañero está lleno (o necesita cambio), ayudas a llevarlo y traer uno vacío. No es “tu” carrito solo: es apoyo al equipo en la banda.'
+            },
+            {
+              img: 'assets/graphics/cart-help.jpg',
+              alt: 'Personas ayudando a cambiar un carrito lleno por uno vacío'
+            },
+            {
+              h: '📦 Pallet: apilar y envolver cajas grandes',
+              p: 'Las cajas grandes van en pallets. Las apilas con cuidado y envuelves el pallet para que viaje estable.'
+            },
+            {
+              img: 'assets/graphics/pallet-wrap.jpg',
+              alt: 'Cajas grandes apiladas en un pallet y envueltas'
+            },
             {
               grid: [
-                { icon: '🔄', t: 'Cambiar carrito', d: 'Lleno → estación; vacío a la banda.' },
-                { icon: '🔒', t: 'Cerrar', d: 'Luego a carga.' },
-                { icon: '🚚', t: 'Carga', d: 'Scan cada paquete · un carrier.' },
-                { icon: '📅', t: '~30 días', d: 'Solo en tu rol; avisa buddy → TL.' }
+                { icon: '📭', t: 'Armar cajas vacías', d: 'Ayuda a armar cajas / cartón vacío cuando el área lo pide.' },
+                { icon: '🎀', t: 'Bien envuelto', d: 'Revisa que los paquetes vayan bien envueltos / sellados.' },
+                { icon: '⚠️', t: 'Etiqueta frágil', d: 'Si dice FRÁGIL: manéjalo con cuidado, sin tirar ni aplastar.' },
+                { icon: '🤝', t: 'Equipo', d: 'Pregunta a buddy / TL si no estás seguro.' }
               ]
             },
-            { highlight: 'No: mal color · meter sin scan · ignorar seguridad.' }
+            {
+              img: 'assets/graphics/fragile-wrap.jpg',
+              alt: 'Paquete con etiqueta frágil bien envuelto'
+            },
+            {
+              highlight: 'Recuerda: ayudar con carritos · apilar/envolver en pallet · armar cajas · buen wrap · cuidado frágil.'
+            }
           ],
-          sceneTitle: 'Carga: ¿cuál está mal?',
+          sceneTitle: 'Piso: ¿cuál está mal?',
           sceneGuide: 'Toca la mala.',
-          scenePrompt: 'En carga, ¿cuál está MAL?',
+          scenePrompt: '¿Cuál acción está MAL?',
           scenes: [
-            { icon: '📷📦🚚', label: 'Scan cada paquete · un carrier', wrong: false },
-            { icon: '🔀🚚', label: 'Mezcla carriers en el trailer', wrong: true }
+            { icon: '🤝🛒', label: 'Ayudar a cambiar un carrito lleno', wrong: false },
+            { icon: '💥📦', label: 'Tirar un paquete con etiqueta FRÁGIL', wrong: true }
           ],
-          sceneOk: 'No mezclar carriers.',
-          sceneFail: 'Lo malo es mezclar carriers.',
-          qTitle: 'Trivia · Carga',
-          q: 'En carga debes…',
+          sceneOk: 'Frágil = cuidado. Nunca tirar.',
+          sceneFail: 'Lo malo es maltratar lo frágil.',
+          qTitle: 'Trivia · Más responsabilidades',
+          q: 'En esta etapa, “cambiar carrito” significa…',
           qopts: [
-            'Mezclar si hay espacio',
-            'Escanear cada paquete y cargar por carrier',
-            'Saltar scan si el gaylord ya cerró',
-            'Cargar solo el día 1 de cinta'
+            'Solo mover tu propio carrito cuando te aburres',
+            'Ayudar a otros a cambiar carritos llenos / que necesitan cambio',
+            'Escanear en la banda como en contenedor',
+            'Ignorar pallets y cajas grandes'
           ],
-          qok: 'Scan + por carrier.',
-          qfail: 'Scan cada uno; sin mezclar.',
+          qok: 'Es ayudar al equipo con carritos llenos o de cambio.',
+          qfail: 'No es solo “tu” carrito: ayudas a cambiar los de otros.',
           qcorrect: 1
         }
       },
@@ -630,37 +651,63 @@
         },
         m5: {
           title: '更多职责',
-          desc: '换车、封箱、装车。',
-          guide: '会装箱之后。',
-          badge: { icon: '🚀', title: '职责加码', desc: '换车、封箱、按承运商装。' },
-          infoTitle: '下一阶段',
-          infoGuide: '装箱稳定后。',
+          desc: '互助 · 托盘 · 易碎。',
+          guide: '会装箱之后：协助团队。',
+          badge: { icon: '🚀', title: '职责加码', desc: '互助换车、托盘与易碎件。' },
+          infoTitle: '现场如何帮忙',
+          infoGuide: '五件清楚的事。配图 + 表情。',
           blocks: [
-            { h: '🚀 更多', p: '' },
+            {
+              h: '🔄 换车 = 帮助别人',
+              p: '同事的车满了（或需要更换）时，你帮忙推走并换上空车。不是只管“自己的车”：是在传送带上支援团队。'
+            },
+            {
+              img: 'assets/graphics/cart-help.jpg',
+              alt: '同事协助把满车换成空车'
+            },
+            {
+              h: '📦 托盘：码放并裹膜大箱',
+              p: '大箱上托盘。小心码齐，再裹膜，让托盘运输更稳。'
+            },
+            {
+              img: 'assets/graphics/pallet-wrap.jpg',
+              alt: '大箱码在托盘上并完成裹膜'
+            },
             {
               grid: [
-                { icon: '🔄', t: '换车', d: '满车去工位；空车回传送带。' },
-                { icon: '🔒', t: '封箱', d: '再交装车。' },
-                { icon: '🚚', t: '装车', d: '逐件扫 · 一个承运商。' },
-                { icon: '📅', t: '约30天', d: '能独立；找带教→组长。' }
+                { icon: '📭', t: '组装空箱', d: '区域需要时，帮忙折好 / 组装空纸箱。' },
+                { icon: '🎀', t: '包好包严', d: '检查包裹是否包好、封好。' },
+                { icon: '⚠️', t: '易碎标签', d: '标了易碎：轻拿轻放，不扔不压。' },
+                { icon: '🤝', t: '团队', d: '不确定就问带教 / 组长。' }
               ]
             },
-            { highlight: '红线：分错色 · 不扫就进 · 忽视安全。' }
+            {
+              img: 'assets/graphics/fragile-wrap.jpg',
+              alt: '贴有易碎标签且包好的包裹'
+            },
+            {
+              highlight: '记住：帮忙换车 · 托盘码放/裹膜 · 组装空箱 · 包好 · 易碎轻拿。'
+            }
           ],
-          sceneTitle: '装车：哪个是错的？',
+          sceneTitle: '现场：哪个是错的？',
           sceneGuide: '点错误的。',
-          scenePrompt: '装车时哪一个是错的？',
+          scenePrompt: '哪一个是错的？',
           scenes: [
-            { icon: '📷📦🚚', label: '逐件扫描 · 一个承运商', wrong: false },
-            { icon: '🔀🚚', label: '拖车里混装承运商', wrong: true }
+            { icon: '🤝🛒', label: '帮忙更换满车', wrong: false },
+            { icon: '💥📦', label: '扔带易碎标签的包裹', wrong: true }
           ],
-          sceneOk: '不要混承运商。',
-          sceneFail: '错的是混装。',
-          qTitle: '小测验 · 装车',
-          q: '装车时必须：',
-          qopts: ['有空就混装', '逐件扫描并按承运商装', '封好就能跳过扫描', '传送带第1天独自装'],
-          qok: '扫描 + 按承运商。',
-          qfail: '逐件扫；不要混。',
+          sceneOk: '易碎 = 轻拿。绝不乱扔。',
+          sceneFail: '错的是粗暴对待易碎件。',
+          qTitle: '小测验 · 更多职责',
+          q: '这一阶段的“换车”是指…',
+          qopts: [
+            '无聊时只挪自己的车',
+            '帮助别人更换满车 / 需要更换的车',
+            '在传送带上像装箱那样扫描',
+            '不管托盘和大箱'
+          ],
+          qok: '是协助团队处理满车或换车。',
+          qfail: '不是只管“自己的车”：要帮别人换。',
           qcorrect: 1
         }
       },
@@ -848,42 +895,63 @@
         },
         m5: {
           title: 'More responsibility',
-          desc: 'Swap, close, load.',
-          guide: 'After container work.',
-          badge: { icon: '🚀', title: 'More ownership', desc: 'Swap, close, load by carrier.' },
-          infoTitle: 'Next level',
-          infoGuide: 'When container is solid.',
+          desc: 'Help · pallets · fragile.',
+          guide: 'After containers: you help the team.',
+          badge: { icon: '🚀', title: 'More ownership', desc: 'Help, pallets, and fragile care.' },
+          infoTitle: 'How you help on the floor',
+          infoGuide: 'Five clear tasks. Photos + emoji.',
           blocks: [
-            { h: '🚀 More', p: '' },
+            {
+              h: '🔄 Cart swap = helping others',
+              p: 'When a teammate’s cart is full (or needs a change), you help take it and bring an empty one. It’s not only “your” cart — you support the belt team.'
+            },
+            {
+              img: 'assets/graphics/cart-help.jpg',
+              alt: 'People helping swap a full cart for an empty one'
+            },
+            {
+              h: '📦 Pallet: stack & wrap large boxes',
+              p: 'Large boxes go on pallets. Stack them carefully, then wrap the pallet so it stays stable.'
+            },
+            {
+              img: 'assets/graphics/pallet-wrap.jpg',
+              alt: 'Large boxes stacked on a pallet and wrapped'
+            },
             {
               grid: [
-                { icon: '🔄', t: 'Swap cart', d: 'Full → station; empty to belt.' },
-                { icon: '🔒', t: 'Close', d: 'Then to load.' },
-                { icon: '🚚', t: 'Load', d: 'Scan each · one carrier.' },
-                { icon: '📅', t: '~30 days', d: 'Solo on your role; buddy → TL.' }
+                { icon: '📭', t: 'Assemble empty boxes', d: 'Help build / fold empty cartons when the area needs them.' },
+                { icon: '🎀', t: 'Well wrapped', d: 'Check packages are well wrapped / sealed.' },
+                { icon: '⚠️', t: 'Fragile label', d: 'If it says FRAGILE: handle with care — no tossing or crushing.' },
+                { icon: '🤝', t: 'Team', d: 'Ask buddy / TL if unsure.' }
               ]
             },
-            { highlight: 'Don’t: wrong color · no-scan put · ignore safety.' }
+            {
+              img: 'assets/graphics/fragile-wrap.jpg',
+              alt: 'Well-wrapped package with a fragile label'
+            },
+            {
+              highlight: 'Remember: help with carts · stack/wrap on pallets · assemble boxes · good wrap · fragile care.'
+            }
           ],
-          sceneTitle: 'Load: which is wrong?',
+          sceneTitle: 'Floor: which is wrong?',
           sceneGuide: 'Tap the bad one.',
-          scenePrompt: 'At load, which is WRONG?',
+          scenePrompt: 'Which action is WRONG?',
           scenes: [
-            { icon: '📷📦🚚', label: 'Scan each · one carrier', wrong: false },
-            { icon: '🔀🚚', label: 'Mix carriers in trailer', wrong: true }
+            { icon: '🤝🛒', label: 'Help swap a full cart', wrong: false },
+            { icon: '💥📦', label: 'Toss a FRAGILE-labeled package', wrong: true }
           ],
-          sceneOk: 'Don’t mix carriers.',
-          sceneFail: 'Mixing carriers is wrong.',
-          qTitle: 'Trivia · Load',
-          q: 'At load you must…',
+          sceneOk: 'Fragile = careful. Never toss.',
+          sceneFail: 'The bad one is mishandling fragile.',
+          qTitle: 'Trivia · More responsibility',
+          q: 'In this stage, “cart swap” means…',
           qopts: [
-            'Mix if space',
-            'Scan each package and load by carrier',
-            'Skip scan if gaylord closed',
-            'Load alone on belt day 1'
+            'Only move your own cart when you’re bored',
+            'Helping others change full carts / carts that need a swap',
+            'Scanning on the belt like at container',
+            'Ignoring pallets and large boxes'
           ],
-          qok: 'Scan + by carrier.',
-          qfail: 'Scan each; no mixing.',
+          qok: 'It’s helping the team with full or change-out carts.',
+          qfail: 'Not just “your” cart — you help others swap.',
           qcorrect: 1
         }
       }
