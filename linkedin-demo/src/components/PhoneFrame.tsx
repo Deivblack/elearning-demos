@@ -1,18 +1,32 @@
 import React from 'react';
 import { AbsoluteFill, OffthreadVideo, staticFile } from 'remotion';
-import { COLORS } from '../config';
+import { COLORS, FPS } from '../config';
 import { CaptionBar } from './CaptionBar';
 
 type Props = {
   src: string;
-  en: string;
+  en?: string;
   es?: string;
+  /** Skip into the clip (seconds) so we never restart at welcome. */
+  startFromSec?: number;
+  /** Optional smaller phone for split layouts. */
+  scale?: number;
+  showCaption?: boolean;
+  marginBottom?: number;
 };
 
-export const PhoneFrame: React.FC<Props> = ({ src, en, es }) => {
+export const PhoneFrame: React.FC<Props> = ({
+  src,
+  en,
+  es,
+  startFromSec = 0,
+  scale = 1.95,
+  showCaption = true,
+  marginBottom = 120,
+}) => {
   const phoneW = 390;
   const phoneH = 844;
-  const scale = 1.95;
+  const startFrom = Math.round(startFromSec * FPS);
 
   return (
     <AbsoluteFill
@@ -32,16 +46,17 @@ export const PhoneFrame: React.FC<Props> = ({ src, en, es }) => {
           overflow: 'hidden',
           background: COLORS.navyDeep,
           position: 'relative',
-          marginBottom: 120,
+          marginBottom: showCaption ? marginBottom : 0,
         }}
       >
         <OffthreadVideo
           src={staticFile(src)}
+          startFrom={startFrom}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           muted
         />
       </div>
-      <CaptionBar en={en} es={es} />
+      {showCaption && en ? <CaptionBar en={en} es={es} /> : null}
     </AbsoluteFill>
   );
 };
