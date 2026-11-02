@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-11-01T20:05:48.125Z",
+  "BASE": "http://127.0.0.1:8765/demos/prime-choice/index.html",
+  "BLUR_FACE": true,
+  "GENERIC_NAMES": true,
+  "learner": {
+    "FIRST": "Alex",
+    "LAST": "Warehouse"
+  },
+  "clips": [
+    "welcome.webm",
+    "mission-map.webm",
+    "lesson-safety.webm",
+    "quiz-wrong.webm",
+    "quiz-right.webm",
+    "badge.webm",
+    "final.webm"
+  ],
+  "piloto": "[TODO: piloto.mov or photo]"
+}
