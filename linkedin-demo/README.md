@@ -58,7 +58,7 @@ npm run render
 # → out/onboarding-demo.mp4  (H.264, x264 veryfast)
 ```
 
-Composition: **1080×1920**, **30 fps**, **~48s**, dark navy / teal / gold, Space Grotesk + Inter, bilingual captions (EN + ES), phone-frame for course clips. Audio track slot empty (no copyrighted music).
+Composition: **1080×1920**, **30 fps**, **~52s**, dark navy / teal / gold, Space Grotesk + Inter, bilingual captions (EN + ES), phone-frame for course clips. First ~20s pair captions with live UI. Clip in-points avoid welcome mid-story. Audio track slot empty (no copyrighted music).
 
 End card: **David Moreno Abril**.
 
