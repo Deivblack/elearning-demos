@@ -436,7 +436,6 @@
         <article class="card">
           <div class="card-media manual">
             <img src="demo-manual-usuario/story_content/thumbnail.jpg" alt="" width="400" height="140"/>
-            <span class="media-sub" data-i18n="bNotice">Spanish-language sample · Click play to start</span>
           </div>
           <div class="card-body">
             <h2 data-i18n="bTitle">User Manual Micro-course — Process Actors (SCORM)</h2>
@@ -446,7 +445,6 @@
               <li><strong data-i18n="labelAudience">Audience:</strong> <span data-i18n="bAudience">system end users.</span></li>
               <li><strong data-i18n="labelRole">My role:</strong> <span data-i18n="bRole">instructional design and development.</span></li>
               <li><strong data-i18n="labelTools">Tools:</strong> <span data-i18n="bTools">Articulate Storyline 360, published as SCORM/HTML5.</span></li>
-              <li><strong data-i18n="labelFeatures">Features:</strong> <span data-i18n="bFeatures">[COMPLETAR: interacciones que tiene la cápsula]</span></li>
             </ul>
             <div class="card-actions">
               <a class="btn btn-primary" href="demo-manual-usuario/story_html5.html" data-i18n="viewDemo">View demo</a>
@@ -454,18 +452,17 @@
           </div>
         </article>
 
-        <!-- C. Prime Choice (already on Pages branch) -->
+        <!-- C. Warehouse Outbound Onboarding -->
         <article class="card">
           <div class="card-media prime" aria-hidden="true">
-            <span class="media-label">PC</span>
+            <span class="media-label">OB</span>
           </div>
           <div class="card-body">
-            <h2 data-i18n="pTitle">Prime Choice — Outbound</h2>
-            <p class="notice" data-i18n="pNotice">Pilot · warehouse outbound onboarding</p>
+            <h2 data-i18n="pTitle">Warehouse Outbound Onboarding — Live Pilot</h2>
             <ul class="facts">
-              <li><strong data-i18n="labelChallenge">Challenge:</strong> <span data-i18n="pChallenge">gamified warehouse outbound onboarding covering safety, conveyor belt, and container.</span></li>
+              <li><strong data-i18n="labelChallenge">Challenge:</strong> <span data-i18n="pChallenge">New outbound associates needed to learn safety, belt colors and containerization fast, in Spanish, English or Chinese.</span></li>
               <li><strong data-i18n="labelAudience">Audience:</strong> <span data-i18n="pAudience">warehouse outbound team (pilot).</span></li>
-              <li><strong data-i18n="labelRole">My role:</strong> <span data-i18n="pRole">[COMPLETAR: rol en este piloto]</span></li>
+              <li><strong data-i18n="labelRole">My role:</strong> <span data-i18n="pRole">Identified the training need on the floor, designed and built the course, and piloted it with new outbound associates.</span></li>
               <li><strong data-i18n="labelTools">Tools:</strong> <span data-i18n="pTools">HTML, CSS, JavaScript; mobile-friendly.</span></li>
               <li><strong data-i18n="labelFeatures">Features:</strong> <span data-i18n="pFeatures">short missions with XP; interface in ES / EN / 简体.</span></li>
             </ul>
@@ -475,19 +472,16 @@
           </div>
         </article>
 
-        <!-- D. Rise placeholder -->
-        <article class="card">
+        <!-- D. Rise placeholder — visible only when RISE_DEMO_URL is set -->
+        <article class="card" id="rise-card" hidden>
           <div class="card-media rise" aria-hidden="true">
             <span class="media-label">Rise</span>
           </div>
           <div class="card-body">
             <h2 data-i18n="cTitle">Articulate Rise sample</h2>
             <p class="coming-soon" data-i18n="cComing">Coming soon: New Hire Orientation (Articulate Rise)</p>
-            <ul class="facts">
-              <li><strong data-i18n="labelStatus">Status:</strong> <span data-i18n="cStatus">link not published yet — button stays disabled until the Rise URL is added.</span></li>
-            </ul>
             <div class="card-actions">
-              <a class="btn btn-primary" id="rise-demo-btn" href="#" aria-disabled="true" tabindex="-1" data-i18n="viewDemo">View demo</a>
+              <a class="btn btn-primary" id="rise-demo-btn" href="#" data-i18n="viewDemo">View demo</a>
             </div>
           </div>
         </article>
@@ -508,7 +502,7 @@
   </div>
 
   <script>
-    // Paste the Articulate Rise demo URL here when ready (e.g. "https://..."). Leave empty to keep the button disabled.
+    // Paste the Articulate Rise demo URL here when ready (e.g. "https://..."). Leave empty to hide the Rise card.
     const RISE_DEMO_URL = '';
 
     const I18N = {
@@ -527,7 +521,6 @@
         labelRole: 'My role:',
         labelTools: 'Tools:',
         labelFeatures: 'Features:',
-        labelStatus: 'Status:',
         aTitle: 'Onboarding Academy — Gamified New Hire Onboarding',
         aChallenge: 'new hires need a clear, engaging first week that covers company, culture and safety.',
         aAudience: 'new employees (all roles).',
@@ -540,17 +533,14 @@
         bAudience: 'system end users.',
         bRole: 'instructional design and development.',
         bTools: 'Articulate Storyline 360, published as SCORM/HTML5.',
-        bFeatures: '[COMPLETAR: interacciones que tiene la cápsula]',
-        pTitle: 'Prime Choice — Outbound',
-        pNotice: 'Pilot · warehouse outbound onboarding',
-        pChallenge: 'gamified warehouse outbound onboarding covering safety, conveyor belt, and container.',
+        pTitle: 'Warehouse Outbound Onboarding — Live Pilot',
+        pChallenge: 'New outbound associates needed to learn safety, belt colors and containerization fast, in Spanish, English or Chinese.',
         pAudience: 'warehouse outbound team (pilot).',
-        pRole: '[COMPLETAR: rol en este piloto]',
+        pRole: 'Identified the training need on the floor, designed and built the course, and piloted it with new outbound associates.',
         pTools: 'HTML, CSS, JavaScript; mobile-friendly.',
         pFeatures: 'short missions with XP; interface in ES / EN / 简体.',
         cTitle: 'Articulate Rise sample',
         cComing: 'Coming soon: New Hire Orientation (Articulate Rise)',
-        cStatus: 'link not published yet — button stays disabled until the Rise URL is added.',
         resultsTitle: 'Selected results',
         resultsSub: 'Highlights from L&D and consulting work (public summary only).',
         r1: '<strong>PRONACA (7,000+ employees):</strong> SAP SuccessFactors LMS company-wide rollout; 7,000 employees trained; 1,400 courses in 2019; 60% training budget savings in 2020.',
@@ -573,7 +563,6 @@
         labelRole: 'Mi rol:',
         labelTools: 'Herramientas:',
         labelFeatures: 'Características:',
-        labelStatus: 'Estado:',
         aTitle: 'Onboarding Academy — Inducción gamificada para nuevos ingresos',
         aChallenge: 'los nuevos colaboradores necesitan una primera semana clara y atractiva sobre empresa, cultura y seguridad.',
         aAudience: 'nuevos empleados (todos los roles).',
@@ -586,17 +575,14 @@
         bAudience: 'usuarios finales del sistema.',
         bRole: 'diseño instruccional y desarrollo.',
         bTools: 'Articulate Storyline 360, publicado como SCORM/HTML5.',
-        bFeatures: '[COMPLETAR: interacciones que tiene la cápsula]',
-        pTitle: 'Prime Choice — Outbound',
-        pNotice: 'Piloto · onboarding outbound de warehouse',
-        pChallenge: 'onboarding gamificado de warehouse outbound: seguridad, cinta y contenedor.',
+        pTitle: 'Onboarding de Outbound en Warehouse — Piloto real',
+        pChallenge: 'Los nuevos asociados de outbound necesitaban aprender rápido seguridad, colores de cinta y containerización, en español, inglés o chino.',
         pAudience: 'equipo outbound de warehouse (piloto).',
-        pRole: '[COMPLETAR: rol en este piloto]',
+        pRole: 'Detecté la necesidad en piso, diseñé y construí el curso, y lo piloteé con nuevos asociados de outbound.',
         pTools: 'HTML, CSS, JavaScript; adaptable a móvil.',
         pFeatures: 'misiones cortas con XP; interfaz en ES / EN / 简体.',
         cTitle: 'Muestra de Articulate Rise',
         cComing: 'Próximamente: Orientación para nuevos ingresos (Articulate Rise)',
-        cStatus: 'enlace aún no publicado — el botón queda desactivado hasta agregar la URL de Rise.',
         resultsTitle: 'Resultados seleccionados',
         resultsSub: 'Destacados de trabajo en L&D y consultoría (solo resumen público).',
         r1: '<strong>PRONACA (más de 7.000 empleados):</strong> despliegue corporativo de SAP SuccessFactors LMS; 7.000 empleados capacitados; 1.400 cursos en 2019; 60% de ahorro en presupuesto de capacitación en 2020.',
@@ -629,20 +615,17 @@
       });
     }
 
-    function setupRiseButton() {
+    function setupRiseCard() {
+      const card = document.getElementById('rise-card');
       const btn = document.getElementById('rise-demo-btn');
-      if (!btn) return;
+      if (!card || !btn) return;
       if (RISE_DEMO_URL && RISE_DEMO_URL.trim()) {
+        card.hidden = false;
         btn.href = RISE_DEMO_URL.trim();
-        btn.removeAttribute('aria-disabled');
-        btn.removeAttribute('tabindex');
         btn.target = '_blank';
         btn.rel = 'noopener noreferrer';
       } else {
-        btn.href = '#';
-        btn.setAttribute('aria-disabled', 'true');
-        btn.tabIndex = -1;
-        btn.addEventListener('click', e => e.preventDefault());
+        card.hidden = true;
       }
     }
 
@@ -650,7 +633,7 @@
       btn.addEventListener('click', () => applyLanguage(btn.getAttribute('data-lang')));
     });
 
-    setupRiseButton();
+    setupRiseCard();
     applyLanguage('en');
   </script>
 </body>
