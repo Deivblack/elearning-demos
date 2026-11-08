@@ -672,7 +672,7 @@
         title: m.title,
         ...(STATE.moduleScores[m.id] || {})
       })),
-      program: 'Prime Choice Outbound Onboarding',
+      program: 'Outbound Onboarding',
       version: '1.2-pilot'
     };
     try {

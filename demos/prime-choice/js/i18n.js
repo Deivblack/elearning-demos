@@ -1,14 +1,14 @@
-/* Prime Choice outbound — UI + lessons: es / zh (简体) / en */
+/* Outbound Onboarding — UI + lessons: es / zh (简体) / en */
 (function (global) {
   const UI = {
     es: {
-      docTitle: 'Prime Choice — Onboarding Outbound',
-      hudBrand: 'Prime Choice · Outbound',
+      docTitle: 'Outbound Onboarding — Warehouse',
+      hudBrand: 'Outbound Onboarding',
       langLabel: 'Idioma',
       badgeDemo: 'Piloto · ~10 min',
       welcomeHi: 'Bienvenido/a a',
-      welcomeBrand: 'Prime Choice',
-      welcomeSubBrand: 'Outbound',
+      welcomeBrand: 'Outbound Onboarding',
+      welcomeSubBrand: 'Warehouse',
       welcomeSub: 'Seguridad, cinta por colores y contenedor. Gana XP con misiones cortas.',
       firstNamePh: 'Nombre',
       lastNamePh: 'Apellido',
@@ -66,12 +66,12 @@
       wrongShort: 'Intenta de nuevo'
     },
     zh: {
-      docTitle: 'Prime Choice — 出库入职培训',
-      hudBrand: 'Prime Choice · 出库',
+      docTitle: 'Outbound Onboarding — 出库入职培训',
+      hudBrand: 'Outbound Onboarding',
       langLabel: '语言',
       badgeDemo: '试点 · 约10分钟',
       welcomeHi: '欢迎来到',
-      welcomeBrand: 'Prime Choice',
+      welcomeBrand: 'Outbound Onboarding',
       welcomeSubBrand: '出库',
       welcomeSub: '安全、传送带分色、装箱。短任务赚 XP。',
       firstNamePh: '名',
@@ -130,13 +130,13 @@
       wrongShort: '再试'
     },
     en: {
-      docTitle: 'Prime Choice — Outbound Onboarding',
-      hudBrand: 'Prime Choice · Outbound',
+      docTitle: 'Outbound Onboarding — Warehouse',
+      hudBrand: 'Outbound Onboarding',
       langLabel: 'Language',
       badgeDemo: 'Pilot · ~10 min',
       welcomeHi: 'Welcome to',
-      welcomeBrand: 'Prime Choice',
-      welcomeSubBrand: 'Outbound',
+      welcomeBrand: 'Outbound Onboarding',
+      welcomeSubBrand: 'Warehouse',
       welcomeSub: 'Safety, belt colors, containers. Short missions. Earn XP.',
       firstNamePh: 'First name',
       lastNamePh: 'Last name',
