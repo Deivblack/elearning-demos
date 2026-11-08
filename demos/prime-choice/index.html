@@ -70,7 +70,7 @@
   .hud-stat { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; }
   .hud-xp { color: var(--gold); }
   .hud-level { color: var(--teal2); }
-  .hud-bar-bg { width: 72px; height: 6px; background: rgba(255,255,255,.15); border-radius: 3px; overflow: hidden; }
+  .hud-bar-bg { width: 96px; height: 8px; background: rgba(255,255,255,.15); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
   .hud-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal2)); transition: width .6s ease; }
 
   .page-wrap {
@@ -169,6 +169,38 @@
   .missions-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(22px, 5vw, 28px); font-weight: 700; margin-bottom: 6px; }
   .missions-sub { color: var(--gray500); font-size: 14px; line-height: 1.45; }
   .hello-line { color: var(--teal2); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .path-progress {
+    width: 100%; margin: 14px 0 6px; padding: 12px 14px;
+    background: rgba(13,148,136,.1); border: 1px solid rgba(13,148,136,.28);
+    border-radius: 12px;
+  }
+  .path-progress-label {
+    font-size: 13px; font-weight: 700; color: var(--teal2); margin-bottom: 8px;
+  }
+  .path-progress-track {
+    width: 100%; height: 12px; border-radius: 999px;
+    background: rgba(255,255,255,.1); overflow: hidden;
+  }
+  .path-progress-fill {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--teal), var(--teal2));
+    transition: width .5s ease;
+  }
+  .resume-hint { font-size: 12px; color: var(--gray500); margin-top: 8px; }
+  .lesson-figure {
+    margin: 12px 0 16px; border-radius: 12px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.2);
+  }
+  .lesson-figure img {
+    display: block; width: 100%; height: auto; max-height: 280px; object-fit: cover;
+  }
+  .info-alert {
+    margin: 14px 0; padding: 14px 16px; border-radius: 12px;
+    background: rgba(244,63,94,.1); border: 1.5px solid rgba(244,63,94,.35);
+  }
+  .info-alert-title { font-weight: 800; color: #FDA4AF; margin-bottom: 8px; font-size: 14px; }
+  .info-alert ul { margin: 0; padding-left: 18px; color: #FECACA; font-size: 13px; line-height: 1.55; }
+  .info-alert li { margin-bottom: 4px; }
   .missions-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
 
   .mission-card {
@@ -404,7 +436,7 @@
     .name-grid { grid-template-columns: 1fr; }
     .results-stats { grid-template-columns: 1fr; }
     .hud-level { display: none; }
-    .hud-bar-bg { width: 48px; }
+    .hud-bar-bg { width: 64px; }
     .welcome-avatar { width: 84px; height: 84px; }
     .avatar-guide img { width: 48px; height: 48px; }
     .page-wrap { padding-left: 14px; padding-right: 14px; }
@@ -474,6 +506,11 @@
       <p class="hello-line" id="hello-line"></p>
       <h2 class="missions-title" id="missions-title"></h2>
       <p class="missions-sub" id="missions-sub"></p>
+      <div class="path-progress" aria-live="polite">
+        <div class="path-progress-label" id="path-progress-label">0/5</div>
+        <div class="path-progress-track"><div class="path-progress-fill" id="path-progress-fill" style="width:0%"></div></div>
+        <p class="resume-hint" id="resume-hint"></p>
+      </div>
     </div>
     <div class="missions-grid" id="missions-grid"></div>
   </div>

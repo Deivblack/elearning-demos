@@ -1,4 +1,4 @@
-/* Outbound Onboarding — UI + lessons: es / zh (简体) / en */
+﻿/* Outbound Onboarding — UI + lessons: es / zh (简体) / en */
 (function (global) {
   const UI = {
     es: {
@@ -24,7 +24,9 @@
       guideMissionsNamed: 'Hola {name}. 5 misiones · puedes reintentar · mejor puntaje cuenta.',
       hello: 'Hola, {name}',
       missionsTitle: 'Tu ruta',
-      missionsSub: 'Cinta primero (varios días, sin escanear solo) → contenedor → más.',
+      missionsSub: 'Cinta primero (varios días; en la banda no se escanea) → contenedor → más.',
+      progressLabel: 'Progreso {done}/{total}',
+      resumeHint: 'Tu avance se guarda en este dispositivo.',
       xpCompleteMission: '+{xp} XP al completar',
       stepOf: '{num} · Paso {cur}/{total}',
       trivia: 'Trivia',
@@ -88,7 +90,9 @@
       guideMissionsNamed: '你好，{name}。5 个任务 · 可重试 · 记最高分。',
       hello: '你好，{name}',
       missionsTitle: '培训路线',
-      missionsSub: '先传送带（几天，不要独自扫描）→ 装箱 → 更多。',
+      missionsSub: '先传送带（几天；传送带上不扫描）→ 装箱 → 更多。',
+      progressLabel: '进度 {done}/{total}',
+      resumeHint: '进度保存在本设备。',
       xpCompleteMission: '完成 +{xp} XP',
       stepOf: '{num} · {cur}/{total}',
       trivia: '小测验',
@@ -152,7 +156,9 @@
       guideMissionsNamed: 'Hi {name}. 5 missions · retry OK · best score counts.',
       hello: 'Hi, {name}',
       missionsTitle: 'Your path',
-      missionsSub: 'Start on the belt for several days with no solo scanning, then move to containers, then take on more tasks.',
+      missionsSub: 'Start on the belt for several days with no scanning on the belt, then move to containers, then take on more tasks.',
+      progressLabel: 'Progress {done}/{total}',
+      resumeHint: 'Your progress is saved on this device.',
       xpCompleteMission: '+{xp} XP when done',
       stepOf: '{num} · {cur}/{total}',
       trivia: 'Trivia',
@@ -262,60 +268,70 @@
           q1correct: 1
         },
         m2: {
-          title: 'Mapa outbound',
-          desc: 'Banda → carritos → scan → carga.',
-          guide: 'Mapa corto. Luego ordena.',
-          badge: { icon: '🗺️', title: 'Mapa claro', desc: 'Sabes el flujo outbound.' },
-          infoTitle: 'Flujo',
+          title: 'Así funciona nuestra área de outbound / last mile',
+          desc: 'Banda → carritos → contenedor → carga.',
+          guide: 'Vista corta del área. Luego ordena tu ruta.',
+          badge: { icon: '🗺️', title: 'Área clara', desc: 'Sabes cómo fluye outbound / last mile.' },
+          infoTitle: 'Nuestra área',
           infoGuide: 'Mismos pasos día y noche.',
           blocks: [
-            { h: '🗺️ Outbound', p: '' },
+            { h: '🗺️ Outbound / last mile', p: 'Después de packing: surtir, contenedorizar y entregar a carga.' },
             {
               flow: [
-                '📦 Banda',
-                '🎨 Carritos por color',
-                '🔄 Cambiar carrito',
-                '🏷️ Label + scan',
+                '📦 Banda (paquetes llegan)',
+                '🎨 Carritos por color (carrier)',
+                '🔄 Cambiar carrito lleno',
+                '📥 Contenerización (más adelante)',
                 '🔒 Cerrar → carga',
                 '🚚 Trailer por carrier'
               ]
             },
-            { highlight: 'Entrena: cinta (días) → contenedor → más. No saltes.' }
+            {
+              highlight:
+                'Empiezas en la banda uno o varios días; luego contenedores; después más responsabilidades.'
+            }
           ],
           orderTitle: 'Ordena el entrenamiento',
           orderGuide: 'Toca en orden.',
           orderPrompt: '¿En qué orden aprendes?',
-          orderItems: ['Cinta / colores', 'Contenedor + scan', 'Más responsabilidades'],
-          orderOk: 'Sí: cinta → contenedor → más.',
-          orderFail: 'Primero cinta, luego scan, luego más.',
+          orderItems: ['Cinta / colores', 'Contenerización', 'Más responsabilidades'],
+          orderOk: 'Sí: cinta → contenedores → más.',
+          orderFail: 'Primero cinta, luego contenedores, luego más.',
           qTitle: 'Trivia · Orden',
           q: 'Orden correcto de entrenamiento:',
           qopts: [
-            'Scan día 1, luego colores',
-            'Cinta → contenedor/scan → más',
+            'Contenedores el día 1, luego colores',
+            'Cinta → contenerización → más',
             'Trailer primero',
             '4 estaciones el día 1'
           ],
           qok: 'Cinta primero.',
-          qfail: 'No adelantes el scan.',
+          qfail: 'No saltes la banda.',
           qcorrect: 1
         },
         m3: {
           title: 'Cinta y colores',
-          desc: 'Colores con buddy. Sin scan solo.',
-          guide: 'Memoriza colores. Toca el correcto.',
+          desc: 'La banda mueve paquetes; tú surtes por color.',
+          guide: 'Mira la banda. Memoriza colores. Toca el correcto.',
           badge: { icon: '📦', title: 'Colores listos', desc: 'Sabes carriers y carritos.' },
-          infoTitle: 'Colores = carriers',
-          infoGuide: 'Tabla de pared.',
+          infoTitle: 'Así funciona la cinta',
+          infoGuide: 'Solo surtir por color. En la banda no se escanea.',
           blocks: [
-            { h: '📦 Cinta', p: 'Varios días: solo colores con buddy. Sin escanear solo.' },
+            {
+              h: '📦 Cinta / banda',
+              p: 'Los paquetes vienen por la cinta. Tú los pones en el carrito del color correcto. Uno o varios días con buddy.'
+            },
+            {
+              img: 'assets/graphics/conveyor-belt.jpg',
+              alt: 'Cinta con paquetes y carritos de colores'
+            },
             {
               colors: C.map((c) => ({ bg: c.hex + '40', bd: c.hex, name: c.label, sub: c.sub }))
             },
             {
               grid: [
-                { icon: '🤝', t: 'Buddy', d: 'Si dudas, pregunta.' },
-                { icon: '🚫', t: 'Sin scan solo', d: 'Scan cuando diga el TL.' }
+                { icon: '🤝', t: 'Buddy', d: 'Si dudas del color, pregunta.' },
+                { icon: '🚫', t: 'En la cinta: sin escanear', d: 'Aquí solo colores a carritos. El escaneo es después, en contenedor.' }
               ]
             }
           ],
@@ -330,91 +346,135 @@
           color2Correct: greenIdx,
           color2Ok: 'Verde = USPS.',
           color2Fail: 'USPS es verde.',
-          qTitle: 'Trivia · Scan',
-          q: '¿Puedes escanear solo los primeros días?',
+          qTitle: 'Trivia · Cinta',
+          q: 'En la cinta / banda, ¿qué haces?',
           qopts: [
-            'Sí, día 1',
-            'No: varios días en cinta con buddy; scan después',
-            'Sí tras 4 días aunque confundes colores',
-            'Solo de noche'
+            'Escanear cada paquete en la banda',
+            'Surtir por color a carritos (sin escanear en la cinta)',
+            'Cargar directo al trailer',
+            'Mezclar todos los colores en un carrito'
           ],
-          qok: 'Cinta primero.',
-          qfail: 'Sin scan solo al inicio.',
+          qok: 'En la cinta solo colores a carritos.',
+          qfail: 'En la banda no se escanea: solo surtir por color.',
           qcorrect: 1
         },
         m4: {
-          title: 'Contenedor y scan',
-          desc: 'Label → scan → meter.',
-          guide: 'Orden fijo en la estación.',
-          badge: { icon: '📥', title: 'Scan con orden', desc: 'Sin escanear, no entra.' },
-          infoTitle: 'En la estación',
-          infoGuide: 'Una estación primero.',
+          title: 'Así funciona la contenerización',
+          desc: 'Identificar label → escanear → meter al gaylord.',
+          guide: 'Orden fijo. Cuidado con 3 errores.',
+          badge: { icon: '📥', title: 'Contenedor OK', desc: 'Identificas, escaneas y metes bien.' },
+          infoTitle: 'Contenerización',
+          infoGuide: 'Los paquetes van al gaylord / cartón grande.',
           blocks: [
-            { h: '📥 Contenerización', p: '' },
-            { flow: ['🏷️ Label', '📷 Scan', '📥 Meter (gaylord / apilar)'] },
+            {
+              h: '📥 Así funciona la contenerización',
+              p: 'En la estación del carrier: identifica el label, escanea y mete el paquete.'
+            },
+            {
+              img: 'assets/graphics/gaylord-carton.jpg',
+              alt: 'Gaylord / cartón grande con paquetes'
+            },
+            {
+              flow: [
+                '🏷️ Identificar el label del contenedor',
+                '📷 Escanear el paquete',
+                '📥 Meter al gaylord / apilar'
+              ]
+            },
+            {
+              alert: {
+                title: '3 errores que no se pasan',
+                items: [
+                  'No escanear (meter sin scan)',
+                  'Paquete ya escaneado / no te das cuenta',
+                  'Paquete de otra compañía (carrier equivocado)'
+                ]
+              }
+            },
             {
               grid: [
-                { icon: '🧑‍🏫', t: 'Día 1 scan', d: 'Con buddy.' },
-                { icon: '⚠️', t: 'Sin scan ≠ entra', d: 'Nunca “ya mételo”.' }
+                { icon: '🧑‍🏫', t: 'Día 1', d: 'Con buddy en la estación.' },
+                { icon: '📍', t: 'Una estación', d: 'Primero un carrier.' }
               ]
             }
           ],
           orderTitle: 'Ordena la estación',
           orderGuide: 'Toca en orden correcto.',
           orderPrompt: 'Orden en la estación:',
-          orderItems: ['Label', 'Escanear', 'Meter'],
-          orderOk: 'Label → scan → meter.',
-          orderFail: 'Primero label, luego scan, luego meter.',
-          qTitle: 'Trivia · Error',
-          q: 'Error grave:',
+          orderItems: ['Identificar el label', 'Escanear', 'Meter'],
+          orderOk: 'Identificar → escanear → meter.',
+          orderFail: 'Primero identificar el label, luego escanear, luego meter.',
+          qTitle: 'Trivia · Errores',
+          q: '¿Cuál es un error grave en contenerización?',
           qopts: [
             'Preguntar al buddy',
             'Meter sin escanear',
             'Empezar en una estación',
-            'Pedir ayuda día 1'
+            'Pedir ayuda el día 1'
           ],
           qok: 'Meter sin escanear es grave.',
-          qfail: 'Lo grave: meter sin scan.',
+          qfail: 'Grave: no escanear, ya escaneado sin notar, o carrier equivocado.',
           qcorrect: 1
         },
         m5: {
           title: 'Más responsabilidades',
-          desc: 'Swap, cerrar, carga.',
-          guide: 'Después del contenedor.',
-          badge: { icon: '🚀', title: 'Más a cargo', desc: 'Swap, cerrar, carga por carrier.' },
-          infoTitle: 'Siguiente nivel',
-          infoGuide: 'Cuando ya manejas contenedor.',
+          desc: 'Ayudar · pallets · frágil.',
+          guide: 'Después del contenedor: ayudas al equipo.',
+          badge: { icon: '🚀', title: 'Más a cargo', desc: 'Ayudas, pallets y cuidado frágil.' },
+          infoTitle: 'Cómo ayudas en el piso',
+          infoGuide: 'Cinco tareas claras. Imágenes + emoji.',
           blocks: [
-            { h: '🚀 Más', p: '' },
+            {
+              h: '🔄 Cambiar carritos = ayudar a otros',
+              p: 'Si el carrito de un compañero está lleno (o necesita cambio), ayudas a llevarlo y traer uno vacío. No es “tu” carrito solo: es apoyo al equipo en la banda.'
+            },
+            {
+              img: 'assets/graphics/cart-help.jpg',
+              alt: 'Personas ayudando a cambiar un carrito lleno por uno vacío'
+            },
+            {
+              h: '📦 Pallet: apilar y envolver cajas grandes',
+              p: 'Las cajas grandes van en pallets. Las apilas con cuidado y envuelves el pallet para que viaje estable.'
+            },
+            {
+              img: 'assets/graphics/pallet-wrap.jpg',
+              alt: 'Cajas grandes apiladas en un pallet y envueltas'
+            },
             {
               grid: [
-                { icon: '🔄', t: 'Cambiar carrito', d: 'Lleno → estación; vacío a la banda.' },
-                { icon: '🔒', t: 'Cerrar', d: 'Luego a carga.' },
-                { icon: '🚚', t: 'Carga', d: 'Scan cada paquete · un carrier.' },
-                { icon: '📅', t: '~30 días', d: 'Solo en tu rol; avisa buddy → TL.' }
+                { icon: '📭', t: 'Armar cajas vacías', d: 'Ayuda a armar cajas / cartón vacío cuando el área lo pide.' },
+                { icon: '🎀', t: 'Bien envuelto', d: 'Revisa que los paquetes vayan bien envueltos / sellados.' },
+                { icon: '⚠️', t: 'Etiqueta frágil', d: 'Si dice FRÁGIL: manéjalo con cuidado, sin tirar ni aplastar.' },
+                { icon: '🤝', t: 'Equipo', d: 'Pregunta a buddy / TL si no estás seguro.' }
               ]
             },
-            { highlight: 'No: mal color · meter sin scan · ignorar seguridad.' }
+            {
+              img: 'assets/graphics/fragile-wrap.jpg',
+              alt: 'Paquete con etiqueta frágil bien envuelto'
+            },
+            {
+              highlight: 'Recuerda: ayudar con carritos · apilar/envolver en pallet · armar cajas · buen wrap · cuidado frágil.'
+            }
           ],
-          sceneTitle: 'Carga: ¿cuál está mal?',
+          sceneTitle: 'Piso: ¿cuál está mal?',
           sceneGuide: 'Toca la mala.',
-          scenePrompt: 'En carga, ¿cuál está MAL?',
+          scenePrompt: '¿Cuál acción está MAL?',
           scenes: [
-            { icon: '📷📦🚚', label: 'Scan cada paquete · un carrier', wrong: false },
-            { icon: '🔀🚚', label: 'Mezcla carriers en el trailer', wrong: true }
+            { icon: '🤝🛒', label: 'Ayudar a cambiar un carrito lleno', wrong: false },
+            { icon: '💥📦', label: 'Tirar un paquete con etiqueta FRÁGIL', wrong: true }
           ],
-          sceneOk: 'No mezclar carriers.',
-          sceneFail: 'Lo malo es mezclar carriers.',
-          qTitle: 'Trivia · Carga',
-          q: 'En carga debes…',
+          sceneOk: 'Frágil = cuidado. Nunca tirar.',
+          sceneFail: 'Lo malo es maltratar lo frágil.',
+          qTitle: 'Trivia · Más responsabilidades',
+          q: 'En esta etapa, “cambiar carrito” significa…',
           qopts: [
-            'Mezclar si hay espacio',
-            'Escanear cada paquete y cargar por carrier',
-            'Saltar scan si el gaylord ya cerró',
-            'Cargar solo el día 1 de cinta'
+            'Solo mover tu propio carrito cuando te aburres',
+            'Ayudar a otros a cambiar carritos llenos / que necesitan cambio',
+            'Escanear en la banda como en contenedor',
+            'Ignorar pallets y cajas grandes'
           ],
-          qok: 'Scan + por carrier.',
-          qfail: 'Scan cada uno; sin mezclar.',
+          qok: 'Es ayudar al equipo con carritos llenos o de cambio.',
+          qfail: 'No es solo “tu” carrito: ayudas a cambiar los de otros.',
           qcorrect: 1
         }
       },
@@ -454,46 +514,62 @@
           q1correct: 1
         },
         m2: {
-          title: '出库流程',
-          desc: '传送带 → 分色 → 扫描 → 装车。',
-          guide: '先看图，再排序。',
-          badge: { icon: '🗺️', title: '流程清楚', desc: '知道出库流程。' },
-          infoTitle: '流程',
-          infoGuide: '白班夜班一样。',
+          title: '出库 / 末端配送区域如何运作',
+          desc: '传送带 → 分色车 → 装箱 → 装车。',
+          guide: '先看区域，再排出学习顺序。',
+          badge: { icon: '🗺️', title: '区域清楚', desc: '了解出库 / last mile 流程。' },
+          infoTitle: '我们的区域',
+          infoGuide: '白班夜班步骤相同。',
           blocks: [
-            { h: '🗺️ 出库', p: '' },
+            { h: '🗺️ 出库 / last mile', p: '打包后：分色、装箱，再交给装车。' },
             {
-              flow: ['📦 传送带', '🎨 按颜色分车', '🔄 换车', '🏷️ 贴标+扫描', '🔒 封箱→装车', '🚚 按承运商装拖车']
+              flow: [
+                '📦 传送带（包裹过来）',
+                '🎨 按颜色分车（承运商）',
+                '🔄 换满车',
+                '📥 装箱（后面再学）',
+                '🔒 封箱 → 装车',
+                '🚚 按承运商装拖车'
+              ]
             },
-            { highlight: '培训：传送带（几天）→ 装箱 → 更多。不要跳。' }
+            {
+              highlight: '你先在传送带上一到几天；然后学装箱；之后再加职责。'
+            }
           ],
           orderTitle: '排出培训顺序',
           orderGuide: '按顺序点。',
           orderPrompt: '学习顺序？',
-          orderItems: ['传送带 / 分色', '装箱 + 扫描', '更多职责'],
+          orderItems: ['传送带 / 分色', '装箱', '更多职责'],
           orderOk: '传送带 → 装箱 → 更多。',
-          orderFail: '先传送带，再扫描，再更多。',
+          orderFail: '先传送带，再装箱，再更多。',
           qTitle: '小测验 · 顺序',
           q: '正确培训顺序：',
-          qopts: ['第1天扫描再分色', '传送带 → 装箱/扫描 → 更多', '先装拖车', '第1天轮四个工位'],
+          qopts: ['第1天就装箱再分色', '传送带 → 装箱 → 更多', '先装拖车', '第1天轮四个工位'],
           qok: '先传送带。',
-          qfail: '不要提前扫描。',
+          qfail: '不要跳过传送带。',
           qcorrect: 1
         },
         m3: {
           title: '传送带与颜色',
-          desc: '跟人带分色。不要独自扫描。',
-          guide: '记颜色，点正确的。',
+          desc: '传送带送包裹；你按颜色分车。',
+          guide: '看传送带。记颜色。点正确的。',
           badge: { icon: '📦', title: '分色过关', desc: '知道承运商颜色。' },
-          infoTitle: '颜色 = 承运商',
-          infoGuide: '墙上的表。',
+          infoTitle: '传送带怎么运作',
+          infoGuide: '只按颜色分。传送带上不扫描。',
           blocks: [
-            { h: '📦 传送带', p: '几天：只跟人带分色。不要独自扫描。' },
+            {
+              h: '📦 传送带',
+              p: '包裹从传送带过来。你放进对应颜色的推车。跟人带一到几天。'
+            },
+            {
+              img: 'assets/graphics/conveyor-belt.jpg',
+              alt: '传送带、包裹和彩色推车'
+            },
             { colors: C.map((c) => ({ bg: c.hex + '40', bd: c.hex, name: c.label, sub: c.sub })) },
             {
               grid: [
-                { icon: '🤝', t: '带教', d: '不确定就问。' },
-                { icon: '🚫', t: '不要独自扫', d: '等组长说可以。' }
+                { icon: '🤝', t: '带教', d: '颜色不确定就问。' },
+                { icon: '🚫', t: '传送带上不扫描', d: '这里只分色。扫描在后面的装箱工位。' }
               ]
             }
           ],
@@ -508,76 +584,130 @@
           color2Correct: greenIdx,
           color2Ok: '绿 = USPS。',
           color2Fail: 'USPS 是绿色。',
-          qTitle: '小测验 · 扫描',
-          q: '头几天可以独自扫描吗？',
-          qopts: ['可以，第1天', '不可以：传送带跟几天；之后再扫', '干了4天就能扫', '只有夜班可以'],
-          qok: '先分色。',
-          qfail: '开始不要独自扫。',
+          qTitle: '小测验 · 传送带',
+          q: '在传送带上你做什么？',
+          qopts: [
+            '在传送带上扫描每个包裹',
+            '按颜色分到推车（传送带上不扫描）',
+            '直接装拖车',
+            '所有颜色混在一辆车'
+          ],
+          qok: '传送带上只分色。',
+          qfail: '传送带上不扫描，只按颜色分车。',
           qcorrect: 1
         },
         m4: {
-          title: '装箱与扫描',
-          desc: '贴标 → 扫描 → 放入。',
-          guide: '工位顺序固定。',
-          badge: { icon: '📥', title: '扫描有序', desc: '不扫不进。' },
-          infoTitle: '在工位',
-          infoGuide: '先做一个工位。',
+          title: '装箱如何运作',
+          desc: '识别标签 → 扫描 → 放入大箱。',
+          guide: '顺序固定。注意 3 个错误。',
+          badge: { icon: '📥', title: '装箱过关', desc: '会识别、扫描、正确放入。' },
+          infoTitle: '装箱',
+          infoGuide: '包裹放进 gaylord / 大纸箱。',
           blocks: [
-            { h: '📥 装箱', p: '' },
-            { flow: ['🏷️ 贴标', '📷 扫描', '📥 放入（大箱/堆叠）'] },
+            {
+              h: '📥 装箱如何运作',
+              p: '在承运商工位：识别容器标签，扫描，再放入。'
+            },
+            {
+              img: 'assets/graphics/gaylord-carton.jpg',
+              alt: '大箱 / gaylord 装包裹'
+            },
+            {
+              flow: [
+                '🏷️ 识别容器标签',
+                '📷 扫描包裹',
+                '📥 放入大箱 / 堆叠'
+              ]
+            },
+            {
+              alert: {
+                title: '3 个不能犯的错误',
+                items: [
+                  '不扫描就放入',
+                  '已经扫过 / 没注意到',
+                  '放错公司（承运商）的包裹'
+                ]
+              }
+            },
             {
               grid: [
-                { icon: '🧑‍🏫', t: '扫描第1天', d: '必须有人带。' },
-                { icon: '⚠️', t: '不扫不进', d: '绝不“先塞再说”。' }
+                { icon: '🧑‍🏫', t: '第1天', d: '工位必须有人带。' },
+                { icon: '📍', t: '一个工位', d: '先做一个承运商。' }
               ]
             }
           ],
           orderTitle: '排出工位顺序',
           orderGuide: '按正确顺序点。',
           orderPrompt: '工位顺序：',
-          orderItems: ['贴标', '扫描', '放入'],
-          orderOk: '贴标 → 扫描 → 放入。',
-          orderFail: '先贴标，再扫，再放。',
+          orderItems: ['识别标签', '扫描', '放入'],
+          orderOk: '识别 → 扫描 → 放入。',
+          orderFail: '先识别标签，再扫描，再放入。',
           qTitle: '小测验 · 错误',
-          q: '严重错误是：',
+          q: '装箱时哪个是严重错误？',
           qopts: ['问带教', '不扫描就放进大箱', '只做一个工位', '第1天请人帮忙'],
           qok: '不扫就放是严重错误。',
-          qfail: '严重错误：不扫就放。',
+          qfail: '严重：不扫、已扫未注意、或放错承运商。',
           qcorrect: 1
         },
         m5: {
           title: '更多职责',
-          desc: '换车、封箱、装车。',
-          guide: '会装箱之后。',
-          badge: { icon: '🚀', title: '职责加码', desc: '换车、封箱、按承运商装。' },
-          infoTitle: '下一阶段',
-          infoGuide: '装箱稳定后。',
+          desc: '互助 · 托盘 · 易碎。',
+          guide: '会装箱之后：协助团队。',
+          badge: { icon: '🚀', title: '职责加码', desc: '互助换车、托盘与易碎件。' },
+          infoTitle: '现场如何帮忙',
+          infoGuide: '五件清楚的事。配图 + 表情。',
           blocks: [
-            { h: '🚀 更多', p: '' },
+            {
+              h: '🔄 换车 = 帮助别人',
+              p: '同事的车满了（或需要更换）时，你帮忙推走并换上空车。不是只管“自己的车”：是在传送带上支援团队。'
+            },
+            {
+              img: 'assets/graphics/cart-help.jpg',
+              alt: '同事协助把满车换成空车'
+            },
+            {
+              h: '📦 托盘：码放并裹膜大箱',
+              p: '大箱上托盘。小心码齐，再裹膜，让托盘运输更稳。'
+            },
+            {
+              img: 'assets/graphics/pallet-wrap.jpg',
+              alt: '大箱码在托盘上并完成裹膜'
+            },
             {
               grid: [
-                { icon: '🔄', t: '换车', d: '满车去工位；空车回传送带。' },
-                { icon: '🔒', t: '封箱', d: '再交装车。' },
-                { icon: '🚚', t: '装车', d: '逐件扫 · 一个承运商。' },
-                { icon: '📅', t: '约30天', d: '能独立；找带教→组长。' }
+                { icon: '📭', t: '组装空箱', d: '区域需要时，帮忙折好 / 组装空纸箱。' },
+                { icon: '🎀', t: '包好包严', d: '检查包裹是否包好、封好。' },
+                { icon: '⚠️', t: '易碎标签', d: '标了易碎：轻拿轻放，不扔不压。' },
+                { icon: '🤝', t: '团队', d: '不确定就问带教 / 组长。' }
               ]
             },
-            { highlight: '红线：分错色 · 不扫就进 · 忽视安全。' }
+            {
+              img: 'assets/graphics/fragile-wrap.jpg',
+              alt: '贴有易碎标签且包好的包裹'
+            },
+            {
+              highlight: '记住：帮忙换车 · 托盘码放/裹膜 · 组装空箱 · 包好 · 易碎轻拿。'
+            }
           ],
-          sceneTitle: '装车：哪个是错的？',
+          sceneTitle: '现场：哪个是错的？',
           sceneGuide: '点错误的。',
-          scenePrompt: '装车时哪一个是错的？',
+          scenePrompt: '哪一个是错的？',
           scenes: [
-            { icon: '📷📦🚚', label: '逐件扫描 · 一个承运商', wrong: false },
-            { icon: '🔀🚚', label: '拖车里混装承运商', wrong: true }
+            { icon: '🤝🛒', label: '帮忙更换满车', wrong: false },
+            { icon: '💥📦', label: '扔带易碎标签的包裹', wrong: true }
           ],
-          sceneOk: '不要混承运商。',
-          sceneFail: '错的是混装。',
-          qTitle: '小测验 · 装车',
-          q: '装车时必须：',
-          qopts: ['有空就混装', '逐件扫描并按承运商装', '封好就能跳过扫描', '传送带第1天独自装'],
-          qok: '扫描 + 按承运商。',
-          qfail: '逐件扫；不要混。',
+          sceneOk: '易碎 = 轻拿。绝不乱扔。',
+          sceneFail: '错的是粗暴对待易碎件。',
+          qTitle: '小测验 · 更多职责',
+          q: '这一阶段的“换车”是指…',
+          qopts: [
+            '无聊时只挪自己的车',
+            '帮助别人更换满车 / 需要更换的车',
+            '在传送带上像装箱那样扫描',
+            '不管托盘和大箱'
+          ],
+          qok: '是协助团队处理满车或换车。',
+          qfail: '不是只管“自己的车”：要帮别人换。',
           qcorrect: 1
         }
       },
@@ -617,46 +747,68 @@
           q1correct: 1
         },
         m2: {
-          title: 'Outbound map',
-          desc: 'From the belt to color carts, then scan, then load.',
-          guide: 'Short map. Then order it.',
-          badge: { icon: '🗺️', title: 'Clear map', desc: 'You know the flow.' },
-          infoTitle: 'Flow',
-          infoGuide: 'Same day and night.',
+          title: 'How our outbound / last mile area works',
+          desc: 'From the belt to color carts, then containers, then load.',
+          guide: 'Short area view. Then order your path.',
+          badge: { icon: '🗺️', title: 'Area clear', desc: 'You know outbound / last mile flow.' },
+          infoTitle: 'Our area',
+          infoGuide: 'Same steps day and night.',
           blocks: [
-            { h: '🗺️ Outbound', p: '' },
+            { h: '🗺️ Outbound / last mile', p: 'After packing: sort, containerize, then hand off to load.' },
             {
-              flow: ['📦 Belt', '🎨 Color carts', '🔄 Swap cart', '🏷️ Label + scan', '🔒 Close → load', '🚚 Trailer by carrier']
+              flow: [
+                '📦 Belt (packages arrive)',
+                '🎨 Color carts (carrier)',
+                '🔄 Swap full cart',
+                '📥 Containerization (later)',
+                '🔒 Close → load',
+                '🚚 Trailer by carrier'
+              ]
             },
-            { highlight: 'Start on the belt (first days, no scanning), then move to containers, then take on more tasks. Don’t skip steps.' }
+            {
+              highlight:
+                'Start on the belt (first days, no scanning), then move to containers, then take on more tasks. Don’t skip steps.'
+            }
           ],
           orderTitle: 'Order the training',
           orderGuide: 'Tap in order.',
           orderPrompt: 'Learn in which order?',
-          orderItems: ['Belt / colors', 'Container + scan', 'More responsibility'],
+          orderItems: ['Belt / colors', 'Containerization', 'More responsibility'],
           orderOk: 'Start on the belt, then containers, then more tasks.',
-          orderFail: 'Belt first, then scanning, then more responsibility.',
+          orderFail: 'Belt first, then containers, then more responsibility.',
           qTitle: 'Trivia · Order',
           q: 'Correct training order:',
-          qopts: ['Scan day 1, then colors', 'Belt first, then container and scan, then more', 'Trailer first', 'All 4 stations day 1'],
+          qopts: [
+            'Containers on day 1, then colors',
+            'Belt first, then containerization, then more',
+            'Trailer first',
+            'All 4 stations day 1'
+          ],
           qok: 'Belt first.',
-          qfail: 'Don’t jump to scan.',
+          qfail: 'Don’t skip the belt.',
           qcorrect: 1
         },
         m3: {
           title: 'Belt & colors',
-          desc: 'Learn cart colors with your buddy. Do not scan alone yet.',
-          guide: 'Learn colors. Tap the right one.',
+          desc: 'The belt moves packages; you sort them by color into carts.',
+          guide: 'See the belt. Learn colors. Tap the right one.',
           badge: { icon: '📦', title: 'Colors ready', desc: 'You know cart colors.' },
-          infoTitle: 'Colors = carriers',
-          infoGuide: 'Wall chart.',
+          infoTitle: 'How the belt works',
+          infoGuide: 'Sort by color only. No scanning on the belt.',
           blocks: [
-            { h: '📦 Belt', p: 'For several days you learn colors with your buddy only. No solo scanning yet.' },
+            {
+              h: '📦 Conveyor belt',
+              p: 'Packages come down the belt. You put each in the right color cart. One or more days with a buddy.'
+            },
+            {
+              img: 'assets/graphics/conveyor-belt.jpg',
+              alt: 'Conveyor belt with packages and color carts'
+            },
             { colors: C.map((c) => ({ bg: c.hex + '40', bd: c.hex, name: c.label, sub: c.sub })) },
             {
               grid: [
-                { icon: '🤝', t: 'Buddy', d: 'If you are unsure, ask your buddy.' },
-                { icon: '🚫', t: 'No solo scan', d: 'Scan only when your team lead says you are ready.' }
+                { icon: '🤝', t: 'Buddy', d: 'If you are unsure of the color, ask your buddy.' },
+                { icon: '🚫', t: 'No scanning on the belt', d: 'Here you only sort by color into carts. Scanning comes later at containerization.' }
               ]
             }
           ],
@@ -671,86 +823,135 @@
           color2Correct: greenIdx,
           color2Ok: 'Green = USPS.',
           color2Fail: 'USPS is green.',
-          qTitle: 'Trivia · Scan',
-          q: 'Solo scan in the first days?',
+          qTitle: 'Trivia · Belt',
+          q: 'On the conveyor belt, what do you do?',
           qopts: [
-            'Yes, day 1',
-            'No: days on belt with buddy; scan later',
-            'Yes after 4 days even if colors mix',
-            'Night only'
+            'Scan each package on the belt',
+            'Sort by color into carts (no scanning on the belt)',
+            'Load straight to the trailer',
+            'Mix all colors in one cart'
           ],
-          qok: 'Belt first.',
-          qfail: 'No solo scan at the start.',
+          qok: 'On the belt you only sort by color into carts.',
+          qfail: 'No scanning on the belt — only sort by color.',
           qcorrect: 1
         },
         m4: {
-          title: 'Container & scan',
-          desc: 'Label the package, scan it, then put it in.',
-          guide: 'Fixed station order.',
-          badge: { icon: '📥', title: 'Scan in order', desc: 'If it is not scanned, it does not go in.' },
-          infoTitle: 'At the station',
-          infoGuide: 'One station first.',
+          title: 'How containerization works',
+          desc: 'Identify the label, scan the package, then put it in the gaylord.',
+          guide: 'Fixed order. Watch for 3 errors.',
+          badge: { icon: '📥', title: 'Container OK', desc: 'Identify, scan, and put packages in correctly.' },
+          infoTitle: 'Containerization',
+          infoGuide: 'Packages go into the gaylord / large carton.',
           blocks: [
-            { h: '📥 Container', p: '' },
-            { flow: ['🏷️ Label', '📷 Scan', '📥 Put (gaylord / stack)'] },
+            {
+              h: '📥 How containerization works',
+              p: 'At the carrier station: identify the container label, scan, then put the package in.'
+            },
+            {
+              img: 'assets/graphics/gaylord-carton.jpg',
+              alt: 'Gaylord / large carton with packages'
+            },
+            {
+              flow: [
+                '🏷️ Identify the container label',
+                '📷 Scan the package',
+                '📥 Put in gaylord / stack'
+              ]
+            },
+            {
+              alert: {
+                title: '3 errors that don’t pass',
+                items: [
+                  'Not scanning (put in with no scan)',
+                  'Already scanned / you don’t notice',
+                  'Wrong company package (wrong carrier)'
+                ]
+              }
+            },
             {
               grid: [
-                { icon: '🧑‍🏫', t: 'Day-1 scan', d: 'With buddy.' },
-                { icon: '⚠️', t: 'No scan = no in', d: 'Never put a package in without scanning.' }
+                { icon: '🧑‍🏫', t: 'Day 1', d: 'With buddy at the station.' },
+                { icon: '📍', t: 'One station', d: 'One carrier first.' }
               ]
             }
           ],
           orderTitle: 'Order the station',
           orderGuide: 'Tap correct order.',
           orderPrompt: 'Station order:',
-          orderItems: ['Label', 'Scan', 'Put in'],
-          orderOk: 'Label, then scan, then put it in.',
-          orderFail: 'Label, then scan, then put.',
-          qTitle: 'Trivia · Error',
-          q: 'Serious error:',
-          qopts: ['Ask buddy', 'Put in without scanning', 'Start at one station', 'Ask help day 1'],
+          orderItems: ['Identify the label', 'Scan', 'Put in'],
+          orderOk: 'Identify the label, then scan, then put it in.',
+          orderFail: 'Identify the label first, then scan, then put.',
+          qTitle: 'Trivia · Errors',
+          q: 'Which is a serious containerization error?',
+          qopts: [
+            'Ask buddy',
+            'Put in without scanning',
+            'Start at one station',
+            'Ask for help on day 1'
+          ],
           qok: 'Putting a package in without scanning is a serious error.',
-          qfail: 'Bad: put without scan.',
+          qfail: 'Serious: no scan, already scanned unnoticed, or wrong carrier.',
           qcorrect: 1
         },
         m5: {
           title: 'More responsibility',
-          desc: 'Swap, close, load.',
-          guide: 'After container work.',
-          badge: { icon: '🚀', title: 'More ownership', desc: 'Swap, close, load by carrier.' },
-          infoTitle: 'Next level',
-          infoGuide: 'When container is solid.',
+          desc: 'Help teammates, work with pallets, and handle fragile packages carefully.',
+          guide: 'After containers: you help the team.',
+          badge: { icon: '🚀', title: 'More ownership', desc: 'Help, pallets, and fragile care.' },
+          infoTitle: 'How you help on the floor',
+          infoGuide: 'Five clear tasks. Photos + emoji.',
           blocks: [
-            { h: '🚀 More', p: '' },
+            {
+              h: '🔄 Cart swap = helping others',
+              p: 'When a teammate’s cart is full (or needs a change), you help take it and bring an empty one. It’s not only “your” cart — you support the belt team.'
+            },
+            {
+              img: 'assets/graphics/cart-help.jpg',
+              alt: 'People helping swap a full cart for an empty one'
+            },
+            {
+              h: '📦 Pallet: stack & wrap large boxes',
+              p: 'Large boxes go on pallets. Stack them carefully, then wrap the pallet so it stays stable.'
+            },
+            {
+              img: 'assets/graphics/pallet-wrap.jpg',
+              alt: 'Large boxes stacked on a pallet and wrapped'
+            },
             {
               grid: [
-                { icon: '🔄', t: 'Swap cart', d: 'Take a full cart to the station; bring an empty cart back to the belt.' },
-                { icon: '🔒', t: 'Close', d: 'Close the container, then send it to load.' },
-                { icon: '🚚', t: 'Load', d: 'Scan each package and load by one carrier.' },
-                { icon: '📅', t: '~30 days', d: 'After about 30 days you can work solo on your role; ask your buddy, then your TL.' }
+                { icon: '📭', t: 'Assemble empty boxes', d: 'Help build / fold empty cartons when the area needs them.' },
+                { icon: '🎀', t: 'Well wrapped', d: 'Check packages are well wrapped / sealed.' },
+                { icon: '⚠️', t: 'Fragile label', d: 'If it says FRAGILE: handle with care — no tossing or crushing.' },
+                { icon: '🤝', t: 'Team', d: 'Ask buddy / TL if unsure.' }
               ]
             },
-            { highlight: 'Do not use the wrong color, put packages in without scanning, or ignore safety rules.' }
+            {
+              img: 'assets/graphics/fragile-wrap.jpg',
+              alt: 'Well-wrapped package with a fragile label'
+            },
+            {
+              highlight: 'Remember: help with carts, stack and wrap on pallets, assemble boxes, wrap well, and handle fragile packages with care.'
+            }
           ],
-          sceneTitle: 'Load: which is wrong?',
+          sceneTitle: 'Floor: which is wrong?',
           sceneGuide: 'Tap the bad one.',
-          scenePrompt: 'At load, which is WRONG?',
+          scenePrompt: 'Which action is WRONG?',
           scenes: [
-            { icon: '📷📦🚚', label: 'Scan each · one carrier', wrong: false },
-            { icon: '🔀🚚', label: 'Mix carriers in trailer', wrong: true }
+            { icon: '🤝🛒', label: 'Help swap a full cart', wrong: false },
+            { icon: '💥📦', label: 'Toss a FRAGILE-labeled package', wrong: true }
           ],
-          sceneOk: 'Don’t mix carriers.',
-          sceneFail: 'Mixing carriers is wrong.',
-          qTitle: 'Trivia · Load',
-          q: 'At load you must…',
+          sceneOk: 'Fragile means careful handling. Never toss.',
+          sceneFail: 'The wrong choice is mishandling a fragile package.',
+          qTitle: 'Trivia · More responsibility',
+          q: 'In this stage, “cart swap” means…',
           qopts: [
-            'Mix if space',
-            'Scan each package and load by carrier',
-            'Skip scan if gaylord closed',
-            'Load alone on belt day 1'
+            'Only move your own cart when you’re bored',
+            'Helping others change full carts / carts that need a swap',
+            'Scanning on the belt like at container',
+            'Ignoring pallets and large boxes'
           ],
-          qok: 'Scan + by carrier.',
-          qfail: 'Scan each; no mixing.',
+          qok: 'It’s helping the team with full or change-out carts.',
+          qfail: 'Not just “your” cart — you help others swap.',
           qcorrect: 1
         }
       }
@@ -965,3 +1166,4 @@
 
   global.PCI18n = { UI, LANGS, t, missions, buildMissions };
 })(typeof window !== 'undefined' ? window : globalThis);
+

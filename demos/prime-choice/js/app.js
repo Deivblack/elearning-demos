@@ -1,6 +1,7 @@
-/* Prime Choice outbound learner app */
+﻿/* Prime Choice outbound learner app */
 (function () {
   const LANG_KEY = 'pc_outbound_lang';
+  const PROGRESS_KEY = 'pc_outbound_progress';
   const AVATAR_SRC = 'assets/avatar/guide.jpg';
 
   const STATE = {
@@ -64,12 +65,92 @@
     return a;
   }
 
+  /** Single source of truth for displayed XP (HUD + badge popup). */
+  function computeXp() {
+    let xp = 0;
+    const curId = currentMission != null ? missions()[currentMission].id : null;
+    const mXp = curId != null ? Number(missions()[currentMission].xp) || 0 : 0;
+
+    Object.keys(STATE.moduleScores).forEach((id) => {
+      if (id === curId) return;
+      xp += Number(STATE.moduleScores[id].total) || 0;
+    });
+
+    if (curId != null) {
+      const prevTotal = Number(STATE.moduleScores[curId] && STATE.moduleScores[curId].total) || 0;
+      if (prevTotal > 0) {
+        // Retry: keep best until this attempt would beat it (mission XP + live quiz)
+        xp += Math.max(prevTotal, mXp + currentModuleQuizXp);
+      } else {
+        // First play: show quiz XP so far; mission bonus lands on complete
+        xp += currentModuleQuizXp;
+      }
+    }
+    return xp;
+  }
+
+  function syncXp() {
+    STATE.xp = computeXp();
+    updateHUD();
+  }
+
   function recalcXpFromBest() {
+    // Settled total = sum of best module scores only (no live attempt overlay)
     let xp = 0;
     Object.keys(STATE.moduleScores).forEach((id) => {
       xp += Number(STATE.moduleScores[id].total) || 0;
     });
     STATE.xp = xp;
+  }
+
+  function saveProgress() {
+    if (!STATE.firstName || !STATE.lastName) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+        firstName: STATE.firstName,
+        lastName: STATE.lastName,
+        lang: STATE.lang,
+        xp: STATE.xp,
+        completedMissions: STATE.completedMissions.slice(),
+        moduleScores: { ...STATE.moduleScores },
+        correctAnswers: STATE.correctAnswers,
+        totalQuestions: STATE.totalQuestions,
+        startedAt: STATE.startedAt,
+        startedMs: STATE.startedMs,
+        updatedAt: new Date().toISOString()
+      }));
+    } catch (e) {
+      console.warn('Could not save progress', e);
+    }
+  }
+
+  function loadProgress() {
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data || !data.firstName || !data.lastName) return null;
+      return data;
+    } catch {
+      return null;
+    }
+  }
+
+  function applyProgress(data) {
+    STATE.firstName = data.firstName;
+    STATE.lastName = data.lastName;
+    STATE.completedMissions = Array.isArray(data.completedMissions) ? data.completedMissions.slice() : [];
+    STATE.moduleScores = data.moduleScores && typeof data.moduleScores === 'object' ? { ...data.moduleScores } : {};
+    STATE.correctAnswers = Number(data.correctAnswers) || 0;
+    STATE.totalQuestions = Number(data.totalQuestions) || 0;
+    STATE.startedAt = data.startedAt || new Date().toISOString();
+    STATE.startedMs = data.startedMs || Date.now();
+    if (data.lang && PCI18n.UI[data.lang]) STATE.lang = data.lang;
+    recalcXpFromBest();
+  }
+
+  function clearProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* ignore */ }
   }
 
   function showScreen(id) {
@@ -187,6 +268,16 @@
     renderLangSwitcher();
   }
 
+  function enterMissionsScreen() {
+    document.getElementById('hello-line').textContent = ui('hello', { name: fullName() });
+    document.getElementById('guide-missions-text').textContent = ui('guideMissionsNamed', { name: STATE.firstName });
+    document.getElementById('hud').classList.add('visible');
+    showScreen('screen-missions');
+    renderMissions();
+    updateHUD();
+    saveProgress();
+  }
+
   function startGame() {
     const first = document.getElementById('first-name').value.trim();
     const last = document.getElementById('last-name').value.trim();
@@ -194,6 +285,26 @@
       alert(ui('needName'));
       return;
     }
+    const saved = loadProgress();
+    const samePerson = saved &&
+      saved.firstName.toLowerCase() === first.toLowerCase() &&
+      saved.lastName.toLowerCase() === last.toLowerCase() &&
+      Array.isArray(saved.completedMissions) &&
+      saved.completedMissions.length > 0;
+
+    if (samePerson) {
+      const uiLang = STATE.lang;
+      applyProgress(saved);
+      STATE.firstName = first;
+      STATE.lastName = last;
+      STATE.lang = uiLang;
+      localStorage.setItem(LANG_KEY, uiLang);
+      document.documentElement.lang = uiLang === 'zh' ? 'zh-CN' : uiLang;
+      applyStaticUI();
+      enterMissionsScreen();
+      return;
+    }
+
     STATE.firstName = first;
     STATE.lastName = last;
     STATE.xp = 0;
@@ -203,12 +314,7 @@
     STATE.totalQuestions = 0;
     STATE.startedAt = new Date().toISOString();
     STATE.startedMs = Date.now();
-    document.getElementById('hello-line').textContent = ui('hello', { name: fullName() });
-    document.getElementById('guide-missions-text').textContent = ui('guideMissionsNamed', { name: STATE.firstName });
-    document.getElementById('hud').classList.add('visible');
-    showScreen('screen-missions');
-    renderMissions();
-    updateHUD();
+    enterMissionsScreen();
   }
 
   function renderMissions() {
@@ -252,6 +358,7 @@
     currentModuleCorrect = 0;
     currentModuleQuestions = 0;
     stepAnswered = false;
+    syncXp();
     renderStep();
     showScreen('screen-lesson');
   }
@@ -261,7 +368,19 @@
     (blocks || []).forEach((b) => {
       if (b.h) html += '<h3>' + escapeHtml(b.h) + '</h3>';
       if (b.p) html += '<p>' + escapeHtml(b.p) + '</p>';
+      if (b.img) {
+        html += '<figure class="lesson-figure"><img src="' + escapeHtml(b.img) + '" alt="' +
+          escapeHtml(b.alt || '') + '" loading="lazy"/></figure>';
+      }
       if (b.highlight) html += '<div class="info-highlight">' + escapeHtml(b.highlight) + '</div>';
+      if (b.alert && b.alert.items) {
+        html += '<div class="info-alert"><div class="info-alert-title">⚠️ ' +
+          escapeHtml(b.alert.title || '') + '</div><ul>';
+        b.alert.items.forEach((item) => {
+          html += '<li>' + escapeHtml(item) + '</li>';
+        });
+        html += '</ul></div>';
+      }
       if (b.grid) {
         html += '<div class="info-grid">';
         b.grid.forEach((g) => {
@@ -330,18 +449,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function liveXp() {
-    let xp = 0;
-    const curId = currentMission != null ? missions()[currentMission].id : null;
-    Object.keys(STATE.moduleScores).forEach((id) => {
-      if (id === curId) return;
-      xp += Number(STATE.moduleScores[id].total) || 0;
-    });
-    if (curId) xp += currentModuleQuizXp;
-    else xp = STATE.xp;
-    return xp;
-  }
-
   function awardActivity(step, isCorrect) {
     currentModuleQuestions++;
     STATE.totalQuestions++;
@@ -349,8 +456,8 @@
       currentModuleQuizXp += step.xp;
       currentModuleCorrect++;
       STATE.correctAnswers++;
-      showXpPopup('+' + step.xp + ' XP');
-      updateHUD();
+      syncXp();
+      showXpPopup('+' + step.xp + ' · ' + STATE.xp + ' XP');
     }
   }
 
@@ -604,7 +711,11 @@
     if (!STATE.completedMissions.includes(m.id)) {
       STATE.completedMissions.push(m.id);
     }
-    // Recalculate XP from best module totals (avoids double-counting retries)
+    // End live attempt so XP = sum of bests only (same number in HUD + badge)
+    currentMission = null;
+    currentModuleQuizXp = 0;
+    currentModuleCorrect = 0;
+    currentModuleQuestions = 0;
     recalcXpFromBest();
     updateHUD();
 
@@ -612,20 +723,28 @@
     if (!isBest && prev) {
       badge.desc = (badge.desc || '') + ' · ' + ui('bestTag', { n: prev.total });
     }
+    saveProgress();
     showBadge(badge, () => {
       if (STATE.completedMissions.length === missions().length) {
         finalizeAndShowResults();
       } else {
         showScreen('screen-missions');
         renderMissions();
+        updateHUD();
+        saveProgress();
       }
     });
   }
 
   function backToMissions() {
-    // discard in-progress XP from this attempt beyond bests
+    // Keep completed missions/scores; drop only in-progress attempt overlay
+    currentMission = null;
+    currentModuleQuizXp = 0;
+    currentModuleCorrect = 0;
+    currentModuleQuestions = 0;
     recalcXpFromBest();
     updateHUD();
+    saveProgress();
     showScreen('screen-missions');
     renderMissions();
   }
@@ -673,13 +792,14 @@
         ...(STATE.moduleScores[m.id] || {})
       })),
       program: 'Outbound Onboarding',
-      version: '1.2-pilot'
+      version: '1.4-pilot'
     };
     try {
       PCStorage.saveCompletion(record);
     } catch (e) {
       console.warn('Could not save completion', e);
     }
+    clearProgress();
     showResults(record);
   }
 
@@ -717,14 +837,21 @@
   }
 
   function updateHUD() {
-    const xpNow = liveXp();
+    const xpNow = STATE.xp;
     document.getElementById('hud-xp-txt').textContent = xpNow + ' XP';
     const lvl = levels().slice().reverse().find((l) => xpNow >= l.min);
     document.getElementById('hud-level-txt').textContent = lvl ? lvl.label : ui('level0');
     const done = STATE.completedMissions.length;
     const total = missions().length;
-    document.getElementById('hud-bar').style.width = ((done / total) * 100) + '%';
+    const pct = total ? (done / total) * 100 : 0;
+    document.getElementById('hud-bar').style.width = pct + '%';
     document.getElementById('hud-prog-txt').textContent = done + '/' + total;
+    const pathFill = document.getElementById('path-progress-fill');
+    const pathLabel = document.getElementById('path-progress-label');
+    if (pathFill) pathFill.style.width = pct + '%';
+    if (pathLabel) pathLabel.textContent = ui('progressLabel', { done: done, total: total });
+    const resume = document.getElementById('resume-hint');
+    if (resume) resume.textContent = ui('resumeHint');
   }
 
   function init() {
@@ -755,8 +882,9 @@
       stepAnswered,
       completedMissions: STATE.completedMissions.slice(),
       moduleScores: { ...STATE.moduleScores },
-      xp: liveXp()
+      xp: STATE.xp
     })
   };
   document.addEventListener('DOMContentLoaded', init);
 })();
+
