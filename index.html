@@ -621,11 +621,17 @@
       if (!card || !btn) return;
       if (RISE_DEMO_URL && RISE_DEMO_URL.trim()) {
         card.hidden = false;
+        card.style.display = '';
+        card.removeAttribute('aria-hidden');
         btn.href = RISE_DEMO_URL.trim();
         btn.target = '_blank';
         btn.rel = 'noopener noreferrer';
       } else {
         card.hidden = true;
+        card.style.display = 'none';
+        card.setAttribute('aria-hidden', 'true');
+        btn.removeAttribute('href');
+        btn.tabIndex = -1;
       }
     }
 
