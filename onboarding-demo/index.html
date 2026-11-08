@@ -127,7 +127,14 @@
     background: rgba(13,148,136,.2); border: 1px solid var(--teal);
     color: var(--teal2); font-size: 11px; font-weight: 700; letter-spacing: 2px;
     text-transform: uppercase; padding: 5px 14px; border-radius: 20px;
-    margin-bottom: 28px;
+    margin-bottom: 12px;
+  }
+  .badge-fiction {
+    display: inline-block;
+    background: rgba(245,158,11,.14); border: 1px solid rgba(245,158,11,.45);
+    color: #FDE68A; font-size: 12px; font-weight: 700;
+    padding: 6px 14px; border-radius: 20px;
+    margin-bottom: 24px;
   }
   .welcome-title {
     font-family: 'Space Grotesk', sans-serif;
@@ -267,7 +274,7 @@
   }
   .info-item .ii-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
   .info-item strong { display: block; font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
-  .info-item span { font-size: 12px; color: var(--gray500); line-height: 1.4; }
+  .info-item span { font-size: 13px; color: #CBD5E1; line-height: 1.45; }
 
   .quiz-card {
     background: rgba(255,255,255,.05); border: 1.5px solid rgba(245,158,11,.25);
@@ -472,6 +479,7 @@
 <div id="screen-welcome" class="screen active">
   <div class="welcome-inner">
     <div class="badge-demo" id="ui-badge-demo">✦ Demo · Gamified E-Learning</div>
+    <div class="badge-fiction" id="ui-badge-fiction">Fictional company — demo content</div>
     <h1 class="welcome-title">
       <span class="hi" id="ui-welcome-hi">Welcome to</span>
       <span class="brand">Onboarding</span><br>Academy
@@ -585,6 +593,7 @@ const countedQuestions = new Set();
 const UI = {
   en: {
     badgeDemo: '✦ Demo · Gamified E-Learning',
+    badgeFiction: 'Fictional company — demo content',
     welcomeHi: 'Welcome to',
     welcomeSub: 'Your first week at the company starts here. Complete the 3 missions, earn XP points, unlock badges and certify as a <strong style="color:var(--white)">Founding Team Member</strong>.',
     namePlaceholder: 'What is your name?',
@@ -628,6 +637,7 @@ const UI = {
   },
   es: {
     badgeDemo: '✦ Demo · E-Learning Gamificado',
+    badgeFiction: 'Empresa ficticia — contenido de demostración',
     welcomeHi: 'Bienvenido/a a',
     welcomeSub: 'Tu primera semana en la empresa comienza aquí. Completa las 3 misiones, acumula puntos XP, desbloquea insignias y certifícate como <strong style="color:var(--white)">Colaborador/a Fundador/a</strong>.',
     namePlaceholder: '¿Cómo te llamas?',
@@ -1030,6 +1040,7 @@ function applyStaticUI() {
   const u = t();
   document.documentElement.lang = currentLang;
   document.getElementById('ui-badge-demo').textContent = u.badgeDemo;
+  document.getElementById('ui-badge-fiction').textContent = u.badgeFiction;
   document.getElementById('ui-welcome-hi').textContent = u.welcomeHi;
   document.getElementById('ui-welcome-sub').innerHTML = u.welcomeSub;
   document.getElementById('player-name').placeholder = u.namePlaceholder;
@@ -1149,7 +1160,7 @@ function renderStep() {
   scenarioChosen = false;
   matchState = { selected: null, matched: [] };
 
-  document.getElementById('lesson-breadcrumb').textContent = `${m.num} · ${t().stepOf(currentStep + 1, m.steps.length)}`;
+  document.getElementById('lesson-breadcrumb').textContent = `${m.title} · ${t().stepOf(currentStep + 1, m.steps.length)}`;
   document.getElementById('lesson-title').textContent = step.title;
   document.getElementById('lesson-xp-badge').textContent = t().xpOnComplete(m.xp);
 
