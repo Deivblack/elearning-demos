@@ -137,7 +137,7 @@
       welcomeHi: 'Welcome to',
       welcomeBrand: 'Outbound Onboarding',
       welcomeSubBrand: 'Warehouse',
-      welcomeSub: 'Safety, belt colors, containers. Short missions. Earn XP.',
+      welcomeSub: 'Learn safety, belt colors, and containers in short missions and earn XP.',
       firstNamePh: 'First name',
       lastNamePh: 'Last name',
       startBtn: 'Start!',
@@ -152,7 +152,7 @@
       guideMissionsNamed: 'Hi {name}. 5 missions · retry OK · best score counts.',
       hello: 'Hi, {name}',
       missionsTitle: 'Your path',
-      missionsSub: 'Belt first (days, no solo scan) → container → more.',
+      missionsSub: 'Start on the belt for several days with no solo scanning, then move to containers, then take on more tasks.',
       xpCompleteMission: '+{xp} XP when done',
       stepOf: '{num} · {cur}/{total}',
       trivia: 'Trivia',
@@ -584,19 +584,19 @@
       en: {
         m1: {
           title: '3 safety rules',
-          desc: 'Look · don’t climb · tell.',
-          guide: '3 short lines.',
-          badge: { icon: '🛡️', title: 'Safe floor', desc: 'Look, don’t climb, tell.' },
+          desc: 'Watch your surroundings, never climb on equipment, and tell your lead about any problem.',
+          guide: 'Three short safety rules for day one.',
+          badge: { icon: '🛡️', title: 'Safe floor', desc: 'Watch, don’t climb, and speak up.' },
           infoTitle: 'The 3 rules',
           infoGuide: 'Icons + one line each.',
           blocks: [
             { h: '🛡️ Floor safety', p: '' },
             {
               grid: [
-                { icon: '👀', t: '1. Eye contact', d: 'Look at forklift. Wait for signal.' },
-                { icon: '🚫', t: '2. Don’t climb', d: 'No gaylords, carts, or dock edges.' },
-                { icon: '✋', t: '3. If it hurts, tell', d: 'Stop. Tell the TL.' },
-                { icon: '📦', t: 'Buddy / TL', d: 'Day 1 tour: these 3.' }
+                { icon: '👀', t: '1. Eye contact', d: 'Make eye contact with the forklift driver and wait for their signal before crossing.' },
+                { icon: '🚫', t: '2. Don’t climb', d: 'Never climb on gaylords, carts, or dock edges.' },
+                { icon: '✋', t: '3. If it hurts, tell', d: 'Stop what you are doing and tell the team lead.' },
+                { icon: '📦', t: 'Buddy / TL', d: 'On day one, your buddy or TL will review these three rules with you.' }
               ]
             }
           ],
@@ -607,18 +607,18 @@
             { icon: '👀🚜', label: 'Looks + waits', wrong: false },
             { icon: '🧗📦', label: 'Climbs the gaylord', wrong: true }
           ],
-          sceneOk: 'Right — don’t climb.',
-          sceneFail: 'The bad one is climbing.',
+          sceneOk: 'Correct — never climb.',
+          sceneFail: 'The wrong choice is climbing.',
           q1Title: 'Trivia · Crossing',
           q1: 'Before crossing a forklift…',
           q1opts: ['Run without looking', 'Eye contact and wait', 'Walk under the load', 'Go if it “looks clear”'],
-          q1ok: 'Look + wait.',
-          q1fail: 'Rule 1: eye contact and wait.',
+          q1ok: 'Make eye contact and wait.',
+          q1fail: 'Rule 1: eye contact and wait for the signal.',
           q1correct: 1
         },
         m2: {
           title: 'Outbound map',
-          desc: 'Belt → carts → scan → load.',
+          desc: 'From the belt to color carts, then scan, then load.',
           guide: 'Short map. Then order it.',
           badge: { icon: '🗺️', title: 'Clear map', desc: 'You know the flow.' },
           infoTitle: 'Flow',
@@ -628,40 +628,40 @@
             {
               flow: ['📦 Belt', '🎨 Color carts', '🔄 Swap cart', '🏷️ Label + scan', '🔒 Close → load', '🚚 Trailer by carrier']
             },
-            { highlight: 'Train: belt (days) → container → more. Don’t skip.' }
+            { highlight: 'Start on the belt (first days, no scanning), then move to containers, then take on more tasks. Don’t skip steps.' }
           ],
           orderTitle: 'Order the training',
           orderGuide: 'Tap in order.',
           orderPrompt: 'Learn in which order?',
           orderItems: ['Belt / colors', 'Container + scan', 'More responsibility'],
-          orderOk: 'Belt → container → more.',
-          orderFail: 'Belt first, then scan, then more.',
+          orderOk: 'Start on the belt, then containers, then more tasks.',
+          orderFail: 'Belt first, then scanning, then more responsibility.',
           qTitle: 'Trivia · Order',
           q: 'Correct training order:',
-          qopts: ['Scan day 1, then colors', 'Belt → container/scan → more', 'Trailer first', 'All 4 stations day 1'],
+          qopts: ['Scan day 1, then colors', 'Belt first, then container and scan, then more', 'Trailer first', 'All 4 stations day 1'],
           qok: 'Belt first.',
           qfail: 'Don’t jump to scan.',
           qcorrect: 1
         },
         m3: {
           title: 'Belt & colors',
-          desc: 'Colors with buddy. No solo scan.',
+          desc: 'Learn cart colors with your buddy. Do not scan alone yet.',
           guide: 'Learn colors. Tap the right one.',
           badge: { icon: '📦', title: 'Colors ready', desc: 'You know cart colors.' },
           infoTitle: 'Colors = carriers',
           infoGuide: 'Wall chart.',
           blocks: [
-            { h: '📦 Belt', p: 'Several days: colors with buddy only. No solo scan.' },
+            { h: '📦 Belt', p: 'For several days you learn colors with your buddy only. No solo scanning yet.' },
             { colors: C.map((c) => ({ bg: c.hex + '40', bd: c.hex, name: c.label, sub: c.sub })) },
             {
               grid: [
-                { icon: '🤝', t: 'Buddy', d: 'Unsure? Ask.' },
-                { icon: '🚫', t: 'No solo scan', d: 'Scan when TL says.' }
+                { icon: '🤝', t: 'Buddy', d: 'If you are unsure, ask your buddy.' },
+                { icon: '🚫', t: 'No solo scan', d: 'Scan only when your team lead says you are ready.' }
               ]
             }
           ],
           colorTitle: 'Color: Swift',
-          colorGuide: 'Carrier → cart.',
+          colorGuide: 'Match each carrier to the correct cart color.',
           colorPrompt: 'Swift goes in…',
           colorCorrect: redIdx,
           colorOk: 'Red = Swift.',
@@ -685,9 +685,9 @@
         },
         m4: {
           title: 'Container & scan',
-          desc: 'Label → scan → put.',
+          desc: 'Label the package, scan it, then put it in.',
           guide: 'Fixed station order.',
-          badge: { icon: '📥', title: 'Scan in order', desc: 'No scan, no in.' },
+          badge: { icon: '📥', title: 'Scan in order', desc: 'If it is not scanned, it does not go in.' },
           infoTitle: 'At the station',
           infoGuide: 'One station first.',
           blocks: [
@@ -696,7 +696,7 @@
             {
               grid: [
                 { icon: '🧑‍🏫', t: 'Day-1 scan', d: 'With buddy.' },
-                { icon: '⚠️', t: 'No scan = no in', d: 'Never “just put it”.' }
+                { icon: '⚠️', t: 'No scan = no in', d: 'Never put a package in without scanning.' }
               ]
             }
           ],
@@ -704,12 +704,12 @@
           orderGuide: 'Tap correct order.',
           orderPrompt: 'Station order:',
           orderItems: ['Label', 'Scan', 'Put in'],
-          orderOk: 'Label → scan → put.',
+          orderOk: 'Label, then scan, then put it in.',
           orderFail: 'Label, then scan, then put.',
           qTitle: 'Trivia · Error',
           q: 'Serious error:',
           qopts: ['Ask buddy', 'Put in without scanning', 'Start at one station', 'Ask help day 1'],
-          qok: 'No scan → put is bad.',
+          qok: 'Putting a package in without scanning is a serious error.',
           qfail: 'Bad: put without scan.',
           qcorrect: 1
         },
@@ -724,13 +724,13 @@
             { h: '🚀 More', p: '' },
             {
               grid: [
-                { icon: '🔄', t: 'Swap cart', d: 'Full → station; empty to belt.' },
-                { icon: '🔒', t: 'Close', d: 'Then to load.' },
-                { icon: '🚚', t: 'Load', d: 'Scan each · one carrier.' },
-                { icon: '📅', t: '~30 days', d: 'Solo on your role; buddy → TL.' }
+                { icon: '🔄', t: 'Swap cart', d: 'Take a full cart to the station; bring an empty cart back to the belt.' },
+                { icon: '🔒', t: 'Close', d: 'Close the container, then send it to load.' },
+                { icon: '🚚', t: 'Load', d: 'Scan each package and load by one carrier.' },
+                { icon: '📅', t: '~30 days', d: 'After about 30 days you can work solo on your role; ask your buddy, then your TL.' }
               ]
             },
-            { highlight: 'Don’t: wrong color · no-scan put · ignore safety.' }
+            { highlight: 'Do not use the wrong color, put packages in without scanning, or ignore safety rules.' }
           ],
           sceneTitle: 'Load: which is wrong?',
           sceneGuide: 'Tap the bad one.',
